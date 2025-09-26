@@ -94,17 +94,17 @@ function escapeRegex(string) {
 
 // Display usage instructions
 function showUsage() {
-    console.log('Usage: node lookup.js <command> <search-term>');
+    console.log('Usage: node lookup.js <type> [command] <search-term>');
     console.log('\nCommands:');
-    console.log('  herb <name>      - Look up an herb by name or alternative name');
-    console.log('  use <term>       - Find herbs that contain a specific term in their ritual use');
-    console.log('  crystal <name>   - Look up a crystal by name or alternative name');
-    console.log('  property <term>  - Find crystals that contain a specific term in their properties');
+    console.log('  herb <name>        - Look up an herb by name or alternative name');
+    console.log('  herb use <term>    - Find herbs that contain a specific term in their ritual use');
+    console.log('  crystal <name>     - Look up a crystal by name or alternative name');
+    console.log('  crystal use <term> - Find crystals that contain a specific term in their properties');
     console.log('\nExamples:');
     console.log('  node lookup.js herb acacia');
-    console.log('  node lookup.js use protection');
+    console.log('  node lookup.js herb use protection');
     console.log('  node lookup.js crystal amethyst');
-    console.log('  node lookup.js property healing');
+    console.log('  node lookup.js crystal use healing');
 }
 
 // Main function
@@ -116,148 +116,151 @@ function main() {
         process.exit(1);
     }
     
-    const command = args[0].toLowerCase();
-    const searchTerm = args.slice(1).join(' ');
+    const type = args[0].toLowerCase();
     const data = loadData();
     const { herbs, crystals } = data;
     
-    if (command === 'herb') {
-        const foundHerb = findHerbByName(herbs, searchTerm);
-        
-        if (foundHerb) {
-            // Highlight the search term in the herb name
-            const highlightedName = highlightText(foundHerb.name, searchTerm);
-            console.log(`\n🌿 ${highlightedName}`);
+    // Handle herb commands
+    if (type === 'herb') {
+        if (args.length >= 3 && args[1].toLowerCase() === 'use') {
+            // herb use <term>
+            const searchTerm = args.slice(2).join(' ');
+            const matchingHerbs = findHerbsByUse(herbs, searchTerm);
             
-            if (foundHerb.alsoCalled && foundHerb.alsoCalled.length > 0) {
-                // Highlight search term in alternative names too
-                const highlightedAlsoNames = foundHerb.alsoCalled.map(name => 
-                    highlightText(name, searchTerm)
-                );
-                console.log(`   Also called: ${highlightedAlsoNames.join(', ')}`);
-            }
-            console.log(`\n📜 Ritual Use:`);
-            console.log(`   ${foundHerb.ritualUse}\n`);
-        } else {
-            console.log(`❌ Herb "${searchTerm}" not found.`);
-            console.log('\nTip: Try searching with alternative names or check spelling.');
-            
-            // Suggest similar herbs
-            const suggestions = herbs.filter(herb => 
-                herb.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (herb.alsoCalled && herb.alsoCalled.some(alt => 
-                    alt.toLowerCase().includes(searchTerm.toLowerCase())
-                ))
-            ).slice(0, 3);
-            
-            if (suggestions.length > 0) {
-                console.log('\nDid you mean one of these?');
-                suggestions.forEach(herb => {
-                    console.log(`   • ${herb.name}`);
+            if (matchingHerbs.length > 0) {
+                console.log(`\n🔍 Found ${matchingHerbs.length} herb(s) with ritual uses containing "\x1b[43m\x1b[30m\x1b[1m${searchTerm}\x1b[0m":\n`);
+                
+                matchingHerbs.forEach((herb) => {
+                    console.log(`🌿 ${herb.name}`);
+                    if (herb.alsoCalled && herb.alsoCalled.length > 0) {
+                        console.log(`   Also called: ${herb.alsoCalled.join(', ')}`);
+                    }
+                    const highlightedUse = highlightText(herb.ritualUse, searchTerm);
+                    console.log(`   📜 ${highlightedUse}`);
+                    console.log('');
                 });
+            } else {
+                console.log(`❌ No herbs found with ritual uses containing "${searchTerm}".`);
+                console.log('\nTry searching for common ritual use terms like:');
+                console.log('   • protection');
+                console.log('   • love');
+                console.log('   • healing');
+                console.log('   • prosperity');
+                console.log('   • purification');
+                console.log('   • banishing');
+                console.log('   • divination');
+                console.log();
             }
-            console.log();
-        }
-        
-    } else if (command === 'use') {
-        const matchingHerbs = findHerbsByUse(herbs, searchTerm);
-        
-        if (matchingHerbs.length > 0) {
-            console.log(`\n🔍 Found ${matchingHerbs.length} herb(s) with ritual uses containing "\x1b[33m\x1b[1m${searchTerm}\x1b[0m":\n`);
+        } else {
+            // herb <name>
+            const searchTerm = args.slice(1).join(' ');
+            const foundHerb = findHerbByName(herbs, searchTerm);
             
-            matchingHerbs.forEach((herb) => {
-                console.log(`🌿 ${herb.name}`);
-                if (herb.alsoCalled && herb.alsoCalled.length > 0) {
-                    console.log(`   Also called: ${herb.alsoCalled.join(', ')}`);
+            if (foundHerb) {
+                const highlightedName = highlightText(foundHerb.name, searchTerm);
+                console.log(`\n🌿 ${highlightedName}`);
+                
+                if (foundHerb.alsoCalled && foundHerb.alsoCalled.length > 0) {
+                    const highlightedAlsoNames = foundHerb.alsoCalled.map(name => 
+                        highlightText(name, searchTerm)
+                    );
+                    console.log(`   Also called: ${highlightedAlsoNames.join(', ')}`);
                 }
-                // Highlight the search term in the ritual use description
-                const highlightedUse = highlightText(herb.ritualUse, searchTerm);
-                console.log(`   📜 ${highlightedUse}`);
-                console.log('');
-            });
-        } else {
-            console.log(`❌ No herbs found with ritual uses containing "${searchTerm}".`);
-            console.log('\nTry searching for common ritual use terms like:');
-            console.log('   • protection');
-            console.log('   • love');
-            console.log('   • healing');
-            console.log('   • prosperity');
-            console.log('   • purification');
-            console.log('   • banishing');
-            console.log('   • divination');
-            console.log();
-        }
-        
-    } else if (command === 'crystal') {
-        const foundCrystal = findCrystalByName(crystals, searchTerm);
-        
-        if (foundCrystal) {
-            // Highlight the search term in the crystal name
-            const highlightedName = highlightText(foundCrystal.name, searchTerm);
-            console.log(`\n💎 ${highlightedName}`);
-            
-            if (foundCrystal.alsoCalled && foundCrystal.alsoCalled.length > 0) {
-                // Highlight search term in alternative names too
-                const highlightedAlsoNames = foundCrystal.alsoCalled.map(name => 
-                    highlightText(name, searchTerm)
-                );
-                console.log(`   Also called: ${highlightedAlsoNames.join(', ')}`);
+                console.log(`\n📜 Ritual Use:`);
+                console.log(`   ${foundHerb.ritualUse}\n`);
+            } else {
+                console.log(`❌ Herb "${searchTerm}" not found.`);
+                console.log('\nTip: Try searching with alternative names or check spelling.');
+                
+                const suggestions = herbs.filter(herb => 
+                    herb.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    (herb.alsoCalled && herb.alsoCalled.some(alt => 
+                        alt.toLowerCase().includes(searchTerm.toLowerCase())
+                    ))
+                ).slice(0, 3);
+                
+                if (suggestions.length > 0) {
+                    console.log('\nDid you mean one of these?');
+                    suggestions.forEach(herb => {
+                        console.log(`   • ${herb.name}`);
+                    });
+                }
+                console.log();
             }
-            console.log(`\n✨ Properties:`);
-            console.log(`   ${foundCrystal.properties}\n`);
-        } else {
-            console.log(`❌ Crystal "${searchTerm}" not found.`);
-            console.log('\nTip: Try searching with alternative names or check spelling.');
+        }
+    
+    // Handle crystal commands
+    } else if (type === 'crystal') {
+        if (args.length >= 3 && args[1].toLowerCase() === 'use') {
+            // crystal use <term>
+            const searchTerm = args.slice(2).join(' ');
+            const matchingCrystals = findCrystalsByProperty(crystals, searchTerm);
             
-            // Suggest similar crystals
-            const suggestions = crystals.filter(crystal => 
-                crystal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (crystal.alsoCalled && crystal.alsoCalled.some(alt => 
-                    alt.toLowerCase().includes(searchTerm.toLowerCase())
-                ))
-            ).slice(0, 3);
-            
-            if (suggestions.length > 0) {
-                console.log('\nDid you mean one of these?');
-                suggestions.forEach(crystal => {
-                    console.log(`   • ${crystal.name}`);
+            if (matchingCrystals.length > 0) {
+                console.log(`\n🔍 Found ${matchingCrystals.length} crystal(s) with properties containing "\x1b[43m\x1b[30m\x1b[1m${searchTerm}\x1b[0m":\n`);
+                
+                matchingCrystals.forEach((crystal) => {
+                    console.log(`💎 ${crystal.name}`);
+                    if (crystal.alsoCalled && crystal.alsoCalled.length > 0) {
+                        console.log(`   Also called: ${crystal.alsoCalled.join(', ')}`);
+                    }
+                    const highlightedProperties = highlightText(crystal.properties, searchTerm);
+                    console.log(`   ✨ ${highlightedProperties}`);
+                    console.log('');
                 });
+            } else {
+                console.log(`❌ No crystals found with properties containing "${searchTerm}".`);
+                console.log('\nTry searching for common crystal properties like:');
+                console.log('   • healing');
+                console.log('   • protection');
+                console.log('   • love');
+                console.log('   • abundance');
+                console.log('   • clarity');
+                console.log('   • grounding');
+                console.log('   • meditation');
+                console.log();
             }
-            console.log();
-        }
-        
-    } else if (command === 'property') {
-        const matchingCrystals = findCrystalsByProperty(crystals, searchTerm);
-        
-        if (matchingCrystals.length > 0) {
-            console.log(`\n🔍 Found ${matchingCrystals.length} crystal(s) with properties containing "\x1b[43m\x1b[30m\x1b[1m${searchTerm}\x1b[0m":\n`);
-            
-            matchingCrystals.forEach((crystal) => {
-                console.log(`💎 ${crystal.name}`);
-                if (crystal.alsoCalled && crystal.alsoCalled.length > 0) {
-                    console.log(`   Also called: ${crystal.alsoCalled.join(', ')}`);
-                }
-                // Highlight the search term in the properties description
-                const highlightedProperties = highlightText(crystal.properties, searchTerm);
-                console.log(`   ✨ ${highlightedProperties}`);
-                console.log('');
-            });
         } else {
-            console.log(`❌ No crystals found with properties containing "${searchTerm}".`);
-            console.log('\nTry searching for common crystal properties like:');
-            console.log('   • healing');
-            console.log('   • protection');
-            console.log('   • love');
-            console.log('   • abundance');
-            console.log('   • clarity');
-            console.log('   • grounding');
-            console.log('   • meditation');
-            console.log();
+            // crystal <name>
+            const searchTerm = args.slice(1).join(' ');
+            const foundCrystal = findCrystalByName(crystals, searchTerm);
+            
+            if (foundCrystal) {
+                const highlightedName = highlightText(foundCrystal.name, searchTerm);
+                console.log(`\n💎 ${highlightedName}`);
+                
+                if (foundCrystal.alsoCalled && foundCrystal.alsoCalled.length > 0) {
+                    const highlightedAlsoNames = foundCrystal.alsoCalled.map(name => 
+                        highlightText(name, searchTerm)
+                    );
+                    console.log(`   Also called: ${highlightedAlsoNames.join(', ')}`);
+                }
+                console.log(`\n✨ Properties:`);
+                console.log(`   ${foundCrystal.properties}\n`);
+            } else {
+                console.log(`❌ Crystal "${searchTerm}" not found.`);
+                console.log('\nTip: Try searching with alternative names or check spelling.');
+                
+                const suggestions = crystals.filter(crystal => 
+                    crystal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    (crystal.alsoCalled && crystal.alsoCalled.some(alt => 
+                        alt.toLowerCase().includes(searchTerm.toLowerCase())
+                    ))
+                ).slice(0, 3);
+                
+                if (suggestions.length > 0) {
+                    console.log('\nDid you mean one of these?');
+                    suggestions.forEach(crystal => {
+                        console.log(`   • ${crystal.name}`);
+                    });
+                }
+                console.log();
+            }
         }
-        
+    
     } else {
-        console.log(`❌ Unknown command: "${command}"`);
-        console.log('Available commands: herb, use, crystal, property\n');
+        console.log(`❌ Unknown type: "${type}"`);
+        console.log('Available types: herb, crystal\n');
         showUsage();
     }
 }

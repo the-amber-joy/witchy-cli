@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load the herbs, crystals, colors, moon phases, and metals data
+// Load the herbs, crystals, colors, moon phases, metals, and days data
 function loadData() {
     try {
         const herbsPath = path.join(__dirname, 'json', 'herbs.json');
@@ -11,14 +11,16 @@ function loadData() {
         const colorsPath = path.join(__dirname, 'json', 'colors.json');
         const moonPath = path.join(__dirname, 'json', 'moon.json');
         const metalsPath = path.join(__dirname, 'json', 'metals.json');
+        const daysPath = path.join(__dirname, 'json', 'days.json');
         
         const herbsData = JSON.parse(fs.readFileSync(herbsPath, 'utf8'));
         const crystalsData = JSON.parse(fs.readFileSync(crystalsPath, 'utf8'));
         const colorsData = JSON.parse(fs.readFileSync(colorsPath, 'utf8'));
         const moonData = JSON.parse(fs.readFileSync(moonPath, 'utf8'));
         const metalsData = JSON.parse(fs.readFileSync(metalsPath, 'utf8'));
+        const daysData = JSON.parse(fs.readFileSync(daysPath, 'utf8'));
         
-        return { herbs: herbsData, crystals: crystalsData, colors: colorsData, moon: moonData, metals: metalsData };
+        return { herbs: herbsData, crystals: crystalsData, colors: colorsData, moon: moonData, metals: metalsData, days: daysData };
     } catch (error) {
         console.error('Error loading data files:', error.message);
         process.exit(1);
@@ -163,6 +165,24 @@ function findMetalsByProperty(metals, propertyTerm) {
     });
 }
 
+// Find day by name
+function findDayByName(days, dayName) {
+    const normalizedDayName = dayName.toLowerCase().trim();
+    
+    return days.filter(day => {
+        return day.name && day.name.toLowerCase().includes(normalizedDayName);
+    });
+}
+
+// Find days by intent
+function findDaysByIntent(days, intentTerm) {
+    const normalizedTerm = intentTerm.toLowerCase().trim();
+    
+    return days.filter(day => {
+        return day.intent && day.intent.toLowerCase().includes(normalizedTerm);
+    });
+}
+
 // Highlight search terms in text
 function highlightText(text, searchTerm, useBackgroundHighlight = true) {
     if (!text || !searchTerm) return text;
@@ -243,6 +263,8 @@ function showUsage() {
     console.log('  moon use <term>    - Find moon phases that contain a specific term in their meaning');
     console.log('  metal <name>       - Look up a metal by name');
     console.log('  metal use <term>   - Find metals that contain a specific term in their properties');
+    console.log('  day <name>         - Look up a day by name (Monday, Tuesday, etc.)');
+    console.log('  day use <term>     - Find days that contain a specific term in their intent');
     console.log('\nExamples:');
     console.log('  node lookup.js herb acacia');
     console.log('  node lookup.js herb use protection');
@@ -254,6 +276,8 @@ function showUsage() {
     console.log('  node lookup.js moon use banishing');
     console.log('  node lookup.js metal gold');
     console.log('  node lookup.js metal use protection');
+    console.log('  node lookup.js day monday');
+    console.log('  node lookup.js day use healing');
 }
 
 // Main function
@@ -267,7 +291,7 @@ function main() {
     
     const type = args[0].toLowerCase();
     const data = loadData();
-    const { herbs, crystals, colors, moon, metals } = data;
+    const { herbs, crystals, colors, moon, metals, days } = data;
     
     // Handle herb commands
     if (type === 'herb') {
@@ -581,9 +605,83 @@ function main() {
             }
         }
     
+    // Handle day commands
+    } else if (type === 'day') {
+        if (args.length >= 3 && args[1].toLowerCase() === 'use') {
+            // day use <term>
+            const searchTerm = args.slice(2).join(' ');
+            const matchingDays = findDaysByIntent(days, searchTerm);
+            
+            if (matchingDays.length > 0) {
+                console.log(`\n🔍 Found ${matchingDays.length} day(s) with intents containing "\x1b[43m\x1b[30m\x1b[1m${searchTerm}\x1b[0m":\n`);
+                
+                matchingDays.forEach((day) => {
+                    console.log(`📅 ${day.name}`);
+                    if (day.planet) {
+                        console.log(`   🪐 Planet: ${day.planet}`);
+                    }
+                    const highlightedIntent = highlightText(day.intent, searchTerm);
+                    console.log(`   🎯 Intent: ${highlightedIntent}`);
+                    if (day.colors) {
+                        console.log(`   🎨 Colors: ${day.colors}`);
+                    }
+                    if (day.deities) {
+                        console.log(`   ⚡ Deities: ${day.deities}`);
+                    }
+                    console.log('');
+                });
+            } else {
+                console.log(`❌ No days found with intents containing "${searchTerm}".`);
+                console.log('\nTry searching for common magical intents like:');
+                console.log('   • healing');
+                console.log('   • protection');
+                console.log('   • success');
+                console.log('   • communication');
+                console.log('   • love');
+                console.log();
+            }
+        } else {
+            // day <name>
+            const searchTerm = args.slice(1).join(' ');
+            const foundDays = findDayByName(days, searchTerm);
+            
+            if (foundDays.length > 0) {
+                foundDays.forEach((day) => {
+                    const highlightedName = highlightText(day.name, searchTerm);
+                    console.log(`\n📅 ${highlightedName}`);
+                    if (day.planet) {
+                        console.log(`\n🪐 Planet: ${day.planet}`);
+                    }
+                    console.log(`🎯 Intent: ${day.intent}`);
+                    if (day.colors) {
+                        console.log(`🎨 Colors: ${day.colors}`);
+                    }
+                    if (day.deities) {
+                        console.log(`⚡ Deities: ${day.deities}`);
+                    }
+                    console.log('');
+                });
+            } else {
+                console.log(`❌ Day "${searchTerm}" not found.`);
+                console.log('\nTip: Try searching with exact day names like "Monday", "Tuesday", etc.');
+                
+                const suggestions = days.filter(day => 
+                    day.name.toLowerCase().includes(searchTerm.toLowerCase())
+                ).slice(0, 3);
+                
+                if (suggestions.length > 0) {
+                    console.log('\nDid you mean one of these?');
+                    suggestions.forEach(day => {
+                        console.log(`   • ${day.name}`);
+                    });
+                }
+                console.log();
+            }
+        }
+    
     } else {
         console.log(`❌ Unknown type: "${type}"`);
-        console.log('Available types: herb, crystal, color, moon, metal\n');
+        console.log('Available types: herb, crystal, color, moon, metal, day\n');
         showUsage();
     }
 }

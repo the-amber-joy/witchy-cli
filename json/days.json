@@ -1,0 +1,51 @@
+[
+  {
+    "name": "Monday",
+    "intent": "Use this day to cast spells for wisdom, messages, reconciliation, illusion, sleep, peace, beauty, healing, cooking, personality, merchandising, psychic work, travel, fertility, family matters and emotions.",
+    "planet": "Moon",
+    "colors": "Silver. Additionally: White and Gray",
+    "deities": "Selene, Luna, Diana, and Artemis"
+  },
+  {
+    "name": "Tuesday",
+    "intent": "Use this day to cast spells for conflict, physical strength, victory, success, revenge, the breaking of negative spells, dynamic energy, courage, conviction, rebellion, defense, wards, protection and competition.",
+    "planet": "Mars",
+    "colors": "Red. Additionally: Autumn Shades",
+    "deities": "Mars, Ares"
+  },
+  {
+    "name": "Wednesday",
+    "intent": "Use this day to cast spells for communication, creativity, messages, luck, travel, perception, conviction, rebellion, defense, wards, protection, medicine, cooking, personality, merchandising, psychic work and intuition.",
+    "planet": "Mercury",
+    "colors": "Yellow. Additionally: Gray, Mixed Hues",
+    "deities": "Mercury, Hermes"
+  },
+  {
+    "name": "Thursday",
+    "intent": "Use this day to cast spells for wealth, success, business, luck, health, protection, legal matters, male fertility,money, desires and laughter.",
+    "planet": "Jupiter",
+    "colors": "Blue. Additionally: Purple",
+    "deities": "Zeus and Thor. Gods of thunder"
+  },
+  {
+    "name": "Friday",
+    "intent": "Use this day to cast spells for love, romance, marriage, fertility, sexual matters, healing, protection, beauty, friendship, gentleness, pregnancy, growth and pleasure.",
+    "planet": "Venus",
+    "colors": "Green. Additionally: Light Blue, Pink, Copper Hues",
+    "deities": "Venus, Aphrodite"
+  },
+  {
+    "name": "Saturday",
+    "intent": "Use this day to cast spells for meditation, psychic attack or defense, freedom, communication between the worlds, the elderly, death, protection, wisdom, spirituality, cleansing, overcoming negativity, limitations, and boundaries.",
+    "planet": "Saturn",
+    "colors": "Black. Additionally: Dark Shades",
+    "deities": "Saturn, Hecate"
+  },
+  {
+    "name": "Sunday",
+    "intent": "Use this day to cast spells for exorcism, creativity, individuality, success, promotion, hope, fortune, fame, wealth, leadership, joy, hope, renewing energy and spirituality.",
+    "planet": "Sun",
+    "colors": "Golden. Additionally: Orange",
+    "deities": "Helios, Apollo, Lugh, and Bel"
+  }
+]

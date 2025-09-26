@@ -3,20 +3,22 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load the herbs, crystals, colors, and moon phases data
+// Load the herbs, crystals, colors, moon phases, and metals data
 function loadData() {
     try {
-        const herbsPath = path.join(__dirname, 'herbs.json');
-        const crystalsPath = path.join(__dirname, 'crystals.json');
-        const colorsPath = path.join(__dirname, 'colors.json');
-        const moonPath = path.join(__dirname, 'moon.json');
+        const herbsPath = path.join(__dirname, 'json', 'herbs.json');
+        const crystalsPath = path.join(__dirname, 'json', 'crystals.json');
+        const colorsPath = path.join(__dirname, 'json', 'colors.json');
+        const moonPath = path.join(__dirname, 'json', 'moon.json');
+        const metalsPath = path.join(__dirname, 'json', 'metals.json');
         
         const herbsData = JSON.parse(fs.readFileSync(herbsPath, 'utf8'));
         const crystalsData = JSON.parse(fs.readFileSync(crystalsPath, 'utf8'));
         const colorsData = JSON.parse(fs.readFileSync(colorsPath, 'utf8'));
         const moonData = JSON.parse(fs.readFileSync(moonPath, 'utf8'));
+        const metalsData = JSON.parse(fs.readFileSync(metalsPath, 'utf8'));
         
-        return { herbs: herbsData, crystals: crystalsData, colors: colorsData, moon: moonData };
+        return { herbs: herbsData, crystals: crystalsData, colors: colorsData, moon: moonData, metals: metalsData };
     } catch (error) {
         console.error('Error loading data files:', error.message);
         process.exit(1);
@@ -143,6 +145,24 @@ function findMoonPhasesByMeaning(moonPhases, meaningTerm) {
     });
 }
 
+// Search for metal by name
+function findMetalByName(metals, searchTerm) {
+    const normalizedSearch = searchTerm.toLowerCase().trim();
+    
+    return metals.find(metal => {
+        return metal.name.toLowerCase() === normalizedSearch;
+    });
+}
+
+// Search for metals by properties
+function findMetalsByProperty(metals, propertyTerm) {
+    const normalizedTerm = propertyTerm.toLowerCase().trim();
+    
+    return metals.filter(metal => {
+        return metal.properties && metal.properties.toLowerCase().includes(normalizedTerm);
+    });
+}
+
 // Highlight search terms in text
 function highlightText(text, searchTerm, useBackgroundHighlight = true) {
     if (!text || !searchTerm) return text;
@@ -189,7 +209,7 @@ function getColorCode(colorName) {
         'copper': '\x1b[38;5;166m\x1b[1m',    // copper (256-color)
         'gold': '\x1b[38;5;220m\x1b[1m',      // gold (256-color)
         'green': '\x1b[32m\x1b[1m',           // bright green
-        'grey': '\x1b[90m\x1b[1m',            // bright black (gray)
+        'gray': '\x1b[90m\x1b[1m',            // bright black (gray)
         'indigo': '\x1b[38;5;54m\x1b[1m',     // indigo (256-color)
         'lavender': '\x1b[38;5;183m\x1b[1m',  // lavender (256-color)
         'light blue': '\x1b[94m\x1b[1m',      // bright cyan/light blue
@@ -221,6 +241,8 @@ function showUsage() {
     console.log('  color use <term>   - Find colors that contain a specific term in their meaning');
     console.log('  moon <phase>       - Look up a moon phase by name');
     console.log('  moon use <term>    - Find moon phases that contain a specific term in their meaning');
+    console.log('  metal <name>       - Look up a metal by name');
+    console.log('  metal use <term>   - Find metals that contain a specific term in their properties');
     console.log('\nExamples:');
     console.log('  node lookup.js herb acacia');
     console.log('  node lookup.js herb use protection');
@@ -230,6 +252,8 @@ function showUsage() {
     console.log('  node lookup.js color use love');
     console.log('  node lookup.js moon full');
     console.log('  node lookup.js moon use banishing');
+    console.log('  node lookup.js metal gold');
+    console.log('  node lookup.js metal use protection');
 }
 
 // Main function
@@ -243,7 +267,7 @@ function main() {
     
     const type = args[0].toLowerCase();
     const data = loadData();
-    const { herbs, crystals, colors, moon } = data;
+    const { herbs, crystals, colors, moon, metals } = data;
     
     // Handle herb commands
     if (type === 'herb') {
@@ -501,9 +525,65 @@ function main() {
             }
         }
     
+    // Handle metal commands
+    } else if (type === 'metal') {
+        if (args.length >= 3 && args[1].toLowerCase() === 'use') {
+            // metal use <term>
+            const searchTerm = args.slice(2).join(' ');
+            const matchingMetals = findMetalsByProperty(metals, searchTerm);
+            
+            if (matchingMetals.length > 0) {
+                console.log(`\n🔍 Found ${matchingMetals.length} metal(s) with properties containing "\x1b[43m\x1b[30m\x1b[1m${searchTerm}\x1b[0m":\n`);
+                
+                matchingMetals.forEach((metal) => {
+                    console.log(`🪨 ${metal.name}`);
+                    const highlightedProperties = highlightText(metal.properties, searchTerm);
+                    console.log(`   ✨ ${highlightedProperties}`);
+                    console.log('');
+                });
+            } else {
+                console.log(`❌ No metals found with properties containing "${searchTerm}".`);
+                console.log('\nTry searching for common metal properties like:');
+                console.log('   • protection');
+                console.log('   • prosperity');
+                console.log('   • healing');
+                console.log('   • strength');
+                console.log('   • abundance');
+                console.log('   • energy');
+                console.log('   • wisdom');
+                console.log();
+            }
+        } else {
+            // metal <name>
+            const searchTerm = args.slice(1).join(' ');
+            const foundMetal = findMetalByName(metals, searchTerm);
+            
+            if (foundMetal) {
+                const highlightedName = highlightText(foundMetal.name, searchTerm);
+                console.log(`\n🪨 ${highlightedName}`);
+                console.log(`\n✨ Properties:`);
+                console.log(`   ${foundMetal.properties}\n`);
+            } else {
+                console.log(`❌ Metal "${searchTerm}" not found.`);
+                console.log('\nTip: Try searching with exact metal names or check spelling.');
+                
+                const suggestions = metals.filter(metal => 
+                    metal.name.toLowerCase().includes(searchTerm.toLowerCase())
+                ).slice(0, 3);
+                
+                if (suggestions.length > 0) {
+                    console.log('\nDid you mean one of these?');
+                    suggestions.forEach(metal => {
+                        console.log(`   • ${metal.name}`);
+                    });
+                }
+                console.log();
+            }
+        }
+    
     } else {
         console.log(`❌ Unknown type: "${type}"`);
-        console.log('Available types: herb, crystal, color, moon\n');
+        console.log('Available types: herb, crystal, color, moon, metal\n');
         showUsage();
     }
 }

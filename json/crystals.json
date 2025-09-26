@@ -1,10 +1,6 @@
 [
   {
-    "name": "Adventurine",
-    "properties": "Attracts Prosperity and Money"
-  },
-  {
-    "name": "Aventurine Orange",
+    "name": "Orange Aventurine",
     "properties": "Creativity, Motivation, Decisiveness, Amplifies leadership qualities."
   },
   {
@@ -53,7 +49,7 @@
   },
   {
     "name": "Amethyst",
-    "properties": "New beginnings, Fertility,Stability, Inner Calm, Insights, Intuition, Meditation, Balance, Dreaming. Protects against psychic attacks. Known as \"Sobriety Stone\", Spiritual cleansing,Dispelling negativity."
+    "properties": "New beginnings, Fertility, Stability, Inner Calm, Insights, Intuition, Meditation, Balance, Dreaming. Protects against psychic attacks. Known as \"Sobriety Stone\", Spiritual cleansing, Dispelling negativity."
   },
   {
     "name": "Ametrine",
@@ -64,8 +60,9 @@
     "properties": "Protects, strengthens degenerate organs, excellent for creative people."
   },
   {
-    "name": "Apache Tear",
-    "properties": "Grounding, Centering, Promoting Peace, Protection, Good Luck, Finding the Hidden, Concealment, Healing emotional wounds, Repel Negativity"
+    "name": "Obsidianite",
+    "properties": "Grounding, Centering, Promoting Peace, Protection, Good Luck, Finding the Hidden, Concealment, Healing emotional wounds, Repel Negativity",
+    "alternateNames": ["Apache Tear"]
   },
   {
     "name": "Aqua Aura",
@@ -144,19 +141,19 @@
     "properties": "Balance, Clarity, Clearing Blockages, Luck, money, Problem resolution, Energy, Meditation"
   },
   {
-    "name": "Calcite Orange",
-    "properties": "Protection,enhances sexual energies and creative abilities."
+    "name": "Orange Calcite",
+    "properties": "Protection, enhances sexual energies and creative abilities."
   },
   {
-    "name": "Calcite White",
+    "name": "White Calcite",
     "properties": "Used in spirituality rituals and meditation. Improves memory. Has a calming effect."
   },
   {
     "name": "Carnelian",
-    "properties": "Creativity, Individualism, Courage, Memory, Concentration, Confidence, Decisions, Grounding, Sexuality,Balancing, Self-confidence, Peace, Eases depression."
+    "properties": "Creativity, Individualism, Courage, Memory, Concentration, Confidence, Decisions, Grounding, Sexuality, Balancing, Self-confidence, Peace, Eases depression."
   },
   {
-    "name": "Casisterite",
+    "name": "Cassiterite",
     "properties": "Acceptance, Prevent negative thoughts, Understanding dreams."
   },
   {
@@ -176,7 +173,7 @@
     "properties": "Conquering Fears"
   },
   {
-    "name": "Chryscholla",
+    "name": "Chrysocolla",
     "properties": "Peace, Patience, Love, Wisdom, Ward off unreasonable fear, Prosperity, Growth, Hope"
   },
   {
@@ -188,7 +185,7 @@
     "properties": "Abundance, Confidence, Strengthens self-esteem, Courage, Clarity of thought, Open mindedness, Successful outcomes, Communication, Anti-nightmare, Protection, Psychic Awareness."
   },
   {
-    "name": "Conichalite",
+    "name": "Conichalcite",
     "properties": "Transcendence. Stepping between the worlds."
   },
   {
@@ -196,7 +193,7 @@
     "properties": "Fertility"
   },
   {
-    "name": "Dalmation Jasper",
+    "name": "Dalmatian Jasper",
     "properties": "Protect from pain, Guard independence."
   },
   {
@@ -236,16 +233,16 @@
     "properties": "Truth, Protection, Problem solving, Aura Cleansing, Focusing, Concentration"
   },
   {
-    "name": "Fuschite",
+    "name": "Fuchsite",
     "properties": "Balance, harmony"
   },
   {
     "name": "Galena",
-    "properties": "The 'stone of harmony' removes self-imposed limits, and stimulates interactions at all levels.Galena is a strong grounding stone, enhancing the centring of ones energies."
+    "properties": "The 'stone of harmony' removes self-imposed limits, and stimulates interactions at all levels. Galena is a strong grounding stone, enhancing the centering of ones energies."
   },
   {
     "name": "Garnet",
-    "properties": "Commitment, Romantic Love, Passion.  Enhances sensuality, sexuality and intimacy, Travel protection, Happiness, Positive thoughts,Boosts energy and self confidence"
+    "properties": "Commitment, Romantic Love, Passion. Enhances sensuality, sexuality and intimacy, Travel protection, Happiness, Positive thoughts, Boosts energy and self confidence"
   },
   {
     "name": "Gem Silica",
@@ -272,7 +269,7 @@
     "properties": "Relieves stagnation, level headedness."
   },
   {
-    "name": "Grey banded agate",
+    "name": "Gray banded agate",
     "properties": "Eases stress, reduces anxiety."
   },
   {
@@ -296,7 +293,7 @@
     "properties": "Accurate visions, Releases discord, Psychic ability, Curiosity, Spiritual growth, Connection with soul."
   },
   {
-    "name": "Iron Pyrates",
+    "name": "Iron Pyrite",
     "properties": "Discerning trickery, falsehood."
   },
   {
@@ -308,20 +305,20 @@
     "properties": "Strengthens the body, Protects from Fatigue, Heals internal disorders, Extends Lifespan."
   },
   {
-    "name": "Jasper (Brachiated)",
+    "name": "Brachiated Jasper",
     "properties": "Animal Healing, Animal communication"
   },
   {
-    "name": "Jasper (Leopard Skin)",
+    "name": "Leopard Skin Jasper",
     "properties": "Aids in service to others, Grounding, Protection during travel"
   },
   {
-    "name": "Jasper (Red)",
+    "name": "Red Jasper",
     "properties": "Protection, Fairness, Justice, Stabilizing and Balancing Enhances responsibility, Choice, Compassion, Recalling dreams"
   },
   {
-    "name": "Jasper (Yellow)",
-    "properties": "Strength and Balance in social arenas .  Protection during travel.  Shields negativity, Protect from depression"
+    "name": "Yellow Jasper",
+    "properties": "Strength and Balance in social arenas. Protection during travel. Shields negativity, Protect from depression"
   },
   {
     "name": "Jet",
@@ -333,11 +330,11 @@
   },
   {
     "name": "Kyanite",
-    "properties": "Awareness, Communication, Altered states, Vivid dreams, Dream recall, Visualizations, Loyalty Honesty, Tranquiliy, Meditation, Clarity, Enhances creativity."
+    "properties": "Awareness, Communication, Altered states, Vivid dreams, Dream recall, Visualizations, Loyalty Honesty, Tranquility, Meditation, Clarity, Enhances creativity."
   },
   {
     "name": "Labradorite",
-    "properties": "Faith, Patience, Imagination, Courage. Enhance dreaming and dream recall. Strengthening convictions,Introspection."
+    "properties": "Faith, Patience, Imagination, Courage. Enhance dreaming and dream recall. Strengthening convictions, Introspection."
   },
   {
     "name": "Lapis Lazuli",
@@ -361,14 +358,14 @@
   },
   {
     "name": "Merlinite",
-    "properties": "Attracts Good luck and Magick and into your life."
+    "properties": "Attracts Good luck and magic and into your life."
   },
   {
     "name": "Moldavite",
     "properties": "Psychic abilities, Mental and Emotional balance"
   },
   {
-    "name": "Molybdentite",
+    "name": "Molybdenite",
     "properties": "Bring Reliability, Consistency."
   },
   {
@@ -381,7 +378,7 @@
   },
   {
     "name": "Obsidian",
-    "properties": "Calming, Grounding, Balancing, Serenity, Increasing spirituality, Purity, Guards against negativity.Protection, Aggressive magic."
+    "properties": "Calming, Grounding, Balancing, Serenity, Increasing spirituality, Purity, Guards against negativity. Protection, Aggressive magic."
   },
   {
     "name": "Okenite",
@@ -396,8 +393,9 @@
     "properties": "Creativity, Positive emotions, Joy, Faithfulness, Self-confidence, Wisdom"
   },
   {
-    "name": "Peacock Ore",
-    "properties": "Happiness, Joy, Positivity."
+    "name": "Bornite",
+    "properties": "Happiness, Joy, Positivity.",
+    "alternateNames": ["Peacock Ore"]
   },
   {
     "name": "Peridot",
@@ -416,15 +414,15 @@
     "properties": "Resolves sexuality issues. Sense of oneness with universe."
   },
   {
-    "name": "Purple Flourite",
+    "name": "Purple Fluorite",
     "properties": "Psychic development, Spiritual peace, Aids the ability to meditate."
   },
   {
-    "name": "Quartz (Clear)",
-    "properties": "Harmonize, Balance, Purify.  Enhance energy and thoughts. Counter Black Magick, Communicate with Spirits"
+    "name": "Quartz",
+    "properties": "Harmonize, Balance, Purify.  Enhance energy and thoughts. Counter Black magic, Communicate with Spirits"
   },
   {
-    "name": "Quartz (Rose)",
+    "name": "Rose Quartz",
     "properties": "The stone of unconditional love.  Gentleness, Forgiveness, Tolerance"
   },
   {
@@ -437,22 +435,18 @@
   },
   {
     "name": "Rhodochrosite",
-    "properties": "Balance, Sexual adventure, Fertility, Pregnancy."
-  },
-  {
-    "name": "Rhodochrosite",
-    "properties": "Self-confidence, Energy, Peace, Destressing. Attract love. Balancing, Beauty, Intelligence"
+    "properties": "Balance, Sexual adventure, Fertility, Pregnancy, Self-confidence, Energy, Peace, De-stressing. Attract love. Balancing, Beauty, Intelligence."
   },
   {
     "name": "Rhodonite",
     "properties": "Happiness, Laughter, Joy, Self-worth, Self-esteem, Self-confidence, Understanding new concepts"
   },
   {
-    "name": "Rhyolitem (Leopardskin)",
+    "name": "Leopardskin Rhyolite",
     "properties": "Protection, Emotional and Confident Expression."
   },
   {
-    "name": "Ruby in Zoisitr",
+    "name": "Anyolite",
     "properties": "Healing. Relieves Grief, Anger, Despair and Defeat. Guarding against psychic attack and negativity."
   },
   {
@@ -469,11 +463,11 @@
   },
   {
     "name": "Serpentine",
-    "properties": "Attracting Love, Money, Wealth, Abundance. Visualization, Meditation,Psychic abilities."
+    "properties": "Attracting Love, Money, Wealth, Abundance. Visualization, Meditation, Psychic abilities."
   },
   {
     "name": "Smoky Quartz",
-    "properties": "Grounding, Balance, Calms the mind, Reduces Fear and Panic,Elevates mood, Neutralises negative vibrations."
+    "properties": "Grounding, Balance, Calms the mind, Reduces Fear and Panic, Elevates mood, Neutralizes negative vibrations."
   },
   {
     "name": "Snow Quartz",
@@ -489,10 +483,10 @@
   },
   {
     "name": "Stilbite",
-    "properties": "Calm, Restful sleep with vivid dreams, Iinner peace during meditation."
+    "properties": "Calm, Restful sleep with vivid dreams, Inner peace during meditation."
   },
   {
-    "name": "Sugalite",
+    "name": "Sugilite",
     "properties": "Psychic awareness, Connection between mind and body, Confidence."
   },
   {
@@ -533,6 +527,6 @@
   },
   {
     "name": "Variscite",
-    "properties": "Encourages self-expression,Provides Hope and Courage.Calms the mind, Meditation, Increases perception."
+    "properties": "Encourages self-expression, Provides Hope and Courage. Calms the mind, Meditation, Increases perception."
   }
 ]

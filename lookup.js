@@ -3,18 +3,20 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load the herbs, crystals, and colors data
+// Load the herbs, crystals, colors, and moon phases data
 function loadData() {
     try {
         const herbsPath = path.join(__dirname, 'herbs.json');
         const crystalsPath = path.join(__dirname, 'crystals.json');
         const colorsPath = path.join(__dirname, 'colors.json');
+        const moonPath = path.join(__dirname, 'moon.json');
         
         const herbsData = JSON.parse(fs.readFileSync(herbsPath, 'utf8'));
         const crystalsData = JSON.parse(fs.readFileSync(crystalsPath, 'utf8'));
         const colorsData = JSON.parse(fs.readFileSync(colorsPath, 'utf8'));
+        const moonData = JSON.parse(fs.readFileSync(moonPath, 'utf8'));
         
-        return { herbs: herbsData, crystals: crystalsData, colors: colorsData };
+        return { herbs: herbsData, crystals: crystalsData, colors: colorsData, moon: moonData };
     } catch (error) {
         console.error('Error loading data files:', error.message);
         process.exit(1);
@@ -99,6 +101,48 @@ function findColorsByMeaning(colors, meaningTerm) {
     });
 }
 
+// Search for moon phase by name
+function findMoonPhaseByName(moonPhases, searchTerm) {
+    const normalizedSearch = searchTerm.toLowerCase().trim();
+    
+    return moonPhases.find(phase => {
+        const phaseName = phase.phase.toLowerCase();
+        
+        // Exact match first
+        if (phaseName === normalizedSearch) {
+            return true;
+        }
+        
+        // Allow partial matches for common phase names
+        if (normalizedSearch === 'new' && phaseName.includes('new')) {
+            return true;
+        }
+        if (normalizedSearch === 'full' && phaseName.includes('full')) {
+            return true;
+        }
+        if (normalizedSearch === 'waxing' && phaseName.includes('waxing')) {
+            return true;
+        }
+        if (normalizedSearch === 'waning' && phaseName.includes('waning')) {
+            return true;
+        }
+        if (normalizedSearch === 'dark' && phaseName.includes('dark')) {
+            return true;
+        }
+        
+        return false;
+    });
+}
+
+// Search for moon phases by meaning
+function findMoonPhasesByMeaning(moonPhases, meaningTerm) {
+    const normalizedTerm = meaningTerm.toLowerCase().trim();
+    
+    return moonPhases.filter(phase => {
+        return phase.meaning && phase.meaning.toLowerCase().includes(normalizedTerm);
+    });
+}
+
 // Highlight search terms in text
 function highlightText(text, searchTerm, useBackgroundHighlight = true) {
     if (!text || !searchTerm) return text;
@@ -114,6 +158,25 @@ function highlightText(text, searchTerm, useBackgroundHighlight = true) {
 // Escape special regex characters
 function escapeRegex(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Get appropriate emoji for moon phase
+function getMoonPhaseEmoji(phaseName) {
+    const phase = phaseName.toLowerCase();
+    
+    if (phase.includes('new')) {
+        return '🌑'; // New moon - dark circle
+    } else if (phase.includes('waxing')) {
+        return '🌒'; // Waxing crescent
+    } else if (phase.includes('full')) {
+        return '🌕'; // Full moon - bright circle
+    } else if (phase.includes('waning')) {
+        return '🌘'; // Waning crescent
+    } else if (phase.includes('dark')) {
+        return '🌚'; // Dark moon face
+    } else {
+        return '🌙'; // Generic crescent moon as fallback
+    }
 }
 
 // Get ANSI color code for a color name
@@ -156,6 +219,8 @@ function showUsage() {
     console.log('  crystal use <term> - Find crystals that contain a specific term in their properties');
     console.log('  color <name>       - Look up a color by name');
     console.log('  color use <term>   - Find colors that contain a specific term in their meaning');
+    console.log('  moon <phase>       - Look up a moon phase by name');
+    console.log('  moon use <term>    - Find moon phases that contain a specific term in their meaning');
     console.log('\nExamples:');
     console.log('  node lookup.js herb acacia');
     console.log('  node lookup.js herb use protection');
@@ -163,6 +228,8 @@ function showUsage() {
     console.log('  node lookup.js crystal use healing');
     console.log('  node lookup.js color red');
     console.log('  node lookup.js color use love');
+    console.log('  node lookup.js moon full');
+    console.log('  node lookup.js moon use banishing');
 }
 
 // Main function
@@ -176,7 +243,7 @@ function main() {
     
     const type = args[0].toLowerCase();
     const data = loadData();
-    const { herbs, crystals, colors } = data;
+    const { herbs, crystals, colors, moon } = data;
     
     // Handle herb commands
     if (type === 'herb') {
@@ -375,9 +442,68 @@ function main() {
             }
         }
     
+    // Handle moon phase commands
+    } else if (type === 'moon') {
+        if (args.length >= 3 && args[1].toLowerCase() === 'use') {
+            // moon use <term>
+            const searchTerm = args.slice(2).join(' ');
+            const matchingPhases = findMoonPhasesByMeaning(moon, searchTerm);
+            
+            if (matchingPhases.length > 0) {
+                console.log(`\n🔍 Found ${matchingPhases.length} moon phase(s) with meanings containing "\x1b[43m\x1b[30m\x1b[1m${searchTerm}\x1b[0m":\n`);
+                
+                matchingPhases.forEach((phase) => {
+                    const phaseEmoji = getMoonPhaseEmoji(phase.phase);
+                    console.log(`${phaseEmoji} ${phase.phase}`);
+                    const highlightedMeaning = highlightText(phase.meaning, searchTerm);
+                    console.log(`   ✨ ${highlightedMeaning}`);
+                    console.log('');
+                });
+            } else {
+                console.log(`❌ No moon phases found with meanings containing "${searchTerm}".`);
+                console.log('\nTry searching for common lunar magic terms like:');
+                console.log('   • new beginnings');
+                console.log('   • banishing');
+                console.log('   • growth');
+                console.log('   • manifestation');
+                console.log('   • release');
+                console.log('   • protection');
+                console.log('   • introspection');
+                console.log();
+            }
+        } else {
+            // moon <phase>
+            const searchTerm = args.slice(1).join(' ');
+            const foundPhase = findMoonPhaseByName(moon, searchTerm);
+            
+            if (foundPhase) {
+                const phaseEmoji = getMoonPhaseEmoji(foundPhase.phase);
+                const highlightedName = highlightText(foundPhase.phase, searchTerm);
+                console.log(`\n${phaseEmoji} ${highlightedName}`);
+                console.log(`\n✨ Meaning:`);
+                console.log(`   ${foundPhase.meaning}\n`);
+            } else {
+                console.log(`❌ Moon phase "${searchTerm}" not found.`);
+                console.log('\nTip: Try searching with exact phase names or check spelling.');
+                
+                const suggestions = moon.filter(phase => 
+                    phase.phase.toLowerCase().includes(searchTerm.toLowerCase())
+                ).slice(0, 3);
+                
+                if (suggestions.length > 0) {
+                    console.log('\nDid you mean one of these?');
+                    suggestions.forEach(phase => {
+                        const phaseEmoji = getMoonPhaseEmoji(phase.phase);
+                        console.log(`   ${phaseEmoji} ${phase.phase}`);
+                    });
+                }
+                console.log();
+            }
+        }
+    
     } else {
         console.log(`❌ Unknown type: "${type}"`);
-        console.log('Available types: herb, crystal, color\n');
+        console.log('Available types: herb, crystal, color, moon\n');
         showUsage();
     }
 }

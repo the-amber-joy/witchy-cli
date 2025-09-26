@@ -251,33 +251,26 @@ function getColorCode(colorName) {
 
 // Display usage instructions
 function showUsage() {
-    console.log('Usage: node lookup.js <type> [command] <search-term>');
-    console.log('\nCommands:');
-    console.log('  herb <name>        - Look up an herb by name or alternative name');
-    console.log('  herb use <term>    - Find herbs that contain a specific term in their ritual use');
-    console.log('  crystal <name>     - Look up a crystal by name or alternative name');
-    console.log('  crystal use <term> - Find crystals that contain a specific term in their properties');
-    console.log('  color <name>       - Look up a color by name');
-    console.log('  color use <term>   - Find colors that contain a specific term in their meaning');
-    console.log('  moon <phase>       - Look up a moon phase by name');
-    console.log('  moon use <term>    - Find moon phases that contain a specific term in their meaning');
-    console.log('  metal <name>       - Look up a metal by name');
-    console.log('  metal use <term>   - Find metals that contain a specific term in their properties');
-    console.log('  day <name>         - Look up a day by name (Monday, Tuesday, etc.)');
-    console.log('  day use <term>     - Find days that contain a specific term in their intent');
-    console.log('\nExamples:');
-    console.log('  node lookup.js herb acacia');
-    console.log('  node lookup.js herb use protection');
-    console.log('  node lookup.js crystal amethyst');
-    console.log('  node lookup.js crystal use healing');
-    console.log('  node lookup.js color red');
-    console.log('  node lookup.js color use love');
-    console.log('  node lookup.js moon full');
-    console.log('  node lookup.js moon use banishing');
-    console.log('  node lookup.js metal gold');
-    console.log('  node lookup.js metal use protection');
+    console.log('✨ Witchy Lookup Tool - Your magical reference companion! ✨\n');
+    console.log('Usage: node lookup.js <type> [command] <search-term>\n');
+    
+    console.log('🔮 Available Lookup Types:');
+    console.log('  🌿 herbs    - Discover magical plants and their ritual uses');
+    console.log('  💎 crystals - Explore gemstones and their mystical properties');
+    console.log('  🎨 colors   - Learn about color magic and meanings');
+    console.log('  🌙 moon     - Find moon phases perfect for your spellwork');
+    console.log('  🪨 metals   - Understand metallic energies and correspondences');
+    console.log('  📅 days     - Discover which days are best for specific magical work\n');
+    
+    console.log('📖 How to Use:');
+    console.log('  <type> <name>      - Look up by name');
+    console.log('  <type> use <term>  - Search by magical use/property\n');
+    
+    console.log('✨ Examples:');
+    console.log('  node lookup.js herb rosemary');
+    console.log('  node lookup.js crystal use protection');
     console.log('  node lookup.js day monday');
-    console.log('  node lookup.js day use healing');
+    console.log('  node lookup.js moon use banishing');
 }
 
 // Main function

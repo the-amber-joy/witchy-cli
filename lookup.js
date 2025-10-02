@@ -200,6 +200,52 @@ function escapeRegex(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+// Check if search term might work better as a "use" search
+function suggestUseSearch(type, searchTerm, data) {
+    const suggestions = [];
+    
+    switch(type) {
+        case 'herb':
+            const herbMatches = findHerbsByUse(data.herbs, searchTerm);
+            if (herbMatches.length > 0) {
+                suggestions.push(`💡 Did you mean: node lookup.js herb use ${searchTerm}`);
+            }
+            break;
+        case 'crystal':
+            const crystalMatches = findCrystalsByProperty(data.crystals, searchTerm);
+            if (crystalMatches.length > 0) {
+                suggestions.push(`💡 Did you mean: node lookup.js crystal use ${searchTerm}`);
+            }
+            break;
+        case 'color':
+            const colorMatches = findColorsByMeaning(data.colors, searchTerm);
+            if (colorMatches.length > 0) {
+                suggestions.push(`💡 Did you mean: node lookup.js color use ${searchTerm}`);
+            }
+            break;
+        case 'moon':
+            const moonMatches = findMoonPhasesByMeaning(data.moon, searchTerm);
+            if (moonMatches.length > 0) {
+                suggestions.push(`💡 Did you mean: node lookup.js moon use ${searchTerm}`);
+            }
+            break;
+        case 'metal':
+            const metalMatches = findMetalsByProperty(data.metals, searchTerm);
+            if (metalMatches.length > 0) {
+                suggestions.push(`💡 Did you mean: node lookup.js metal use ${searchTerm}`);
+            }
+            break;
+        case 'day':
+            const dayMatches = findDaysByIntent(data.days, searchTerm);
+            if (dayMatches.length > 0) {
+                suggestions.push(`💡 Did you mean: node lookup.js day use ${searchTerm}`);
+            }
+            break;
+    }
+    
+    return suggestions;
+}
+
 // Get appropriate emoji for moon phase
 function getMoonPhaseEmoji(phaseName) {
     const phase = phaseName.toLowerCase();
@@ -338,6 +384,12 @@ function main() {
                 console.log(`❌ Herb "${searchTerm}" not found.`);
                 console.log('\nTip: Try searching with alternative names or check spelling.');
                 
+                // Check if this might work as a "use" search
+                const useSearchSuggestions = suggestUseSearch('herb', searchTerm, data);
+                if (useSearchSuggestions.length > 0) {
+                    console.log(useSearchSuggestions[0]);
+                }
+                
                 const suggestions = herbs.filter(herb => 
                     herb.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     (herb.alsoCalled && herb.alsoCalled.some(alt => 
@@ -406,6 +458,12 @@ function main() {
             } else {
                 console.log(`❌ Crystal "${searchTerm}" not found.`);
                 console.log('\nTip: Try searching with alternative names or check spelling.');
+                
+                // Check if this might work as a "use" search
+                const useSearchSuggestions = suggestUseSearch('crystal', searchTerm, data);
+                if (useSearchSuggestions.length > 0) {
+                    console.log(useSearchSuggestions[0]);
+                }
                 
                 const suggestions = crystals.filter(crystal => 
                     crystal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

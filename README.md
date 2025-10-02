@@ -30,11 +30,129 @@ Usage: witchy <type> [command] <search-term>
 
 ## Installation
 
-To use the `witchy` command globally:
+## Installation
 
-1. Make the script executable: `chmod +x lookup.js`
-2. Create a symlink in your PATH: `ln -s /path/to/lookup.js ~/bin/witchy`
-3. Ensure `~/bin` is in your PATH: `export PATH="$HOME/bin:$PATH"`
+### Method 1: Global Installation (Recommended)
+
+#### On macOS/Linux:
+
+To use the `witchy` command from anywhere in your terminal:
+
+1. **Clone or download this repository** to a permanent location:
+   ```bash
+   git clone https://github.com/the-amber-joy/witchyLookup.git ~/witchy-lookup
+   cd ~/witchy-lookup
+   ```
+
+2. **Make the script executable**:
+   ```bash
+   chmod +x lookup.js
+   ```
+
+3. **Create a directory for your personal binaries** (if it doesn't exist):
+   ```bash
+   mkdir -p ~/bin
+   ```
+
+4. **Create a symbolic link to the script**:
+   ```bash
+   ln -sf ~/witchy-lookup/lookup.js ~/bin/witchy
+   ```
+
+5. **Add ~/bin to your PATH** (if not already done):
+   
+   For **zsh** (macOS default):
+   ```bash
+   echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
+   source ~/.zshrc
+   ```
+   
+   For **bash**:
+   ```bash
+   echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
+   source ~/.bashrc
+   ```
+
+6. **Test the installation**:
+   ```bash
+   witchy herb rosemary
+   ```
+
+#### On Windows:
+
+To use the `witchy` command from anywhere in Command Prompt or PowerShell:
+
+1. **Clone or download this repository** to a permanent location:
+   ```cmd
+   git clone https://github.com/the-amber-joy/witchyLookup.git C:\witchy-lookup
+   cd C:\witchy-lookup
+   ```
+
+2. **Create a batch file wrapper**:
+   
+   Create a file called `witchy.bat` in a directory that's in your PATH (like `C:\Windows\System32` or create a personal bin directory):
+   
+   ```batch
+   @echo off
+   node "C:\witchy-lookup\lookup.js" %*
+   ```
+   
+   Or if you prefer PowerShell, create `witchy.ps1`:
+   ```powershell
+   node "C:\witchy-lookup\lookup.js" $args
+   ```
+
+3. **Alternative: Add to PATH directly**:
+   
+   - Open **System Properties** → **Advanced** → **Environment Variables**
+   - Under **User variables**, find or create the `PATH` variable
+   - Add `C:\witchy-lookup` to the PATH
+   - Create a `witchy.bat` file in `C:\witchy-lookup`:
+     ```batch
+     @echo off
+     node "%~dp0lookup.js" %*
+     ```
+
+4. **Test the installation**:
+   ```cmd
+   witchy herb rosemary
+   ```
+
+**Note for Windows users**: Make sure you have [Node.js](https://nodejs.org/) installed, as the script requires it to run.
+
+### Method 2: Local Usage
+
+If you prefer to run it locally without global installation:
+
+**macOS/Linux**:
+```bash
+cd /path/to/witchy-lookup
+./lookup.js herb rosemary
+```
+
+**Windows**:
+```cmd
+cd C:\path\to\witchy-lookup
+node lookup.js herb rosemary
+```
+
+### Updating
+
+To update your installation:
+
+**macOS/Linux**:
+```bash
+cd ~/witchy-lookup
+git pull origin main
+```
+
+**Windows**:
+```cmd
+cd C:\witchy-lookup
+git pull origin main
+```
+
+The symlink (or batch file) will automatically point to the updated version.
 
 ## Data Sources
 

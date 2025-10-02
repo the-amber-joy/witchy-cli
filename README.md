@@ -7,7 +7,7 @@ Your magical reference companion! A command-line tool for looking up magical cor
 ```
 ✨ Witchy Lookup Tool - Your magical reference companion! ✨
 
-Usage: node lookup.js <type> [command] <search-term>
+Usage: witchy <type> [command] <search-term>
 
 🔮 Available Lookup Types:
   🌿 herbs    - Discover magical plants and their ritual uses
@@ -22,11 +22,19 @@ Usage: node lookup.js <type> [command] <search-term>
   <type> use <term>  - Search by magical use/property
 
 ✨ Examples:
-  node lookup.js herb rosemary
-  node lookup.js crystal use protection
-  node lookup.js day monday
-  node lookup.js moon use banishing
+  witchy herb rosemary
+  witchy crystal use protection
+  witchy day monday
+  witchy moon use banishing
 ```
+
+## Installation
+
+To use the `witchy` command globally:
+
+1. Make the script executable: `chmod +x lookup.js`
+2. Create a symlink in your PATH: `ln -s /path/to/lookup.js ~/bin/witchy`
+3. Ensure `~/bin` is in your PATH: `export PATH="$HOME/bin:$PATH"`
 
 ## Data Sources
 

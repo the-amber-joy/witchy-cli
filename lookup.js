@@ -208,37 +208,37 @@ function suggestUseSearch(type, searchTerm, data) {
         case 'herb':
             const herbMatches = findHerbsByUse(data.herbs, searchTerm);
             if (herbMatches.length > 0) {
-                suggestions.push(`💡 Did you mean: node lookup.js herb use ${searchTerm}`);
+                suggestions.push(`💡 Did you mean: witchy herb use ${searchTerm}`);
             }
             break;
         case 'crystal':
             const crystalMatches = findCrystalsByProperty(data.crystals, searchTerm);
             if (crystalMatches.length > 0) {
-                suggestions.push(`💡 Did you mean: node lookup.js crystal use ${searchTerm}`);
+                suggestions.push(`💡 Did you mean: witchy crystal use ${searchTerm}`);
             }
             break;
         case 'color':
             const colorMatches = findColorsByMeaning(data.colors, searchTerm);
             if (colorMatches.length > 0) {
-                suggestions.push(`💡 Did you mean: node lookup.js color use ${searchTerm}`);
+                suggestions.push(`💡 Did you mean: witchy color use ${searchTerm}`);
             }
             break;
         case 'moon':
             const moonMatches = findMoonPhasesByMeaning(data.moon, searchTerm);
             if (moonMatches.length > 0) {
-                suggestions.push(`💡 Did you mean: node lookup.js moon use ${searchTerm}`);
+                suggestions.push(`💡 Did you mean: witchy moon use ${searchTerm}`);
             }
             break;
         case 'metal':
             const metalMatches = findMetalsByProperty(data.metals, searchTerm);
             if (metalMatches.length > 0) {
-                suggestions.push(`💡 Did you mean: node lookup.js metal use ${searchTerm}`);
+                suggestions.push(`💡 Did you mean: witchy metal use ${searchTerm}`);
             }
             break;
         case 'day':
             const dayMatches = findDaysByIntent(data.days, searchTerm);
             if (dayMatches.length > 0) {
-                suggestions.push(`💡 Did you mean: node lookup.js day use ${searchTerm}`);
+                suggestions.push(`💡 Did you mean: witchy day use ${searchTerm}`);
             }
             break;
     }
@@ -298,7 +298,7 @@ function getColorCode(colorName) {
 // Display usage instructions
 function showUsage() {
     console.log('✨ Witchy Lookup Tool - Your magical reference companion! ✨\n');
-    console.log('Usage: node lookup.js <type> [command] <search-term>\n');
+    console.log('Usage: witchy <type> [command] <search-term>\n');
     
     console.log('🔮 Available Lookup Types:');
     console.log('  🌿 herbs    - Discover magical plants and their ritual uses');
@@ -313,10 +313,10 @@ function showUsage() {
     console.log('  <type> use <term>  - Search by magical use/property\n');
     
     console.log('✨ Examples:');
-    console.log('  node lookup.js herb rosemary');
-    console.log('  node lookup.js crystal use protection');
-    console.log('  node lookup.js day monday');
-    console.log('  node lookup.js moon use banishing');
+    console.log('  witchy herb rosemary');
+    console.log('  witchy crystal use protection');
+    console.log('  witchy day monday');
+    console.log('  witchy moon use banishing');
 }
 
 // Main function

@@ -3,7 +3,11 @@ const path = require("path");
 const { initializeDatabase } = require("./setup");
 const { migrateAllData } = require("./migrate");
 
-const DB_PATH = path.join(__dirname, "../data/witchy.db");
+// For pkg executables, use the executable directory; otherwise use project structure
+const isPkg = typeof process.pkg !== "undefined";
+const DB_PATH = isPkg
+  ? path.join(path.dirname(process.execPath), "witchy.db")
+  : path.join(__dirname, "../data/witchy.db");
 
 class DatabaseMigrator {
   static async ensureDatabaseExists(silent = false, quiet = false) {

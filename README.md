@@ -4,6 +4,29 @@ Your magical correspondence companion! A command-line tool for looking up magica
 
 ## Quick Start
 
+### Option 1: Standalone Executable (No Node.js Required) ⚡
+
+**Download** the pre-built executable for your platform from [Releases](https://github.com/the-amber-joy/witchy-cli/releases):
+
+- **Windows**: `witchy-cli-win.exe`
+- **macOS**: `witchy-cli-macos`
+- **Linux**: `witchy-cli-linux`
+
+Then run it directly:
+
+```bash
+# Windows
+witchy-cli-win.exe herb rosemary
+
+# macOS/Linux (make executable first)
+chmod +x witchy-cli-macos
+./witchy-cli-macos herb rosemary
+```
+
+No installation, no dependencies, just download and run! 🚀
+
+### Option 2: With Node.js
+
 ```bash
 # Clone and install
 git clone https://github.com/the-amber-joy/witchy-cli.git
@@ -250,6 +273,38 @@ git pull origin main
 ```
 
 The symlink (or batch file) will automatically point to the updated version.
+
+## Standalone Executables
+
+### What Are They?
+
+The standalone executables are self-contained versions of Witchy CLI that include:
+
+- Node.js runtime
+- All dependencies (sqlite3, etc.)
+- All source code and data files
+
+This means **no Node.js installation required!** Just download and run.
+
+### Benefits
+
+✅ **No Installation** - Download once, run anywhere  
+✅ **No Dependencies** - Everything is bundled  
+✅ **Offline** - Works without internet after download  
+✅ **Fast** - No npm overhead  
+✅ **Portable** - Copy to USB drive and use on any computer
+
+### File Size
+
+Executables are approximately 40-50MB due to the bundled Node.js runtime. This is normal for standalone Node.js applications.
+
+### Where's the Database?
+
+The database (`witchy.db`) is automatically created in the same directory as the executable on first run. You can delete it anytime to reset your data.
+
+### Building from Source
+
+Want to build the executables yourself? See [BUILD.md](BUILD.md) for instructions.
 
 ## Data Sources
 

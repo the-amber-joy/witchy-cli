@@ -1,92 +1,194 @@
-const fs = require('fs');
-const path = require('path');
-const { initializeDatabase, getDatabase } = require('./setup');
+const fs = require("fs");
+const path = require("path");
+const { initializeDatabase, getDatabase } = require("./setup");
 
 /**
- * Migrate herbs data from JSON file to SQLite database
+ * Migrate all data from JSON files to SQLite database
  */
-async function migrateHerbsData() {
+async function migrateAllData() {
   try {
-    console.log('🌿 Starting herbs data migration...');
-    
+    console.log("🔮 Starting complete data migration...\n");
+
     // Initialize database first
     await initializeDatabase();
-    
-    // Read herbs JSON data
-    const herbsJsonPath = path.join(__dirname, '..', '..', 'json', 'herbs.json');
-    const herbsData = JSON.parse(fs.readFileSync(herbsJsonPath, 'utf8'));
-    
-    console.log(`📖 Found ${herbsData.length} herbs to migrate`);
-    
+
     const db = getDatabase();
-    
-    // Prepare insert statement
-    const insertStmt = db.prepare(`
-      INSERT INTO herbs (name, ritual_use, also_called) 
-      VALUES (?, ?, ?)
-    `);
-    
-    let migratedCount = 0;
-    
-    // Insert each herb
+
+    // Read all JSON data files
+    const basePath = path.join(__dirname, "..", "..");
+    const herbsData = JSON.parse(
+      fs.readFileSync(path.join(basePath, "json", "herbs.json"), "utf8"),
+    );
+    const crystalsData = JSON.parse(
+      fs.readFileSync(path.join(basePath, "json", "crystals.json"), "utf8"),
+    );
+    const colorsData = JSON.parse(
+      fs.readFileSync(path.join(basePath, "json", "colors.json"), "utf8"),
+    );
+    const moonData = JSON.parse(
+      fs.readFileSync(path.join(basePath, "json", "moon.json"), "utf8"),
+    );
+    const metalsData = JSON.parse(
+      fs.readFileSync(path.join(basePath, "json", "metals.json"), "utf8"),
+    );
+    const daysData = JSON.parse(
+      fs.readFileSync(path.join(basePath, "json", "days.json"), "utf8"),
+    );
+
+    console.log(`� Migration Summary:`);
+    console.log(`   🌿 ${herbsData.length} herbs`);
+    console.log(`   💎 ${crystalsData.length} crystals`);
+    console.log(`   🎨 ${colorsData.length} colors`);
+    console.log(`   🌙 ${moonData.length} moon phases`);
+    console.log(`   🪨 ${metalsData.length} metals`);
+    console.log(`   📅 ${daysData.length} days\n`);
+
+    // Clear existing data
+    console.log("🧹 Clearing existing data...");
+    db.run("DELETE FROM herbs");
+    db.run("DELETE FROM crystals");
+    db.run("DELETE FROM colors");
+    db.run("DELETE FROM moon_phases");
+    db.run("DELETE FROM metals");
+    db.run("DELETE FROM days");
+    db.run("DELETE FROM witchy_fts");
+
+    // Prepare insert statements
+    const herbsStmt = db.prepare(
+      "INSERT INTO herbs (name, ritual_use, also_called) VALUES (?, ?, ?)",
+    );
+    const crystalsStmt = db.prepare(
+      "INSERT INTO crystals (name, properties, also_called) VALUES (?, ?, ?)",
+    );
+    const colorsStmt = db.prepare(
+      "INSERT INTO colors (name, meanings) VALUES (?, ?)",
+    );
+    const moonStmt = db.prepare(
+      "INSERT INTO moon_phases (phase, meaning) VALUES (?, ?)",
+    );
+    const metalsStmt = db.prepare(
+      "INSERT INTO metals (name, properties) VALUES (?, ?)",
+    );
+    const daysStmt = db.prepare(
+      "INSERT INTO days (name, intent, planet, colors, deities) VALUES (?, ?, ?, ?, ?)",
+    );
+
+    let totalMigrated = 0;
+
+    // Migrate herbs
+    console.log("🌿 Migrating herbs...");
     for (const herb of herbsData) {
-      const alsoCalled = herb.alsoCalled ? JSON.stringify(herb.alsoCalled) : null;
-      
-      insertStmt.run(herb.name, herb.ritualUse, alsoCalled, function(err) {
-        if (err) {
-          console.error(`❌ Error inserting herb "${herb.name}":`, err.message);
-        } else {
-          migratedCount++;
-          if (migratedCount % 50 === 0) {
-            console.log(`   📈 Migrated ${migratedCount}/${herbsData.length} herbs...`);
-          }
-        }
-      });
+      const alsoCalled = herb.alsoCalled
+        ? JSON.stringify(herb.alsoCalled)
+        : null;
+      herbsStmt.run(herb.name, herb.ritualUse, alsoCalled);
+      totalMigrated++;
     }
-    
-    // Finalize and close
-    insertStmt.finalize((err) => {
-      if (err) {
-        console.error('❌ Error finalizing insert statement:', err.message);
-      } else {
-        console.log(`✨ Successfully migrated ${migratedCount} herbs to database!`);
-      }
-      
-      db.close((err) => {
-        if (err) {
-          console.error('❌ Error closing database:', err.message);
-        } else {
-          console.log('🔮 Database migration complete!');
-        }
-      });
-    });
-    
+    herbsStmt.finalize();
+    console.log(`   ✅ ${herbsData.length} herbs migrated`);
+
+    // Migrate crystals
+    console.log("💎 Migrating crystals...");
+    for (const crystal of crystalsData) {
+      const alsoCalled = crystal.alsoCalled
+        ? JSON.stringify(crystal.alsoCalled)
+        : null;
+      crystalsStmt.run(crystal.name, crystal.properties, alsoCalled);
+      totalMigrated++;
+    }
+    crystalsStmt.finalize();
+    console.log(`   ✅ ${crystalsData.length} crystals migrated`);
+
+    // Migrate colors
+    console.log("🎨 Migrating colors...");
+    for (const color of colorsData) {
+      colorsStmt.run(color.name, color.meanings);
+      totalMigrated++;
+    }
+    colorsStmt.finalize();
+    console.log(`   ✅ ${colorsData.length} colors migrated`);
+
+    // Migrate moon phases
+    console.log("🌙 Migrating moon phases...");
+    for (const phase of moonData) {
+      moonStmt.run(phase.phase, phase.meaning);
+      totalMigrated++;
+    }
+    moonStmt.finalize();
+    console.log(`   ✅ ${moonData.length} moon phases migrated`);
+
+    // Migrate metals
+    console.log("🪨 Migrating metals...");
+    for (const metal of metalsData) {
+      metalsStmt.run(metal.name, metal.properties);
+      totalMigrated++;
+    }
+    metalsStmt.finalize();
+    console.log(`   ✅ ${metalsData.length} metals migrated`);
+
+    // Migrate days
+    console.log("📅 Migrating days...");
+    for (const day of daysData) {
+      daysStmt.run(
+        day.name,
+        day.intent,
+        day.planet || null,
+        day.colors || null,
+        day.deities || null,
+      );
+      totalMigrated++;
+    }
+    daysStmt.finalize();
+    console.log(`   ✅ ${daysData.length} days migrated`);
+
+    db.close();
+
+    console.log(`\n✨ Migration Complete!`);
+    console.log(`🔢 Total records migrated: ${totalMigrated}`);
+    console.log("🔮 All witchy correspondences are now in the database!");
   } catch (error) {
-    console.error('❌ Migration failed:', error.message);
+    console.error("❌ Migration failed:", error.message);
     process.exit(1);
   }
 }
 
 /**
- * Verify the migration by checking record count
+ * Verify the migration by checking record counts for all tables
  */
 function verifyMigration() {
   const db = getDatabase();
-  
-  db.get('SELECT COUNT(*) as count FROM herbs', (err, row) => {
-    if (err) {
-      console.error('❌ Error verifying migration:', err.message);
-    } else {
-      console.log(`✅ Database contains ${row.count} herb records`);
-    }
-    
-    db.close();
+
+  const queries = [
+    { name: "herbs", table: "herbs" },
+    { name: "crystals", table: "crystals" },
+    { name: "colors", table: "colors" },
+    { name: "moon phases", table: "moon_phases" },
+    { name: "metals", table: "metals" },
+    { name: "days", table: "days" },
+  ];
+
+  let completed = 0;
+
+  queries.forEach(({ name, table }) => {
+    db.get(`SELECT COUNT(*) as count FROM ${table}`, (err, row) => {
+      if (err) {
+        console.error(`❌ Error verifying ${name}:`, err.message);
+      } else {
+        console.log(`✅ Database contains ${row.count} ${name} records`);
+      }
+
+      completed++;
+      if (completed === queries.length) {
+        db.close();
+        console.log("\n🎉 Database verification complete!");
+      }
+    });
   });
 }
 
 // Run migration if this script is executed directly
 if (require.main === module) {
-  migrateHerbsData().then(() => {
+  migrateAllData().then(() => {
     setTimeout(() => {
       verifyMigration();
     }, 1000); // Wait a bit for the migration to complete
@@ -94,6 +196,6 @@ if (require.main === module) {
 }
 
 module.exports = {
-  migrateHerbsData,
-  verifyMigration
+  migrateAllData,
+  verifyMigration,
 };

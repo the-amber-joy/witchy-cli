@@ -1,34 +1,33 @@
 const { getDatabase } = require("./setup");
 
 /**
- * Database operations for herbs
+ * Database operations for crystals
  */
-class HerbsDB {
+class CrystalsDB {
   /**
-   * Get all herbs from the database
+   * Get all crystals from the database
    */
-  static getAllHerbs() {
+  static getAllCrystals() {
     return new Promise((resolve, reject) => {
       const db = getDatabase();
 
       db.all(
         `
-        SELECT id, name, ritual_use, also_called 
-        FROM herbs 
+        SELECT id, name, properties, also_called 
+        FROM crystals 
         ORDER BY name
       `,
         (err, rows) => {
           if (err) {
             reject(err);
           } else {
-            // Parse also_called JSON back to array
-            const herbs = rows.map((row) => ({
+            const crystals = rows.map((row) => ({
               id: row.id,
               name: row.name,
-              ritualUse: row.ritual_use,
+              properties: row.properties,
               alsoCalled: row.also_called ? JSON.parse(row.also_called) : [],
             }));
-            resolve(herbs);
+            resolve(crystals);
           }
           db.close();
         },
@@ -37,17 +36,17 @@ class HerbsDB {
   }
 
   /**
-   * Find herb by exact name match (including alternative names)
+   * Find crystal by exact name match
    */
-  static findHerbByName(searchName) {
+  static findCrystalByName(searchName) {
     return new Promise((resolve, reject) => {
       const db = getDatabase();
       const searchTerm = searchName.toLowerCase();
 
       db.get(
         `
-        SELECT id, name, ritual_use, also_called 
-        FROM herbs 
+        SELECT id, name, properties, also_called 
+        FROM crystals 
         WHERE LOWER(name) = ? 
            OR (also_called IS NOT NULL AND LOWER(also_called) LIKE ?)
       `,
@@ -56,13 +55,13 @@ class HerbsDB {
           if (err) {
             reject(err);
           } else if (row) {
-            const herb = {
+            const crystal = {
               id: row.id,
               name: row.name,
-              ritualUse: row.ritual_use,
+              properties: row.properties,
               alsoCalled: row.also_called ? JSON.parse(row.also_called) : [],
             };
-            resolve(herb);
+            resolve(crystal);
           } else {
             resolve(null);
           }
@@ -73,19 +72,19 @@ class HerbsDB {
   }
 
   /**
-   * Find herbs by ritual use (full-text search)
+   * Find crystals by properties (full-text search)
    */
-  static findHerbsByUse(searchTerm) {
+  static findCrystalsByProperty(searchTerm) {
     return new Promise((resolve, reject) => {
       const db = getDatabase();
 
       // Use FTS for better search results
       db.all(
         `
-        SELECT h.id, h.name, h.ritual_use, h.also_called
-        FROM herbs h
-        JOIN herbs_fts fts ON h.id = fts.rowid
-        WHERE herbs_fts MATCH ?
+        SELECT c.id, c.name, c.properties, c.also_called
+        FROM crystals c
+        JOIN witchy_fts fts ON c.name = fts.name AND fts.content_type = 'crystal'
+        WHERE witchy_fts MATCH ?
         ORDER BY rank
       `,
         [searchTerm],
@@ -94,9 +93,9 @@ class HerbsDB {
             // Fallback to LIKE search if FTS fails
             db.all(
               `
-            SELECT id, name, ritual_use, also_called 
-            FROM herbs 
-            WHERE LOWER(ritual_use) LIKE ?
+            SELECT id, name, properties, also_called 
+            FROM crystals 
+            WHERE LOWER(properties) LIKE ?
             ORDER BY name
           `,
               [`%${searchTerm.toLowerCase()}%`],
@@ -104,27 +103,27 @@ class HerbsDB {
                 if (fallbackErr) {
                   reject(fallbackErr);
                 } else {
-                  const herbs = fallbackRows.map((row) => ({
+                  const crystals = fallbackRows.map((row) => ({
                     id: row.id,
                     name: row.name,
-                    ritualUse: row.ritual_use,
+                    properties: row.properties,
                     alsoCalled: row.also_called
                       ? JSON.parse(row.also_called)
                       : [],
                   }));
-                  resolve(herbs);
+                  resolve(crystals);
                 }
                 db.close();
               },
             );
           } else {
-            const herbs = rows.map((row) => ({
+            const crystals = rows.map((row) => ({
               id: row.id,
               name: row.name,
-              ritualUse: row.ritual_use,
+              properties: row.properties,
               alsoCalled: row.also_called ? JSON.parse(row.also_called) : [],
             }));
-            resolve(herbs);
+            resolve(crystals);
             db.close();
           }
         },
@@ -133,17 +132,17 @@ class HerbsDB {
   }
 
   /**
-   * Search herbs by partial name match (for suggestions)
+   * Search crystals by partial name match (for suggestions)
    */
-  static searchHerbsByPartialName(searchTerm) {
+  static searchCrystalsByPartialName(searchTerm) {
     return new Promise((resolve, reject) => {
       const db = getDatabase();
       const searchPattern = `%${searchTerm.toLowerCase()}%`;
 
       db.all(
         `
-        SELECT id, name, ritual_use, also_called 
-        FROM herbs 
+        SELECT id, name, properties, also_called 
+        FROM crystals 
         WHERE LOWER(name) LIKE ? 
            OR (also_called IS NOT NULL AND LOWER(also_called) LIKE ?)
         ORDER BY name
@@ -154,13 +153,13 @@ class HerbsDB {
           if (err) {
             reject(err);
           } else {
-            const herbs = rows.map((row) => ({
+            const crystals = rows.map((row) => ({
               id: row.id,
               name: row.name,
-              ritualUse: row.ritual_use,
+              properties: row.properties,
               alsoCalled: row.also_called ? JSON.parse(row.also_called) : [],
             }));
-            resolve(herbs);
+            resolve(crystals);
           }
           db.close();
         },
@@ -169,4 +168,4 @@ class HerbsDB {
   }
 }
 
-module.exports = { HerbsDB };
+module.exports = { CrystalsDB };

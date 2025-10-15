@@ -121,7 +121,10 @@ async function processCommand(args) {
     if (args.length >= 3 && args[1].toLowerCase() === "use") {
       // crystal use <term>
       const searchTerm = args.slice(2).join(" ");
-      const matchingCrystals = findCrystalsByProperty(crystals, searchTerm);
+      const matchingCrystals = await findCrystalsByProperty(
+        crystals,
+        searchTerm,
+      );
 
       if (matchingCrystals.length > 0) {
         console.log(
@@ -162,7 +165,7 @@ async function processCommand(args) {
     } else {
       // crystal <name>
       const searchTerm = args.slice(1).join(" ");
-      const foundCrystal = findCrystalByName(crystals, searchTerm);
+      const foundCrystal = await findCrystalByName(crystals, searchTerm);
 
       if (foundCrystal) {
         console.log(`\n💎 ${foundCrystal.name}`);
@@ -214,7 +217,7 @@ async function processCommand(args) {
     if (args.length >= 3 && args[1].toLowerCase() === "use") {
       // color use <term>
       const searchTerm = args.slice(2).join(" ");
-      const matchingColors = findColorsByMeaning(colors, searchTerm);
+      const matchingColors = await findColorsByMeaning(colors, searchTerm);
 
       if (matchingColors.length > 0) {
         console.log(
@@ -250,7 +253,7 @@ async function processCommand(args) {
     } else {
       // color <name>
       const searchTerm = args.slice(1).join(" ");
-      const foundColor = findColorByName(colors, searchTerm);
+      const foundColor = await findColorByName(colors, searchTerm);
 
       if (foundColor) {
         const colorCode = getColorCode(foundColor.name);
@@ -294,7 +297,10 @@ async function processCommand(args) {
     if (args.length >= 3 && args[1].toLowerCase() === "use") {
       // moon use <term>
       const searchTerm = args.slice(2).join(" ");
-      const matchingMoonPhases = findMoonPhasesByMeaning(moon, searchTerm);
+      const matchingMoonPhases = await findMoonPhasesByMeaning(
+        moon,
+        searchTerm,
+      );
 
       if (matchingMoonPhases.length > 0) {
         console.log(
@@ -330,7 +336,7 @@ async function processCommand(args) {
     } else {
       // moon <phase>
       const searchTerm = args.slice(1).join(" ");
-      const foundMoonPhase = findMoonPhaseByName(moon, searchTerm);
+      const foundMoonPhase = await findMoonPhaseByName(moon, searchTerm);
 
       if (foundMoonPhase) {
         const emoji = getMoonPhaseEmoji(foundMoonPhase.phase);
@@ -370,7 +376,7 @@ async function processCommand(args) {
     if (args.length >= 3 && args[1].toLowerCase() === "use") {
       // metal use <term>
       const searchTerm = args.slice(2).join(" ");
-      const matchingMetals = findMetalsByProperty(metals, searchTerm);
+      const matchingMetals = await findMetalsByProperty(metals, searchTerm);
 
       if (matchingMetals.length > 0) {
         console.log(
@@ -408,7 +414,7 @@ async function processCommand(args) {
     } else {
       // metal <name>
       const searchTerm = args.slice(1).join(" ");
-      const foundMetal = findMetalByName(metals, searchTerm);
+      const foundMetal = await findMetalByName(metals, searchTerm);
 
       if (foundMetal) {
         console.log(`\n🪨 ${foundMetal.name}`);
@@ -451,7 +457,7 @@ async function processCommand(args) {
     if (args.length >= 3 && args[1].toLowerCase() === "use") {
       // day use <term>
       const searchTerm = args.slice(2).join(" ");
-      const matchingDays = findDaysByIntent(days, searchTerm);
+      const matchingDays = await findDaysByIntent(days, searchTerm);
 
       if (matchingDays.length > 0) {
         console.log(
@@ -493,7 +499,7 @@ async function processCommand(args) {
     } else {
       // day <name>
       const searchTerm = args.slice(1).join(" ");
-      const foundDays = findDayByName(days, searchTerm);
+      const foundDays = await findDayByName(days, searchTerm);
 
       if (foundDays.length > 0) {
         foundDays.forEach((day) => {
@@ -547,13 +553,13 @@ async function processCommand(args) {
 // Main function (for CLI usage)
 async function main() {
   const args = process.argv.slice(2);
-  
+
   if (args.length === 0) {
     // No arguments, show usage
     showUsage();
     process.exit(1);
   }
-  
+
   await processCommand(args);
 }
 

@@ -36,7 +36,7 @@ jobs:
         run: npm ci
 
       - name: Build executable
-        run: npm run build
+        run: npx pkg . --targets node18-${{ matrix.target }} --out-path dist
 
       - name: Rename artifact
         shell: bash

@@ -15,7 +15,8 @@ class InteractiveCLI {
   setupEventHandlers() {
     // Handle Ctrl+C gracefully
     this.rl.on("SIGINT", () => {
-      console.log("\n✨ Blessed be! Exiting witchy lookup...");
+      console.clear();
+      console.log("✨ Blessed be! Exiting witchy lookup...");
       process.exit(0);
     });
 
@@ -26,7 +27,8 @@ class InteractiveCLI {
 
     // Handle close event
     this.rl.on("close", () => {
-      console.log("\n✨ Blessed be! Goodbye!");
+      console.clear();
+      console.log("✨ Blessed be! Goodbye!");
       process.exit(0);
     });
   }
@@ -45,6 +47,7 @@ class InteractiveCLI {
     }
 
     if (input === "exit" || input === "quit") {
+      console.clear();
       console.log("✨ Blessed be! Goodbye!");
       process.exit(0);
     }

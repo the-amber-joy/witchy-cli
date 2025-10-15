@@ -1,455 +1,549 @@
 // Import all modules
-const { loadData } = require('./data/loader');
-const { showUsage } = require('./ui/display');
-const { highlightText } = require('./utils/text');
-const { getMoonPhaseEmoji, getColorCode } = require('./utils/colors');
-const { suggestUseSearch } = require('./utils/suggestions');
+const { loadData } = require("./data/loader");
+const { showUsage } = require("./ui/display");
+const { highlightText } = require("./utils/text");
+const { getMoonPhaseEmoji, getColorCode } = require("./utils/colors");
+const { suggestUseSearch } = require("./utils/suggestions");
 
 // Import search functions
-const { findHerbByName, findHerbsByUse } = require('./search/herbs');
-const { findCrystalByName, findCrystalsByProperty } = require('./search/crystals');
-const { findColorByName, findColorsByMeaning } = require('./search/colors');
-const { findMoonPhaseByName, findMoonPhasesByMeaning } = require('./search/moon');
-const { findMetalByName, findMetalsByProperty } = require('./search/metals');
-const { findDayByName, findDaysByIntent } = require('./search/days');
+const { findHerbByName, findHerbsByUse } = require("./search/herbs");
+const {
+  findCrystalByName,
+  findCrystalsByProperty,
+} = require("./search/crystals");
+const { findColorByName, findColorsByMeaning } = require("./search/colors");
+const {
+  findMoonPhaseByName,
+  findMoonPhasesByMeaning,
+} = require("./search/moon");
+const { findMetalByName, findMetalsByProperty } = require("./search/metals");
+const { findDayByName, findDaysByIntent } = require("./search/days");
 
 // Main function
 function main() {
-    const args = process.argv.slice(2);
-    
-    if (args.length < 2) {
-        showUsage();
-        process.exit(1);
-    }
-    
-    const type = args[0].toLowerCase();
-    const data = loadData();
-    const { herbs, crystals, colors, moon, metals, days } = data;
-    
-    // Handle herb commands
-    if (type === 'herb') {
-        if (args.length >= 3 && args[1].toLowerCase() === 'use') {
-            // herb use <term>
-            const searchTerm = args.slice(2).join(' ');
-            const matchingHerbs = findHerbsByUse(herbs, searchTerm);
-            
-            if (matchingHerbs.length > 0) {
-                console.log(`\n🔍 Found ${matchingHerbs.length} herb(s) with ritual uses containing "\x1b[43m\x1b[30m\x1b[1m${searchTerm}\x1b[0m":\n`);
-                
-                matchingHerbs.forEach((herb) => {
-                    console.log(`🌿 ${herb.name}`);
-                    if (herb.alsoCalled && herb.alsoCalled.length > 0) {
-                        console.log(`   Also called: ${herb.alsoCalled.join(', ')}`);
-                    }
-                    const highlightedUse = highlightText(herb.ritualUse, searchTerm);
-                    console.log(`   📜 ${highlightedUse}`);
-                    console.log('');
-                });
-            } else {
-                console.log(`❌ No herbs found with ritual uses containing \"${searchTerm}\".`);
-                console.log('\nTry searching for common ritual use terms like:');
-                console.log('   • protection');
-                console.log('   • love');
-                console.log('   • healing');
-                console.log('   • prosperity');
-                console.log('   • purification');
-                console.log('   • banishing');
-                console.log('   • divination');
-                console.log();
-            }
-        } else {
-            // herb <name>
-            const searchTerm = args.slice(1).join(' ');
-            const foundHerb = findHerbByName(herbs, searchTerm);
-            
-            if (foundHerb) {
-                const highlightedName = highlightText(foundHerb.name, searchTerm);
-                console.log(`\n🌿 ${highlightedName}`);
-                
-                if (foundHerb.alsoCalled && foundHerb.alsoCalled.length > 0) {
-                    const highlightedAlsoNames = foundHerb.alsoCalled.map(name => 
-                        highlightText(name, searchTerm)
-                    );
-                    console.log(`   Also called: ${highlightedAlsoNames.join(', ')}`);
-                }
-                console.log(`\n📜 Ritual Use:`);
-                console.log(`   ${foundHerb.ritualUse}\n`);
-            } else {
-                console.log(`❌ Herb \"${searchTerm}\" not found.`);
-                console.log('\nTip: Try searching with alternative names or check spelling.');
-                
-                // Check if this might work as a \"use\" search
-                const useSearchSuggestions = suggestUseSearch('herb', searchTerm, data);
-                if (useSearchSuggestions.length > 0) {
-                    console.log(useSearchSuggestions[0]);
-                }
-                
-                const suggestions = herbs.filter(herb => 
-                    herb.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    (herb.alsoCalled && herb.alsoCalled.some(alt => 
-                        alt.toLowerCase().includes(searchTerm.toLowerCase())
-                    ))
-                ).slice(0, 3);
-                
-                if (suggestions.length > 0) {
-                    console.log('\nDid you mean one of these?');
-                    suggestions.forEach(herb => {
-                        console.log(`   • ${herb.name}`);
-                    });
-                }
-                console.log();
-            }
-        }
-    
-    // Handle crystal commands  
-    } else if (type === 'crystal') {
-        if (args.length >= 3 && args[1].toLowerCase() === 'use') {
-            // crystal use <term>
-            const searchTerm = args.slice(2).join(' ');
-            const matchingCrystals = findCrystalsByProperty(crystals, searchTerm);
-            
-            if (matchingCrystals.length > 0) {
-                console.log(`\n🔍 Found ${matchingCrystals.length} crystal(s) with properties containing \"\\x1b[43m\\x1b[30m\\x1b[1m${searchTerm}\\x1b[0m\":\n`);
-                
-                matchingCrystals.forEach((crystal) => {
-                    console.log(`💎 ${crystal.name}`);
-                    if (crystal.alsoCalled && crystal.alsoCalled.length > 0) {
-                        console.log(`   Also called: ${crystal.alsoCalled.join(', ')}`);
-                    }
-                    const highlightedProperties = highlightText(crystal.properties, searchTerm);
-                    console.log(`   ✨ ${highlightedProperties}`);
-                    console.log('');
-                });
-            } else {
-                console.log(`❌ No crystals found with properties containing \"${searchTerm}\".`);
-                console.log('\nTry searching for common crystal properties like:');
-                console.log('   • healing');
-                console.log('   • protection');
-                console.log('   • love');
-                console.log('   • abundance');
-                console.log('   • clarity');
-                console.log('   • grounding');
-                console.log('   • energy');
-                console.log();
-            }
-        } else {
-            // crystal <name>
-            const searchTerm = args.slice(1).join(' ');
-            const foundCrystal = findCrystalByName(crystals, searchTerm);
-            
-            if (foundCrystal) {
-                const highlightedName = highlightText(foundCrystal.name, searchTerm);
-                console.log(`\n💎 ${highlightedName}`);
-                
-                if (foundCrystal.alsoCalled && foundCrystal.alsoCalled.length > 0) {
-                    const highlightedAlsoNames = foundCrystal.alsoCalled.map(name => 
-                        highlightText(name, searchTerm)
-                    );
-                    console.log(`   Also called: ${highlightedAlsoNames.join(', ')}`);
-                }
-                console.log(`\n✨ Properties:`);
-                console.log(`   ${foundCrystal.properties}\n`);
-            } else {
-                console.log(`❌ Crystal \"${searchTerm}\" not found.`);
-                console.log('\nTip: Try searching with alternative names or check spelling.');
-                
-                // Check if this might work as a \"use\" search
-                const useSearchSuggestions = suggestUseSearch('crystal', searchTerm, data);
-                if (useSearchSuggestions.length > 0) {
-                    console.log(useSearchSuggestions[0]);
-                }
-                
-                const suggestions = crystals.filter(crystal => 
-                    crystal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    (crystal.alsoCalled && crystal.alsoCalled.some(alt => 
-                        alt.toLowerCase().includes(searchTerm.toLowerCase())
-                    ))
-                ).slice(0, 3);
-                
-                if (suggestions.length > 0) {
-                    console.log('\nDid you mean one of these?');
-                    suggestions.forEach(crystal => {
-                        console.log(`   • ${crystal.name}`);
-                    });
-                }
-                console.log();
-            }
-        }
-    
-    // Handle color commands
-    } else if (type === 'color') {
-        if (args.length >= 3 && args[1].toLowerCase() === 'use') {
-            // color use <term>
-            const searchTerm = args.slice(2).join(' ');
-            const matchingColors = findColorsByMeaning(colors, searchTerm);
-            
-            if (matchingColors.length > 0) {
-                console.log(`\n🔍 Found ${matchingColors.length} color(s) with meanings containing "\\x1b[43m\\x1b[30m\\x1b[1m${searchTerm}\\x1b[0m":\n`);
-                
-                matchingColors.forEach((color) => {
-                    const colorCode = getColorCode(color.name);
-                    console.log(`${colorCode}🎨 ${color.name}\x1b[0m`);
-                    const highlightedMeanings = highlightText(color.meanings, searchTerm);
-                    console.log(`   🌟 ${highlightedMeanings}`);
-                    console.log('');
-                });
-            } else {
-                console.log(`❌ No colors found with meanings containing \"${searchTerm}\".`);
-                console.log('\nTry searching for common color meanings like:');
-                console.log('   • love');
-                console.log('   • protection');
-                console.log('   • healing');
-                console.log('   • prosperity');
-                console.log('   • spirituality');
-                console.log('   • passion');
-                console.log('   • peace');
-                console.log();
-            }
-        } else {
-            // color <name>
-            const searchTerm = args.slice(1).join(' ');
-            const foundColor = findColorByName(colors, searchTerm);
-            
-            if (foundColor) {
-                const colorCode = getColorCode(foundColor.name);
-                console.log(`\n${colorCode}🎨 ${foundColor.name}\x1b[0m`);
-                console.log(`\n🌟 Meanings:`);
-                console.log(`   ${foundColor.meanings}\n`);
-            } else {
-                console.log(`❌ Color \"${searchTerm}\" not found.`);
-                console.log('\nTip: Try searching with exact color names or check spelling.');
-                
-                // Check if this might work as a \"use\" search
-                const useSearchSuggestions = suggestUseSearch('color', searchTerm, data);
-                if (useSearchSuggestions.length > 0) {
-                    console.log(useSearchSuggestions[0]);
-                }
-                
-                const suggestions = colors.filter(color => 
-                    color.name.toLowerCase().includes(searchTerm.toLowerCase())
-                ).slice(0, 3);
-                
-                if (suggestions.length > 0) {
-                    console.log('\nDid you mean one of these?');
-                    suggestions.forEach(color => {
-                        console.log(`   • ${color.name}`);
-                    });
-                }
-                console.log();
-            }
-        }
-    
-    // Handle moon commands
-    } else if (type === 'moon') {
-        if (args.length >= 3 && args[1].toLowerCase() === 'use') {
-            // moon use <term>
-            const searchTerm = args.slice(2).join(' ');
-            const matchingMoonPhases = findMoonPhasesByMeaning(moon, searchTerm);
-            
-            if (matchingMoonPhases.length > 0) {
-                console.log(`\n🔍 Found ${matchingMoonPhases.length} moon phase(s) with meanings containing \"\\x1b[43m\\x1b[30m\\x1b[1m${searchTerm}\\x1b[0m\":\n`);
-                
-                matchingMoonPhases.forEach((phase) => {
-                    const emoji = getMoonPhaseEmoji(phase.phase);
-                    console.log(`${emoji} ${phase.phase}`);
-                    const highlightedMeaning = highlightText(phase.meaning, searchTerm);
-                    console.log(`   🌟 ${highlightedMeaning}`);
-                    console.log('');
-                });
-            } else {
-                console.log(`❌ No moon phases found with meanings containing \"${searchTerm}\".`);
-                console.log('\nTry searching for common magical purposes like:');
-                console.log('   • manifestation');
-                console.log('   • banishing');
-                console.log('   • cleansing');
-                console.log('   • divination');
-                console.log('   • healing');
-                console.log('   • protection');
-                console.log('   • growth');
-                console.log();
-            }
-        } else {
-            // moon <phase>
-            const searchTerm = args.slice(1).join(' ');
-            const foundMoonPhase = findMoonPhaseByName(moon, searchTerm);
-            
-            if (foundMoonPhase) {
-                const emoji = getMoonPhaseEmoji(foundMoonPhase.phase);
-                const highlightedPhase = highlightText(foundMoonPhase.phase, searchTerm);
-                console.log(`\n${emoji} ${highlightedPhase}`);
-                console.log(`\n🌟 Meaning:`);
-                console.log(`   ${foundMoonPhase.meaning}\n`);
-            } else {
-                console.log(`❌ Moon phase \"${searchTerm}\" not found.`);
-                console.log('\nTip: Try searching with exact phase names or check spelling.');
-                
-                // Check if this might work as a \"use\" search
-                const useSearchSuggestions = suggestUseSearch('moon', searchTerm, data);
-                if (useSearchSuggestions.length > 0) {
-                    console.log(useSearchSuggestions[0]);
-                }
-                
-                const suggestions = moon.filter(phase => 
-                    phase.phase.toLowerCase().includes(searchTerm.toLowerCase())
-                ).slice(0, 3);
-                
-                if (suggestions.length > 0) {
-                    console.log('\nDid you mean one of these?');
-                    suggestions.forEach(phase => {
-                        console.log(`   • ${phase.phase}`);
-                    });
-                }
-                console.log();
-            }
-        }
-    
-    // Handle metal commands
-    } else if (type === 'metal') {
-        if (args.length >= 3 && args[1].toLowerCase() === 'use') {
-            // metal use <term>
-            const searchTerm = args.slice(2).join(' ');
-            const matchingMetals = findMetalsByProperty(metals, searchTerm);
-            
-            if (matchingMetals.length > 0) {
-                console.log(`\n🔍 Found ${matchingMetals.length} metal(s) with properties containing \"\\x1b[43m\\x1b[30m\\x1b[1m${searchTerm}\\x1b[0m\":\n`);
-                
-                matchingMetals.forEach((metal) => {
-                    console.log(`🪨 ${metal.name}`);
-                    const highlightedProperties = highlightText(metal.properties, searchTerm);
-                    console.log(`   ✨ ${highlightedProperties}`);
-                    console.log('');
-                });
-            } else {
-                console.log(`❌ No metals found with properties containing \"${searchTerm}\".`);
-                console.log('\nTry searching for common metal properties like:');
-                console.log('   • protection');
-                console.log('   • prosperity');
-                console.log('   • healing');
-                console.log('   • strength');
-                console.log('   • abundance');
-                console.log('   • energy');
-                console.log('   • wisdom');
-                console.log();
-            }
-        } else {
-            // metal <name>
-            const searchTerm = args.slice(1).join(' ');
-            const foundMetal = findMetalByName(metals, searchTerm);
-            
-            if (foundMetal) {
-                const highlightedName = highlightText(foundMetal.name, searchTerm);
-                console.log(`\n🪨 ${highlightedName}`);
-                console.log(`\n✨ Properties:`);
-                console.log(`   ${foundMetal.properties}\n`);
-            } else {
-                console.log(`❌ Metal \"${searchTerm}\" not found.`);
-                console.log('\nTip: Try searching with exact metal names or check spelling.');
-                
-                // Check if this might work as a \"use\" search
-                const useSearchSuggestions = suggestUseSearch('metal', searchTerm, data);
-                if (useSearchSuggestions.length > 0) {
-                    console.log(useSearchSuggestions[0]);
-                }
-                
-                const suggestions = metals.filter(metal => 
-                    metal.name.toLowerCase().includes(searchTerm.toLowerCase())
-                ).slice(0, 3);
-                
-                if (suggestions.length > 0) {
-                    console.log('\nDid you mean one of these?');
-                    suggestions.forEach(metal => {
-                        console.log(`   • ${metal.name}`);
-                    });
-                }
-                console.log();
-            }
-        }
-    
-    // Handle day commands
-    } else if (type === 'day') {
-        if (args.length >= 3 && args[1].toLowerCase() === 'use') {
-            // day use <term>
-            const searchTerm = args.slice(2).join(' ');
-            const matchingDays = findDaysByIntent(days, searchTerm);
-            
-            if (matchingDays.length > 0) {
-                console.log(`\n🔍 Found ${matchingDays.length} day(s) with intents containing \"\\x1b[43m\\x1b[30m\\x1b[1m${searchTerm}\\x1b[0m\":\n`);
-                
-                matchingDays.forEach((day) => {
-                    console.log(`📅 ${day.name}`);
-                    if (day.planet) {
-                        console.log(`   🪐 Planet: ${day.planet}`);
-                    }
-                    const highlightedIntent = highlightText(day.intent, searchTerm);
-                    console.log(`   🎯 Intent: ${highlightedIntent}`);
-                    if (day.colors) {
-                        console.log(`   🎨 Colors: ${day.colors}`);
-                    }
-                    if (day.deities) {
-                        console.log(`   ⚡ Deities: ${day.deities}`);
-                    }
-                    console.log('');
-                });
-            } else {
-                console.log(`❌ No days found with intents containing \"${searchTerm}\".`);
-                console.log('\nTry searching for common magical intents like:');
-                console.log('   • healing');
-                console.log('   • protection');
-                console.log('   • success');
-                console.log('   • communication');
-                console.log('   • love');
-                console.log();
-            }
-        } else {
-            // day <name>
-            const searchTerm = args.slice(1).join(' ');
-            const foundDays = findDayByName(days, searchTerm);
-            
-            if (foundDays.length > 0) {
-                foundDays.forEach((day) => {
-                    const highlightedName = highlightText(day.name, searchTerm);
-                    console.log(`\n📅 ${highlightedName}`);
-                    if (day.planet) {
-                        console.log(`\n🪐 Planet: ${day.planet}`);
-                    }
-                    console.log(`🎯 Intent: ${day.intent}`);
-                    if (day.colors) {
-                        console.log(`🎨 Colors: ${day.colors}`);
-                    }
-                    if (day.deities) {
-                        console.log(`⚡ Deities: ${day.deities}`);
-                    }
-                    console.log('');
-                });
-            } else {
-                console.log(`❌ Day \"${searchTerm}\" not found.`);
-                console.log('\nTip: Try searching with exact day names like \"Monday\", \"Tuesday\", etc.');
-                
-                // Check if this might work as a \"use\" search
-                const useSearchSuggestions = suggestUseSearch('day', searchTerm, data);
-                if (useSearchSuggestions.length > 0) {
-                    console.log(useSearchSuggestions[0]);
-                }
-                
-                const suggestions = days.filter(day => 
-                    day.name.toLowerCase().includes(searchTerm.toLowerCase())
-                ).slice(0, 3);
-                
-                if (suggestions.length > 0) {
-                    console.log('\nDid you mean one of these?');
-                    suggestions.forEach(day => {
-                        console.log(`   • ${day.name}`);
-                    });
-                }
-                console.log();
-            }
-        }
-    
+  const args = process.argv.slice(2);
+
+  if (args.length < 2) {
+    showUsage();
+    process.exit(1);
+  }
+
+  const type = args[0].toLowerCase();
+  const data = loadData();
+  const { herbs, crystals, colors, moon, metals, days } = data;
+
+  // Handle herb commands
+  if (type === "herb") {
+    if (args.length >= 3 && args[1].toLowerCase() === "use") {
+      // herb use <term>
+      const searchTerm = args.slice(2).join(" ");
+      const matchingHerbs = findHerbsByUse(herbs, searchTerm);
+
+      if (matchingHerbs.length > 0) {
+        console.log(
+          `\n🔍 Found ${
+            matchingHerbs.length
+          } herb(s) with ritual uses containing "${highlightText(
+            searchTerm,
+            searchTerm,
+          )}":\n`,
+        );
+
+        matchingHerbs.forEach((herb) => {
+          console.log(`🌿 ${herb.name}`);
+          if (herb.alsoCalled && herb.alsoCalled.length > 0) {
+            console.log(`   Also called: ${herb.alsoCalled.join(", ")}`);
+          }
+          const highlightedUse = highlightText(herb.ritualUse, searchTerm);
+          console.log(`   📜 ${highlightedUse}`);
+          console.log("");
+        });
+      } else {
+        console.log(
+          `❌ No herbs found with ritual uses containing \"${searchTerm}\".`,
+        );
+        console.log("\nTry searching for common ritual use terms like:");
+        console.log("   • protection");
+        console.log("   • love");
+        console.log("   • healing");
+        console.log("   • prosperity");
+        console.log("   • purification");
+        console.log("   • banishing");
+        console.log("   • divination");
+        console.log();
+      }
     } else {
-        console.log(`❌ Unknown type: \"${type}\"`);
-        console.log('Available types: herb, crystal, color, moon, metal, day\n');
-        showUsage();
+      // herb <name>
+      const searchTerm = args.slice(1).join(" ");
+      const foundHerb = findHerbByName(herbs, searchTerm);
+
+      if (foundHerb) {
+        console.log(`\n🌿 ${foundHerb.name}`);
+
+        if (foundHerb.alsoCalled && foundHerb.alsoCalled.length > 0) {
+          console.log(`   Also called: ${foundHerb.alsoCalled.join(", ")}`);
+        }
+        console.log(`\n📜 Ritual Use:`);
+        console.log(`   ${foundHerb.ritualUse}\n`);
+      } else {
+        console.log(`❌ Herb \"${searchTerm}\" not found.`);
+        console.log(
+          "\nTip: Try searching with alternative names or check spelling.",
+        );
+
+        // Check if this might work as a \"use\" search
+        const useSearchSuggestions = suggestUseSearch("herb", searchTerm, data);
+        if (useSearchSuggestions.length > 0) {
+          console.log(useSearchSuggestions[0]);
+        }
+
+        const suggestions = herbs
+          .filter(
+            (herb) =>
+              herb.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              (herb.alsoCalled &&
+                herb.alsoCalled.some((alt) =>
+                  alt.toLowerCase().includes(searchTerm.toLowerCase()),
+                )),
+          )
+          .slice(0, 3);
+
+        if (suggestions.length > 0) {
+          console.log("\nDid you mean one of these?");
+          suggestions.forEach((herb) => {
+            console.log(`   • ${herb.name}`);
+          });
+        }
+        console.log();
+      }
     }
+
+    // Handle crystal commands
+  } else if (type === "crystal") {
+    if (args.length >= 3 && args[1].toLowerCase() === "use") {
+      // crystal use <term>
+      const searchTerm = args.slice(2).join(" ");
+      const matchingCrystals = findCrystalsByProperty(crystals, searchTerm);
+
+      if (matchingCrystals.length > 0) {
+        console.log(
+          `\n🔍 Found ${
+            matchingCrystals.length
+          } crystal(s) with properties containing "${highlightText(
+            searchTerm,
+            searchTerm,
+          )}":\n`,
+        );
+
+        matchingCrystals.forEach((crystal) => {
+          console.log(`💎 ${crystal.name}`);
+          if (crystal.alsoCalled && crystal.alsoCalled.length > 0) {
+            console.log(`   Also called: ${crystal.alsoCalled.join(", ")}`);
+          }
+          const highlightedProperties = highlightText(
+            crystal.properties,
+            searchTerm,
+          );
+          console.log(`   ✨ ${highlightedProperties}`);
+          console.log("");
+        });
+      } else {
+        console.log(
+          `❌ No crystals found with properties containing \"${searchTerm}\".`,
+        );
+        console.log("\nTry searching for common crystal properties like:");
+        console.log("   • healing");
+        console.log("   • protection");
+        console.log("   • love");
+        console.log("   • abundance");
+        console.log("   • clarity");
+        console.log("   • grounding");
+        console.log("   • energy");
+        console.log();
+      }
+    } else {
+      // crystal <name>
+      const searchTerm = args.slice(1).join(" ");
+      const foundCrystal = findCrystalByName(crystals, searchTerm);
+
+      if (foundCrystal) {
+        console.log(`\n💎 ${foundCrystal.name}`);
+
+        if (foundCrystal.alsoCalled && foundCrystal.alsoCalled.length > 0) {
+          console.log(`   Also called: ${foundCrystal.alsoCalled.join(", ")}`);
+        }
+        console.log(`\n✨ Properties:`);
+        console.log(`   ${foundCrystal.properties}\n`);
+      } else {
+        console.log(`❌ Crystal \"${searchTerm}\" not found.`);
+        console.log(
+          "\nTip: Try searching with alternative names or check spelling.",
+        );
+
+        // Check if this might work as a \"use\" search
+        const useSearchSuggestions = suggestUseSearch(
+          "crystal",
+          searchTerm,
+          data,
+        );
+        if (useSearchSuggestions.length > 0) {
+          console.log(useSearchSuggestions[0]);
+        }
+
+        const suggestions = crystals
+          .filter(
+            (crystal) =>
+              crystal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              (crystal.alsoCalled &&
+                crystal.alsoCalled.some((alt) =>
+                  alt.toLowerCase().includes(searchTerm.toLowerCase()),
+                )),
+          )
+          .slice(0, 3);
+
+        if (suggestions.length > 0) {
+          console.log("\nDid you mean one of these?");
+          suggestions.forEach((crystal) => {
+            console.log(`   • ${crystal.name}`);
+          });
+        }
+        console.log();
+      }
+    }
+
+    // Handle color commands
+  } else if (type === "color") {
+    if (args.length >= 3 && args[1].toLowerCase() === "use") {
+      // color use <term>
+      const searchTerm = args.slice(2).join(" ");
+      const matchingColors = findColorsByMeaning(colors, searchTerm);
+
+      if (matchingColors.length > 0) {
+        console.log(
+          `\n🔍 Found ${
+            matchingColors.length
+          } color(s) with meanings containing "${highlightText(
+            searchTerm,
+            searchTerm,
+          )}":\n`,
+        );
+
+        matchingColors.forEach((color) => {
+          const colorCode = getColorCode(color.name);
+          console.log(`${colorCode}🎨 ${color.name}\x1b[0m`);
+          const highlightedMeanings = highlightText(color.meanings, searchTerm);
+          console.log(`   🌟 ${highlightedMeanings}`);
+          console.log("");
+        });
+      } else {
+        console.log(
+          `❌ No colors found with meanings containing \"${searchTerm}\".`,
+        );
+        console.log("\nTry searching for common color meanings like:");
+        console.log("   • love");
+        console.log("   • protection");
+        console.log("   • healing");
+        console.log("   • prosperity");
+        console.log("   • spirituality");
+        console.log("   • passion");
+        console.log("   • peace");
+        console.log();
+      }
+    } else {
+      // color <name>
+      const searchTerm = args.slice(1).join(" ");
+      const foundColor = findColorByName(colors, searchTerm);
+
+      if (foundColor) {
+        const colorCode = getColorCode(foundColor.name);
+        console.log(`\n${colorCode}🎨 ${foundColor.name}\x1b[0m`);
+        console.log(`\n🌟 Meanings:`);
+        console.log(`   ${foundColor.meanings}\n`);
+      } else {
+        console.log(`❌ Color \"${searchTerm}\" not found.`);
+        console.log(
+          "\nTip: Try searching with exact color names or check spelling.",
+        );
+
+        // Check if this might work as a \"use\" search
+        const useSearchSuggestions = suggestUseSearch(
+          "color",
+          searchTerm,
+          data,
+        );
+        if (useSearchSuggestions.length > 0) {
+          console.log(useSearchSuggestions[0]);
+        }
+
+        const suggestions = colors
+          .filter((color) =>
+            color.name.toLowerCase().includes(searchTerm.toLowerCase()),
+          )
+          .slice(0, 3);
+
+        if (suggestions.length > 0) {
+          console.log("\nDid you mean one of these?");
+          suggestions.forEach((color) => {
+            console.log(`   • ${color.name}`);
+          });
+        }
+        console.log();
+      }
+    }
+
+    // Handle moon commands
+  } else if (type === "moon") {
+    if (args.length >= 3 && args[1].toLowerCase() === "use") {
+      // moon use <term>
+      const searchTerm = args.slice(2).join(" ");
+      const matchingMoonPhases = findMoonPhasesByMeaning(moon, searchTerm);
+
+      if (matchingMoonPhases.length > 0) {
+        console.log(
+          `\n🔍 Found ${
+            matchingMoonPhases.length
+          } moon phase(s) with meanings containing "${highlightText(
+            searchTerm,
+            searchTerm,
+          )}":\n`,
+        );
+
+        matchingMoonPhases.forEach((phase) => {
+          const emoji = getMoonPhaseEmoji(phase.phase);
+          console.log(`${emoji} ${phase.phase}`);
+          const highlightedMeaning = highlightText(phase.meaning, searchTerm);
+          console.log(`   🌟 ${highlightedMeaning}`);
+          console.log("");
+        });
+      } else {
+        console.log(
+          `❌ No moon phases found with meanings containing \"${searchTerm}\".`,
+        );
+        console.log("\nTry searching for common magical purposes like:");
+        console.log("   • manifestation");
+        console.log("   • banishing");
+        console.log("   • cleansing");
+        console.log("   • divination");
+        console.log("   • healing");
+        console.log("   • protection");
+        console.log("   • growth");
+        console.log();
+      }
+    } else {
+      // moon <phase>
+      const searchTerm = args.slice(1).join(" ");
+      const foundMoonPhase = findMoonPhaseByName(moon, searchTerm);
+
+      if (foundMoonPhase) {
+        const emoji = getMoonPhaseEmoji(foundMoonPhase.phase);
+        console.log(`\n${emoji} ${foundMoonPhase.phase}`);
+        console.log(`\n🌟 Meaning:`);
+        console.log(`   ${foundMoonPhase.meaning}\n`);
+      } else {
+        console.log(`❌ Moon phase \"${searchTerm}\" not found.`);
+        console.log(
+          "\nTip: Try searching with exact phase names or check spelling.",
+        );
+
+        // Check if this might work as a \"use\" search
+        const useSearchSuggestions = suggestUseSearch("moon", searchTerm, data);
+        if (useSearchSuggestions.length > 0) {
+          console.log(useSearchSuggestions[0]);
+        }
+
+        const suggestions = moon
+          .filter((phase) =>
+            phase.phase.toLowerCase().includes(searchTerm.toLowerCase()),
+          )
+          .slice(0, 3);
+
+        if (suggestions.length > 0) {
+          console.log("\nDid you mean one of these?");
+          suggestions.forEach((phase) => {
+            console.log(`   • ${phase.phase}`);
+          });
+        }
+        console.log();
+      }
+    }
+
+    // Handle metal commands
+  } else if (type === "metal") {
+    if (args.length >= 3 && args[1].toLowerCase() === "use") {
+      // metal use <term>
+      const searchTerm = args.slice(2).join(" ");
+      const matchingMetals = findMetalsByProperty(metals, searchTerm);
+
+      if (matchingMetals.length > 0) {
+        console.log(
+          `\n🔍 Found ${
+            matchingMetals.length
+          } metal(s) with properties containing "${highlightText(
+            searchTerm,
+            searchTerm,
+          )}":\n`,
+        );
+
+        matchingMetals.forEach((metal) => {
+          console.log(`🪨 ${metal.name}`);
+          const highlightedProperties = highlightText(
+            metal.properties,
+            searchTerm,
+          );
+          console.log(`   ✨ ${highlightedProperties}`);
+          console.log("");
+        });
+      } else {
+        console.log(
+          `❌ No metals found with properties containing \"${searchTerm}\".`,
+        );
+        console.log("\nTry searching for common metal properties like:");
+        console.log("   • protection");
+        console.log("   • prosperity");
+        console.log("   • healing");
+        console.log("   • strength");
+        console.log("   • abundance");
+        console.log("   • energy");
+        console.log("   • wisdom");
+        console.log();
+      }
+    } else {
+      // metal <name>
+      const searchTerm = args.slice(1).join(" ");
+      const foundMetal = findMetalByName(metals, searchTerm);
+
+      if (foundMetal) {
+        console.log(`\n🪨 ${foundMetal.name}`);
+        console.log(`\n✨ Properties:`);
+        console.log(`   ${foundMetal.properties}\n`);
+      } else {
+        console.log(`❌ Metal \"${searchTerm}\" not found.`);
+        console.log(
+          "\nTip: Try searching with exact metal names or check spelling.",
+        );
+
+        // Check if this might work as a \"use\" search
+        const useSearchSuggestions = suggestUseSearch(
+          "metal",
+          searchTerm,
+          data,
+        );
+        if (useSearchSuggestions.length > 0) {
+          console.log(useSearchSuggestions[0]);
+        }
+
+        const suggestions = metals
+          .filter((metal) =>
+            metal.name.toLowerCase().includes(searchTerm.toLowerCase()),
+          )
+          .slice(0, 3);
+
+        if (suggestions.length > 0) {
+          console.log("\nDid you mean one of these?");
+          suggestions.forEach((metal) => {
+            console.log(`   • ${metal.name}`);
+          });
+        }
+        console.log();
+      }
+    }
+
+    // Handle day commands
+  } else if (type === "day") {
+    if (args.length >= 3 && args[1].toLowerCase() === "use") {
+      // day use <term>
+      const searchTerm = args.slice(2).join(" ");
+      const matchingDays = findDaysByIntent(days, searchTerm);
+
+      if (matchingDays.length > 0) {
+        console.log(
+          `\n🔍 Found ${
+            matchingDays.length
+          } day(s) with intents containing "${highlightText(
+            searchTerm,
+            searchTerm,
+          )}":\n`,
+        );
+
+        matchingDays.forEach((day) => {
+          console.log(`📅 ${day.name}`);
+          if (day.planet) {
+            console.log(`   🪐 Planet: ${day.planet}`);
+          }
+          const highlightedIntent = highlightText(day.intent, searchTerm);
+          console.log(`   🎯 Intent: ${highlightedIntent}`);
+          if (day.colors) {
+            console.log(`   🎨 Colors: ${day.colors}`);
+          }
+          if (day.deities) {
+            console.log(`   ⚡ Deities: ${day.deities}`);
+          }
+          console.log("");
+        });
+      } else {
+        console.log(
+          `❌ No days found with intents containing \"${searchTerm}\".`,
+        );
+        console.log("\nTry searching for common magical intents like:");
+        console.log("   • healing");
+        console.log("   • protection");
+        console.log("   • success");
+        console.log("   • communication");
+        console.log("   • love");
+        console.log();
+      }
+    } else {
+      // day <name>
+      const searchTerm = args.slice(1).join(" ");
+      const foundDays = findDayByName(days, searchTerm);
+
+      if (foundDays.length > 0) {
+        foundDays.forEach((day) => {
+          console.log(`\n📅 ${day.name}`);
+          if (day.planet) {
+            console.log(`\n🪐 Planet: ${day.planet}`);
+          }
+          console.log(`🎯 Intent: ${day.intent}`);
+          if (day.colors) {
+            console.log(`🎨 Colors: ${day.colors}`);
+          }
+          if (day.deities) {
+            console.log(`⚡ Deities: ${day.deities}`);
+          }
+          console.log("");
+        });
+      } else {
+        console.log(`❌ Day \"${searchTerm}\" not found.`);
+        console.log(
+          '\nTip: Try searching with exact day names like "Monday", "Tuesday", etc.',
+        );
+
+        // Check if this might work as a \"use\" search
+        const useSearchSuggestions = suggestUseSearch("day", searchTerm, data);
+        if (useSearchSuggestions.length > 0) {
+          console.log(useSearchSuggestions[0]);
+        }
+
+        const suggestions = days
+          .filter((day) =>
+            day.name.toLowerCase().includes(searchTerm.toLowerCase()),
+          )
+          .slice(0, 3);
+
+        if (suggestions.length > 0) {
+          console.log("\nDid you mean one of these?");
+          suggestions.forEach((day) => {
+            console.log(`   • ${day.name}`);
+          });
+        }
+        console.log();
+      }
+    }
+  } else {
+    console.log(`❌ Unknown type: \"${type}\"`);
+    console.log("Available types: herb, crystal, color, moon, metal, day\n");
+    showUsage();
+  }
 }
 
 module.exports = { main };

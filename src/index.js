@@ -19,13 +19,11 @@ const {
 const { findMetalByName, findMetalsByProperty } = require("./search/metals");
 const { findDayByName, findDaysByIntent } = require("./search/days");
 
-// Main function
-function main() {
-  const args = process.argv.slice(2);
-
+// Process a command with given arguments
+function processCommand(args) {
   if (args.length < 2) {
     showUsage();
-    process.exit(1);
+    return;
   }
 
   const type = args[0].toLowerCase();
@@ -546,4 +544,17 @@ function main() {
   }
 }
 
-module.exports = { main };
+// Main function (for CLI usage)
+function main() {
+  const args = process.argv.slice(2);
+
+  if (args.length === 0) {
+    // No arguments, show usage
+    showUsage();
+    process.exit(1);
+  }
+
+  processCommand(args);
+}
+
+module.exports = { main, processCommand };

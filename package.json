@@ -1,0 +1,30 @@
+{
+  "name": "witchy-lookup",
+  "version": "1.0.0",
+  "description": "A magical correspondence lookup tool.",
+  "main": "lookup.js",
+  "bin": {
+    "witchy": "./lookup.js"
+  },
+  "scripts": {
+    "start": "node lookup.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "witchcraft",
+    "magic",
+    "correspondences",
+    "herbs",
+    "crystals",
+    "cli",
+    "spellwork"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "readline": "^1.3.0"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  }
+}

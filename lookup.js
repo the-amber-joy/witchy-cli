@@ -1,7 +1,17 @@
 #!/usr/bin/env node
 
-// Import the main function from the modular structure
-const { main } = require('./src/index');
+// Import the main function and interactive CLI from the modular structure
+const { main } = require("./src/index");
+const { InteractiveCLI } = require("./src/cli");
 
-// Run the main function
-main();
+// Check if arguments are provided
+const args = process.argv.slice(2);
+
+if (args.length === 0) {
+  // No arguments provided, start interactive mode
+  const cli = new InteractiveCLI();
+  cli.start();
+} else {
+  // Arguments provided, use original CLI behavior
+  main();
+}

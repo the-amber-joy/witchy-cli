@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node lookup.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "node -e \"require('./src/database/migrator').DatabaseMigrator.ensureDatabaseExists(false).then(() => console.log('✨ Database ready!')).catch(err => console.log('⚠️  Database setup will run on first use'))\"",
     "db:setup": "node -e \"require('./src/database/setup').setupDatabase().then(() => console.log('Database setup complete!'))\"",
     "db:migrate": "node -e \"require('./src/database/migrate').migrateAllData().then(() => console.log('Migration complete!'))\"",
     "db:reset": "node -e \"require('./src/database/migrator').DatabaseMigrator.resetDatabase().then(() => console.log('Database reset complete!'))\"",

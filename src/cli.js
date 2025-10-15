@@ -1,5 +1,6 @@
 const readline = require("readline");
 const { processCommand } = require("./index");
+const { DatabaseMigrator } = require("./database/migrator");
 
 class InteractiveCLI {
   constructor() {
@@ -16,7 +17,7 @@ class InteractiveCLI {
     // Handle Ctrl+C gracefully
     this.rl.on("SIGINT", () => {
       console.clear();
-      console.log("✨ Blessed be! Exiting witchy lookup...");
+      console.log("🧙✨ Blessed be! Exiting witchy lookup...");
       process.exit(0);
     });
 
@@ -28,12 +29,12 @@ class InteractiveCLI {
     // Handle close event
     this.rl.on("close", () => {
       console.clear();
-      console.log("✨ Blessed be! Goodbye!");
+      console.log("🧙✨ Blessed be! Goodbye!");
       process.exit(0);
     });
   }
 
-  handleCommand(input) {
+  async handleCommand(input) {
     if (!input) {
       this.rl.prompt();
       return;
@@ -48,7 +49,7 @@ class InteractiveCLI {
 
     if (input === "exit" || input === "quit") {
       console.clear();
-      console.log("✨ Blessed be! Goodbye!");
+      console.log("🧙✨ Blessed be! Goodbye!");
       process.exit(0);
     }
 
@@ -70,8 +71,8 @@ class InteractiveCLI {
     }
 
     try {
-      // Process the command using the existing logic
-      processCommand(args);
+      // Process the command using the existing logic (skip migration since CLI handles it)
+      await processCommand(args, true);
     } catch (error) {
       console.log(`❌ Error: ${error.message}\n`);
     }
@@ -80,13 +81,13 @@ class InteractiveCLI {
   }
 
   showWelcome() {
-    console.log("✨🔮 Welcome to Witchy Lookup CLI! 🔮✨\n");
+    console.log("✨🧙 Welcome to Witchy Lookup CLI! 🔮✨\n");
     this.showHelp(false);
   }
 
   showHelp(showTitle = true) {
     if (showTitle) {
-      console.log("\n🔮 Witchy Lookup Help 🔮\n");
+      console.log("\n🧙 Witchy Lookup Help 🔮\n");
     }
     console.log("🌟 Available Lookup Types:");
     console.log(
@@ -122,10 +123,64 @@ class InteractiveCLI {
     console.log("  exit  - Exit the program\n");
   }
 
-  start() {
+  async start() {
     console.clear();
-    this.showWelcome();
-    this.rl.prompt();
+
+    // Show a simple loading message while migration runs
+    console.log("🧹 Preparing witchy lookup...");
+
+    try {
+      // Run database migration silently (suppress console output)
+      const originalConsoleLog = console.log;
+      const originalConsoleError = console.error;
+
+      // Temporarily silence console output during migration
+      console.log = () => {};
+      console.error = () => {};
+
+      const migrationRan = await DatabaseMigrator.ensureDatabaseExists();
+
+      // Restore console output
+      console.log = originalConsoleLog;
+      console.error = originalConsoleError;
+
+      // If migration just ran, wait for database to be fully populated
+      if (migrationRan) {
+        const { HerbsDB } = require("./database/herbs");
+
+        let attempts = 0;
+        const maxAttempts = 100; // Max attempts (10 seconds at 100ms each)
+        let isReady = false;
+
+        while (attempts < maxAttempts && !isReady) {
+          try {
+            // Try to get all herbs to verify database is fully accessible and populated
+            const allHerbs = await HerbsDB.getAllHerbs();
+            if (allHerbs && allHerbs.length >= 450) {
+              isReady = true;
+            } else {
+              await new Promise((resolve) => setTimeout(resolve, 100));
+              attempts++;
+            }
+          } catch (err) {
+            // Database not ready yet (locked or not populated), wait and retry
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            attempts++;
+          }
+        }
+      }
+
+      // Clear the loading message and show welcome
+      console.clear();
+      this.showWelcome();
+      this.rl.prompt();
+    } catch (error) {
+      console.clear();
+      console.log("❌ Error initializing database:", error.message);
+      console.log("The CLI will continue with JSON fallback.\n");
+      this.showWelcome();
+      this.rl.prompt();
+    }
   }
 }
 

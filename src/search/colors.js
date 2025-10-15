@@ -1,19 +1,64 @@
-// Search for color by name
-function findColorByName(colors, searchTerm) {
-    const normalizedSearch = searchTerm.toLowerCase().trim();
-    
-    return colors.find(color => {
-        return color.name.toLowerCase() === normalizedSearch;
-    });
+const { ColorsDB } = require("../database/colors");
+
+// Search for color by name (database version)
+async function findColorByName(colors, searchTerm) {
+  try {
+    return await ColorsDB.findColorByName(searchTerm);
+  } catch (error) {
+    console.error(
+      "Database error, falling back to array search:",
+      error.message,
+    );
+    return findColorByNameSync(colors, searchTerm);
+  }
 }
 
-// Search for colors by meaning
-function findColorsByMeaning(colors, meaningTerm) {
-    const normalizedTerm = meaningTerm.toLowerCase().trim();
-    
-    return colors.filter(color => {
-        return color.meanings && color.meanings.toLowerCase().includes(normalizedTerm);
-    });
+// Search for colors by meanings (database version)
+async function findColorsByMeaning(colors, meaningTerm) {
+  try {
+    return await ColorsDB.findColorsByMeaning(meaningTerm);
+  } catch (error) {
+    console.error(
+      "Database error, falling back to array search:",
+      error.message,
+    );
+    return findColorsByMeaningSync(colors, meaningTerm);
+  }
 }
 
-module.exports = { findColorByName, findColorsByMeaning };
+// Get color suggestions for partial matches
+async function getColorSuggestions(searchTerm) {
+  try {
+    return await ColorsDB.searchColorsByPartialName(searchTerm);
+  } catch (error) {
+    console.error("Database error for suggestions:", error.message);
+    return [];
+  }
+}
+
+// Synchronous fallback functions (for backwards compatibility)
+function findColorByNameSync(colors, searchTerm) {
+  const normalizedSearch = searchTerm.toLowerCase().trim();
+
+  return colors.find((color) => {
+    return color.name.toLowerCase() === normalizedSearch;
+  });
+}
+
+function findColorsByMeaningSync(colors, meaningTerm) {
+  const normalizedTerm = meaningTerm.toLowerCase().trim();
+
+  return colors.filter((color) => {
+    return (
+      color.meanings && color.meanings.toLowerCase().includes(normalizedTerm)
+    );
+  });
+}
+
+module.exports = {
+  findColorByName,
+  findColorsByMeaning,
+  getColorSuggestions,
+  findColorByNameSync,
+  findColorsByMeaningSync,
+};

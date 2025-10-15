@@ -1,5 +1,5 @@
 // Import all modules
-const { loadData } = require("./data/loader");
+const { loadData, loadDataSync } = require("./data/loader");
 const { showUsage } = require("./ui/display");
 const { highlightText } = require("./utils/text");
 const { getMoonPhaseEmoji, getColorCode } = require("./utils/colors");
@@ -20,22 +20,41 @@ const { findMetalByName, findMetalsByProperty } = require("./search/metals");
 const { findDayByName, findDaysByIntent } = require("./search/days");
 
 // Process a command with given arguments
-function processCommand(args) {
+async function processCommand(args, skipMigration = false) {
   if (args.length < 2) {
     showUsage();
     return;
   }
 
   const type = args[0].toLowerCase();
-  const data = loadData();
-  const { herbs, crystals, colors, moon, metals, days } = data;
+  // For direct CLI commands (skipMigration=true), don't load data upfront
+  // Search functions will handle database migration themselves
+  // For interactive CLI (skipMigration=false), load all data into memory
+  let herbs, crystals, colors, moon, metals, days;
+
+  if (!skipMigration) {
+    // Interactive mode - load all data
+    const loadedData = await loadData(false, false);
+    ({ herbs, crystals, colors, moon, metals, days } = loadedData);
+  } else {
+    // Direct CLI mode - pass empty arrays (search functions query database directly)
+    herbs = [];
+    crystals = [];
+    colors = [];
+    moon = [];
+    metals = [];
+    days = [];
+  }
+
+  // Create data object for compatibility with suggestions
+  const data = { herbs, crystals, colors, moon, metals, days };
 
   // Handle herb commands
   if (type === "herb") {
     if (args.length >= 3 && args[1].toLowerCase() === "use") {
       // herb use <term>
       const searchTerm = args.slice(2).join(" ");
-      const matchingHerbs = findHerbsByUse(herbs, searchTerm);
+      const matchingHerbs = await findHerbsByUse(herbs, searchTerm);
 
       if (matchingHerbs.length > 0) {
         console.log(
@@ -73,7 +92,7 @@ function processCommand(args) {
     } else {
       // herb <name>
       const searchTerm = args.slice(1).join(" ");
-      const foundHerb = findHerbByName(herbs, searchTerm);
+      const foundHerb = await findHerbByName(herbs, searchTerm);
 
       if (foundHerb) {
         console.log(`\n🌿 ${foundHerb.name}`);
@@ -121,7 +140,10 @@ function processCommand(args) {
     if (args.length >= 3 && args[1].toLowerCase() === "use") {
       // crystal use <term>
       const searchTerm = args.slice(2).join(" ");
-      const matchingCrystals = findCrystalsByProperty(crystals, searchTerm);
+      const matchingCrystals = await findCrystalsByProperty(
+        crystals,
+        searchTerm,
+      );
 
       if (matchingCrystals.length > 0) {
         console.log(
@@ -162,7 +184,7 @@ function processCommand(args) {
     } else {
       // crystal <name>
       const searchTerm = args.slice(1).join(" ");
-      const foundCrystal = findCrystalByName(crystals, searchTerm);
+      const foundCrystal = await findCrystalByName(crystals, searchTerm);
 
       if (foundCrystal) {
         console.log(`\n💎 ${foundCrystal.name}`);
@@ -214,7 +236,7 @@ function processCommand(args) {
     if (args.length >= 3 && args[1].toLowerCase() === "use") {
       // color use <term>
       const searchTerm = args.slice(2).join(" ");
-      const matchingColors = findColorsByMeaning(colors, searchTerm);
+      const matchingColors = await findColorsByMeaning(colors, searchTerm);
 
       if (matchingColors.length > 0) {
         console.log(
@@ -250,7 +272,7 @@ function processCommand(args) {
     } else {
       // color <name>
       const searchTerm = args.slice(1).join(" ");
-      const foundColor = findColorByName(colors, searchTerm);
+      const foundColor = await findColorByName(colors, searchTerm);
 
       if (foundColor) {
         const colorCode = getColorCode(foundColor.name);
@@ -294,7 +316,10 @@ function processCommand(args) {
     if (args.length >= 3 && args[1].toLowerCase() === "use") {
       // moon use <term>
       const searchTerm = args.slice(2).join(" ");
-      const matchingMoonPhases = findMoonPhasesByMeaning(moon, searchTerm);
+      const matchingMoonPhases = await findMoonPhasesByMeaning(
+        moon,
+        searchTerm,
+      );
 
       if (matchingMoonPhases.length > 0) {
         console.log(
@@ -330,7 +355,7 @@ function processCommand(args) {
     } else {
       // moon <phase>
       const searchTerm = args.slice(1).join(" ");
-      const foundMoonPhase = findMoonPhaseByName(moon, searchTerm);
+      const foundMoonPhase = await findMoonPhaseByName(moon, searchTerm);
 
       if (foundMoonPhase) {
         const emoji = getMoonPhaseEmoji(foundMoonPhase.phase);
@@ -370,7 +395,7 @@ function processCommand(args) {
     if (args.length >= 3 && args[1].toLowerCase() === "use") {
       // metal use <term>
       const searchTerm = args.slice(2).join(" ");
-      const matchingMetals = findMetalsByProperty(metals, searchTerm);
+      const matchingMetals = await findMetalsByProperty(metals, searchTerm);
 
       if (matchingMetals.length > 0) {
         console.log(
@@ -408,7 +433,7 @@ function processCommand(args) {
     } else {
       // metal <name>
       const searchTerm = args.slice(1).join(" ");
-      const foundMetal = findMetalByName(metals, searchTerm);
+      const foundMetal = await findMetalByName(metals, searchTerm);
 
       if (foundMetal) {
         console.log(`\n🪨 ${foundMetal.name}`);
@@ -451,7 +476,7 @@ function processCommand(args) {
     if (args.length >= 3 && args[1].toLowerCase() === "use") {
       // day use <term>
       const searchTerm = args.slice(2).join(" ");
-      const matchingDays = findDaysByIntent(days, searchTerm);
+      const matchingDays = await findDaysByIntent(days, searchTerm);
 
       if (matchingDays.length > 0) {
         console.log(
@@ -493,7 +518,7 @@ function processCommand(args) {
     } else {
       // day <name>
       const searchTerm = args.slice(1).join(" ");
-      const foundDays = findDayByName(days, searchTerm);
+      const foundDays = await findDayByName(days, searchTerm);
 
       if (foundDays.length > 0) {
         foundDays.forEach((day) => {
@@ -545,7 +570,7 @@ function processCommand(args) {
 }
 
 // Main function (for CLI usage)
-function main() {
+async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
@@ -554,7 +579,8 @@ function main() {
     process.exit(1);
   }
 
-  processCommand(args);
+  // For direct CLI usage, skip migration in loadData since search functions handle it
+  await processCommand(args, true);
 }
 
 module.exports = { main, processCommand };

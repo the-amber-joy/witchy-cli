@@ -138,21 +138,43 @@ class InteractiveCLI {
       console.log = () => {};
       console.error = () => {};
 
-      await DatabaseMigrator.ensureDatabaseExists();
+      const migrationRan = await DatabaseMigrator.ensureDatabaseExists();
 
       // Restore console output
       console.log = originalConsoleLog;
       console.error = originalConsoleError;
+
+      // If migration just ran, wait for database to be fully populated
+      if (migrationRan) {
+        const { HerbsDB } = require("./database/herbs");
+
+        let attempts = 0;
+        const maxAttempts = 100; // Max attempts (10 seconds at 100ms each)
+        let isReady = false;
+
+        while (attempts < maxAttempts && !isReady) {
+          try {
+            // Try to get all herbs to verify database is fully accessible and populated
+            const allHerbs = await HerbsDB.getAllHerbs();
+            if (allHerbs && allHerbs.length >= 450) {
+              isReady = true;
+            } else {
+              await new Promise((resolve) => setTimeout(resolve, 100));
+              attempts++;
+            }
+          } catch (err) {
+            // Database not ready yet (locked or not populated), wait and retry
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            attempts++;
+          }
+        }
+      }
 
       // Clear the loading message and show welcome
       console.clear();
       this.showWelcome();
       this.rl.prompt();
     } catch (error) {
-      // Restore console output in case of error
-      console.log = originalConsoleLog;
-      console.error = originalConsoleError;
-
       console.clear();
       console.log("❌ Error initializing database:", error.message);
       console.log("The CLI will continue with JSON fallback.\n");

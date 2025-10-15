@@ -27,9 +27,27 @@ async function processCommand(args, skipMigration = false) {
   }
 
   const type = args[0].toLowerCase();
-  // For direct CLI commands, run silent migration. For interactive CLI, skip migration (handled separately)
-  const data = await loadData(!skipMigration, !skipMigration);
-  const { herbs, crystals, colors, moon, metals, days } = data;
+  // For direct CLI commands (skipMigration=true), don't load data upfront
+  // Search functions will handle database migration themselves
+  // For interactive CLI (skipMigration=false), load all data into memory
+  let herbs, crystals, colors, moon, metals, days;
+
+  if (!skipMigration) {
+    // Interactive mode - load all data
+    const loadedData = await loadData(false, false);
+    ({ herbs, crystals, colors, moon, metals, days } = loadedData);
+  } else {
+    // Direct CLI mode - pass empty arrays (search functions query database directly)
+    herbs = [];
+    crystals = [];
+    colors = [];
+    moon = [];
+    metals = [];
+    days = [];
+  }
+
+  // Create data object for compatibility with suggestions
+  const data = { herbs, crystals, colors, moon, metals, days };
 
   // Handle herb commands
   if (type === "herb") {
@@ -561,7 +579,8 @@ async function main() {
     process.exit(1);
   }
 
-  await processCommand(args);
+  // For direct CLI usage, skip migration in loadData since search functions handle it
+  await processCommand(args, true);
 }
 
 module.exports = { main, processCommand };

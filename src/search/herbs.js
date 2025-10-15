@@ -1,8 +1,54 @@
 const { HerbsDB } = require("../database/herbs");
+const { DatabaseMigrator } = require("../database/migrator");
 
 // Search for herb by name or alternative name (database version)
 async function findHerbByName(herbs, searchTerm) {
   try {
+    // Ensure database exists before searching
+    await DatabaseMigrator.ensureDatabaseExists(true);
+
+    // Always verify database is ready and populated before first query
+    // This handles both fresh migrations and cases where CLI pre-initialized the DB
+    let attempts = 0;
+    const maxAttempts = 50; // Max attempts (5 seconds at 100ms each)
+    let isReady = false;
+
+    while (attempts < maxAttempts && !isReady) {
+      try {
+        // Try a quick count check to verify database is accessible
+        const allHerbs = await HerbsDB.getAllHerbs();
+        if (allHerbs && allHerbs.length >= 450) {
+          isReady = true;
+        } else if (attempts === 0) {
+          // Only show message on first attempt if data isn't ready
+          process.stdout.write("🔮 Preparing witchy database...");
+        }
+
+        if (!isReady) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          attempts++;
+        }
+      } catch (err) {
+        // Database not ready yet (locked or not populated), wait and retry
+        if (attempts === 0) {
+          process.stdout.write("🔮 Preparing witchy database...");
+        }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        attempts++;
+      }
+    }
+
+    // Clear the message if it was shown
+    if (attempts > 0) {
+      process.stdout.write("\r" + " ".repeat(35) + "\r");
+    }
+
+    if (!isReady) {
+      console.error(
+        "⚠️  Database preparation timed out. Results may be incomplete.",
+      );
+    }
+
     return await HerbsDB.findHerbByName(searchTerm);
   } catch (error) {
     console.error(
@@ -17,6 +63,48 @@ async function findHerbByName(herbs, searchTerm) {
 // Search for herbs by ritual use (database version)
 async function findHerbsByUse(herbs, useTerm) {
   try {
+    // Ensure database exists before searching
+    await DatabaseMigrator.ensureDatabaseExists(true);
+
+    // Always verify database is ready and populated before first query
+    let attempts = 0;
+    const maxAttempts = 50; // Max attempts (5 seconds at 100ms each)
+    let isReady = false;
+
+    while (attempts < maxAttempts && !isReady) {
+      try {
+        // Try a quick count check to verify database is accessible
+        const allHerbs = await HerbsDB.getAllHerbs();
+        if (allHerbs && allHerbs.length >= 450) {
+          isReady = true;
+        } else if (attempts === 0) {
+          process.stdout.write("🔮 Preparing witchy database...");
+        }
+
+        if (!isReady) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          attempts++;
+        }
+      } catch (err) {
+        if (attempts === 0) {
+          process.stdout.write("🔮 Preparing witchy database...");
+        }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        attempts++;
+      }
+    }
+
+    // Clear the message if it was shown
+    if (attempts > 0) {
+      process.stdout.write("\r" + " ".repeat(35) + "\r");
+    }
+
+    if (!isReady) {
+      console.error(
+        "⚠️  Database preparation timed out. Results may be incomplete.",
+      );
+    }
+
     return await HerbsDB.findHerbsByUse(useTerm);
   } catch (error) {
     console.error(
@@ -31,6 +119,29 @@ async function findHerbsByUse(herbs, useTerm) {
 // Get herb suggestions for partial matches
 async function getHerbSuggestions(searchTerm) {
   try {
+    // Ensure database exists before searching
+    await DatabaseMigrator.ensureDatabaseExists(true);
+
+    // Always verify database is ready and populated
+    let attempts = 0;
+    const maxAttempts = 50; // Max attempts (5 seconds at 100ms each)
+    let isReady = false;
+
+    while (attempts < maxAttempts && !isReady) {
+      try {
+        const allHerbs = await HerbsDB.getAllHerbs();
+        if (allHerbs && allHerbs.length >= 450) {
+          isReady = true;
+        } else {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          attempts++;
+        }
+      } catch (err) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        attempts++;
+      }
+    }
+
     return await HerbsDB.searchHerbsByPartialName(searchTerm);
   } catch (error) {
     console.error("Database error for suggestions:", error.message);

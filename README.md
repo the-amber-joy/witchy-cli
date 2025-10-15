@@ -39,8 +39,8 @@ To use the `witchy` command from anywhere in your terminal:
 1. **Clone or download this repository** to a permanent location:
 
    ```bash
-   git clone https://github.com/the-amber-joy/witchyLookup.git ~/witchy-lookup
-   cd ~/witchy-lookup
+   git clone https://github.com/the-amber-joy/witchy-cli.git ~/witchy-cli
+   cd ~/witchy-cli
    ```
 
 2. **Make the script executable**:
@@ -58,7 +58,7 @@ To use the `witchy` command from anywhere in your terminal:
 4. **Create a symbolic link to the script**:
 
    ```bash
-   ln -sf ~/witchy-lookup/lookup.js ~/bin/witchy
+   ln -sf ~/witchy-cli/lookup.js ~/bin/witchy
    ```
 
 5. **Add ~/bin to your PATH** (if not already done):
@@ -89,8 +89,8 @@ To use the `witchy` command from anywhere in Command Prompt or PowerShell:
 1. **Clone or download this repository** to a permanent location:
 
    ```cmd
-   git clone https://github.com/the-amber-joy/witchyLookup.git C:\path\to\witchy-lookup
-   cd C:\path\to\witchy-lookup
+   git clone https://github.com/the-amber-joy/witchy-cli.git C:\path\to\witchy-cli
+   cd C:\path\to\witchy-cli
    ```
 
 2. **Create a batch file wrapper**:
@@ -99,21 +99,21 @@ To use the `witchy` command from anywhere in Command Prompt or PowerShell:
 
    ```batch
    @echo off
-   node "C:\path\to\witchy-lookup" %*
+   node "C:\path\to\witchy-cli" %*
    ```
 
    Or if you prefer PowerShell, create `witchy.ps1`:
 
    ```powershell
-   node "C:\path\to\witchy-lookup" $args
+   node "C:\path\to\witchy-cli" $args
    ```
 
 3. **Alternative: Add to PATH directly**:
 
    - Open **System Properties** → **Advanced** → **Environment Variables**
    - Under **User variables**, find or create the `PATH` variable
-   - Add `C:\path\to\witchy-lookup` to the PATH
-   - Create a `witchy.bat` file in `C:\path\to\witchy-lookup`:
+   - Add `C:\path\to\witchy-cli` to the PATH
+   - Create a `witchy.bat` file in `C:\path\to\witchy-cli`:
      ```batch
      @echo off
      node "%~dp0lookup.js" %*
@@ -133,14 +133,14 @@ If you prefer to run it locally without global installation:
 **macOS/Linux**:
 
 ```bash
-cd /path/to/witchy-lookup
+cd /path/to/witchy-cli
 ./lookup.js herb rosemary
 ```
 
 **Windows**:
 
 ```cmd
-cd C:\path\to\witchy-lookup
+cd C:\path\to\witchy-cli
 node lookup.js herb rosemary
 ```
 
@@ -151,14 +151,14 @@ To update your installation:
 **macOS/Linux**:
 
 ```bash
-cd /path/to/witchy-lookup
+cd /path/to/witchy-cli
 git pull origin main
 ```
 
 **Windows**:
 
 ```cmd
-cd C:\path\to\witchy-lookup
+cd C:\path\to\witchy-cli
 git pull origin main
 ```
 

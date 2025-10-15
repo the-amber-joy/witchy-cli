@@ -8,13 +8,12 @@ const { MetalsDB } = require("../database/metals");
 const { DaysDB } = require("../database/days");
 const { DatabaseMigrator } = require("../database/migrator");
 
-// Load all data from database (with auto-migration)
-async function loadData() {
+// Load all data from database (with optional auto-migration)
+async function loadData(runMigration = true, silentMigration = false) {
   try {
-    // Ensure database exists and is populated
-    const migrationRan = await DatabaseMigrator.ensureDatabaseExists();
-    if (migrationRan) {
-      console.log("🔮 Database ready for use!\n");
+    // Ensure database exists and is populated (only if requested)
+    if (runMigration) {
+      await DatabaseMigrator.ensureDatabaseExists(silentMigration);
     }
 
     // Load all data types from database in parallel for better performance
@@ -55,14 +54,14 @@ async function loadData() {
 // Load data synchronously for backwards compatibility (falls back to JSON)
 function loadDataSync() {
   try {
-    const projectRoot = path.join(__dirname, "..", "..");
+    const dataDir = __dirname; // JSON files are now in the same directory
 
-    const herbsPath = path.join(projectRoot, "json", "herbs.json");
-    const crystalsPath = path.join(projectRoot, "json", "crystals.json");
-    const colorsPath = path.join(projectRoot, "json", "colors.json");
-    const moonPath = path.join(projectRoot, "json", "moon.json");
-    const metalsPath = path.join(projectRoot, "json", "metals.json");
-    const daysPath = path.join(projectRoot, "json", "days.json");
+    const herbsPath = path.join(dataDir, "herbs.json");
+    const crystalsPath = path.join(dataDir, "crystals.json");
+    const colorsPath = path.join(dataDir, "colors.json");
+    const moonPath = path.join(dataDir, "moon.json");
+    const metalsPath = path.join(dataDir, "metals.json");
+    const daysPath = path.join(dataDir, "days.json");
 
     const herbsData = JSON.parse(fs.readFileSync(herbsPath, "utf8"));
     const crystalsData = JSON.parse(fs.readFileSync(crystalsPath, "utf8"));

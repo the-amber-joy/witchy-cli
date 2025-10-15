@@ -1,5 +1,6 @@
 const readline = require("readline");
 const { processCommand } = require("./index");
+const { DatabaseMigrator } = require("./database/migrator");
 
 class InteractiveCLI {
   constructor() {
@@ -70,8 +71,8 @@ class InteractiveCLI {
     }
 
     try {
-      // Process the command using the existing logic
-      await processCommand(args);
+      // Process the command using the existing logic (skip migration since CLI handles it)
+      await processCommand(args, true);
     } catch (error) {
       console.log(`❌ Error: ${error.message}\n`);
     }
@@ -122,10 +123,42 @@ class InteractiveCLI {
     console.log("  exit  - Exit the program\n");
   }
 
-  start() {
+  async start() {
     console.clear();
-    this.showWelcome();
-    this.rl.prompt();
+
+    // Show a simple loading message while migration runs
+    console.log("🔮 Preparing witchy lookup...");
+
+    try {
+      // Run database migration silently (suppress console output)
+      const originalConsoleLog = console.log;
+      const originalConsoleError = console.error;
+
+      // Temporarily silence console output during migration
+      console.log = () => {};
+      console.error = () => {};
+
+      await DatabaseMigrator.ensureDatabaseExists();
+
+      // Restore console output
+      console.log = originalConsoleLog;
+      console.error = originalConsoleError;
+
+      // Clear the loading message and show welcome
+      console.clear();
+      this.showWelcome();
+      this.rl.prompt();
+    } catch (error) {
+      // Restore console output in case of error
+      console.log = originalConsoleLog;
+      console.error = originalConsoleError;
+
+      console.clear();
+      console.log("❌ Error initializing database:", error.message);
+      console.log("The CLI will continue with JSON fallback.\n");
+      this.showWelcome();
+      this.rl.prompt();
+    }
   }
 }
 

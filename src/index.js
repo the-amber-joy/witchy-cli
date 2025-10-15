@@ -20,14 +20,15 @@ const { findMetalByName, findMetalsByProperty } = require("./search/metals");
 const { findDayByName, findDaysByIntent } = require("./search/days");
 
 // Process a command with given arguments
-async function processCommand(args) {
+async function processCommand(args, skipMigration = false) {
   if (args.length < 2) {
     showUsage();
     return;
   }
 
   const type = args[0].toLowerCase();
-  const data = await loadData();
+  // For direct CLI commands, run silent migration. For interactive CLI, skip migration (handled separately)
+  const data = await loadData(!skipMigration, !skipMigration);
   const { herbs, crystals, colors, moon, metals, days } = data;
 
   // Handle herb commands

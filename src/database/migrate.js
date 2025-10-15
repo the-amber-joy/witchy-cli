@@ -15,24 +15,24 @@ async function migrateAllData() {
     const db = getDatabase();
 
     // Read all JSON data files
-    const basePath = path.join(__dirname, "..", "..");
+    const dataPath = path.join(__dirname, "..", "data");
     const herbsData = JSON.parse(
-      fs.readFileSync(path.join(basePath, "json", "herbs.json"), "utf8"),
+      fs.readFileSync(path.join(dataPath, "herbs.json"), "utf8"),
     );
     const crystalsData = JSON.parse(
-      fs.readFileSync(path.join(basePath, "json", "crystals.json"), "utf8"),
+      fs.readFileSync(path.join(dataPath, "crystals.json"), "utf8"),
     );
     const colorsData = JSON.parse(
-      fs.readFileSync(path.join(basePath, "json", "colors.json"), "utf8"),
+      fs.readFileSync(path.join(dataPath, "colors.json"), "utf8"),
     );
     const moonData = JSON.parse(
-      fs.readFileSync(path.join(basePath, "json", "moon.json"), "utf8"),
+      fs.readFileSync(path.join(dataPath, "moon.json"), "utf8"),
     );
     const metalsData = JSON.parse(
-      fs.readFileSync(path.join(basePath, "json", "metals.json"), "utf8"),
+      fs.readFileSync(path.join(dataPath, "metals.json"), "utf8"),
     );
     const daysData = JSON.parse(
-      fs.readFileSync(path.join(basePath, "json", "days.json"), "utf8"),
+      fs.readFileSync(path.join(dataPath, "days.json"), "utf8"),
     );
 
     console.log(`� Migration Summary:`);
@@ -51,7 +51,7 @@ async function migrateAllData() {
     db.run("DELETE FROM moon_phases");
     db.run("DELETE FROM metals");
     db.run("DELETE FROM days");
-    db.run("DELETE FROM witchy_fts");
+    // Note: FTS table is contentless and will be updated automatically via triggers
 
     // Prepare insert statements
     const herbsStmt = db.prepare(

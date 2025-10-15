@@ -25,10 +25,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "18"
 
@@ -48,7 +48,7 @@ jobs:
           fi
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}
           path: dist/${{ matrix.artifact_name }}
@@ -60,16 +60,16 @@ jobs:
 
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
-            witchy-cli-linux/witchy-cli-linux
-            witchy-cli-macos/witchy-cli-macos
-            witchy-cli-win.exe/witchy-cli-win.exe
+            artifacts/witchy-cli-linux/witchy-cli-linux
+            artifacts/witchy-cli-macos/witchy-cli-macos
+            artifacts/witchy-cli-win.exe/witchy-cli-win.exe
           draft: false
           prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

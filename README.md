@@ -1,11 +1,11 @@
 # ✨ Witchy Lookup Tool
 
-Your magical reference companion! A command-line tool for looking up magical correspondences including herbs, crystals, colors, moon phases, metals, and days of the week.
+Your magical correspondence companion! A command-line tool for looking up magical correspondences including herbs, crystals, colors, moon phases, metals, and days of the week.
 
 ## Usage
 
 ```
-✨ Witchy Lookup Tool - Your magical reference companion! ✨
+✨ Witchy Lookup Tool - Your magical correspondence companion! ✨
 
 Usage: witchy <type> [command] <search-term>
 
@@ -30,8 +30,6 @@ Usage: witchy <type> [command] <search-term>
 
 ## Installation
 
-## Installation
-
 ### Method 1: Global Installation (Recommended)
 
 #### On macOS/Linux:
@@ -39,35 +37,41 @@ Usage: witchy <type> [command] <search-term>
 To use the `witchy` command from anywhere in your terminal:
 
 1. **Clone or download this repository** to a permanent location:
+
    ```bash
    git clone https://github.com/the-amber-joy/witchyLookup.git ~/witchy-lookup
    cd ~/witchy-lookup
    ```
 
 2. **Make the script executable**:
+
    ```bash
    chmod +x lookup.js
    ```
 
 3. **Create a directory for your personal binaries** (if it doesn't exist):
+
    ```bash
    mkdir -p ~/bin
    ```
 
 4. **Create a symbolic link to the script**:
+
    ```bash
    ln -sf ~/witchy-lookup/lookup.js ~/bin/witchy
    ```
 
 5. **Add ~/bin to your PATH** (if not already done):
-   
+
    For **zsh** (macOS default):
+
    ```bash
    echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
    source ~/.zshrc
    ```
-   
+
    For **bash**:
+
    ```bash
    echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
    source ~/.bashrc
@@ -83,31 +87,33 @@ To use the `witchy` command from anywhere in your terminal:
 To use the `witchy` command from anywhere in Command Prompt or PowerShell:
 
 1. **Clone or download this repository** to a permanent location:
+
    ```cmd
-   git clone https://github.com/the-amber-joy/witchyLookup.git C:\witchy-lookup
-   cd C:\witchy-lookup
+   git clone https://github.com/the-amber-joy/witchyLookup.git C:\path\to\witchy-lookup
+   cd C:\path\to\witchy-lookup
    ```
 
 2. **Create a batch file wrapper**:
-   
+
    Create a file called `witchy.bat` in a directory that's in your PATH (like `C:\Windows\System32` or create a personal bin directory):
-   
+
    ```batch
    @echo off
-   node "C:\witchy-lookup\lookup.js" %*
+   node "C:\path\to\witchy-lookup" %*
    ```
-   
+
    Or if you prefer PowerShell, create `witchy.ps1`:
+
    ```powershell
-   node "C:\witchy-lookup\lookup.js" $args
+   node "C:\path\to\witchy-lookup" $args
    ```
 
 3. **Alternative: Add to PATH directly**:
-   
+
    - Open **System Properties** → **Advanced** → **Environment Variables**
    - Under **User variables**, find or create the `PATH` variable
-   - Add `C:\witchy-lookup` to the PATH
-   - Create a `witchy.bat` file in `C:\witchy-lookup`:
+   - Add `C:\path\to\witchy-lookup` to the PATH
+   - Create a `witchy.bat` file in `C:\path\to\witchy-lookup`:
      ```batch
      @echo off
      node "%~dp0lookup.js" %*
@@ -125,12 +131,14 @@ To use the `witchy` command from anywhere in Command Prompt or PowerShell:
 If you prefer to run it locally without global installation:
 
 **macOS/Linux**:
+
 ```bash
 cd /path/to/witchy-lookup
 ./lookup.js herb rosemary
 ```
 
 **Windows**:
+
 ```cmd
 cd C:\path\to\witchy-lookup
 node lookup.js herb rosemary
@@ -141,14 +149,16 @@ node lookup.js herb rosemary
 To update your installation:
 
 **macOS/Linux**:
+
 ```bash
-cd ~/witchy-lookup
+cd /path/to/witchy-lookup
 git pull origin main
 ```
 
 **Windows**:
+
 ```cmd
-cd C:\witchy-lookup
+cd C:\path\to\witchy-lookup
 git pull origin main
 ```
 

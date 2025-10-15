@@ -2,14 +2,36 @@
 
 Your magical correspondence companion! A command-line tool for looking up magical correspondences including herbs, crystals, colors, moon phases, metals, and days of the week.
 
+## Quick Start
+
+```bash
+# Clone and install
+git clone https://github.com/the-amber-joy/witchy-cli.git
+cd witchy-cli
+npm install
+
+# Launch interactive CLI
+npm start
+```
+
 ## Usage
 
+### Interactive CLI Mode
+
+Launch the interactive CLI for an immersive experience:
+
+```bash
+npm start
+# or
+node src/cli.js
 ```
-🧙✨ Witchy CLI - Your magical correspondence companion! ✨🔮
 
-Usage: witchy <type> [command] <search-term>
+This opens an interactive prompt where you can run multiple lookups without retyping commands:
 
-🔮 Available Lookup Types:
+```
+✨🧙 Welcome to Witchy CLI! 🔮✨
+
+🌟 Available Lookup Types:
   🌿 herbs    - Discover magical plants and their ritual uses
   💎 crystals - Explore gemstones and their mystical properties
   🎨 colors   - Learn about color magic and meanings
@@ -17,15 +39,42 @@ Usage: witchy <type> [command] <search-term>
   🪨 metals   - Understand metallic energies and correspondences
   📅 days     - Discover which days are best for specific magical work
 
-📖 How to Use:
-  <type> <name>      - Look up by name
-  <type> use <term>  - Search by magical use/property
+🪄 witchy > herb rosemary
+🪄 witchy > crystal use protection
+🪄 witchy > exit
+```
 
-✨ Examples:
-  witchy herb rosemary
-  witchy crystal use protection
-  witchy day monday
-  witchy moon use banishing
+### Direct Command Mode
+
+For quick, one-off lookups:
+
+```bash
+witchy <type> [command] <search-term>
+```
+
+**Available Lookup Types:**
+
+- 🌿 `herbs` - Discover magical plants and their ritual uses
+- 💎 `crystals` - Explore gemstones and their mystical properties
+- 🎨 `colors` - Learn about color magic and meanings
+- 🌙 `moon` - Find moon phases perfect for your spellwork
+- 🪨 `metals` - Understand metallic energies and correspondences
+- 📅 `days` - Discover which days are best for specific magical work
+
+**Command Formats:**
+
+- `<type> <name>` - Look up by name
+- `<type> use <term>` - Search by magical use/property
+
+**Examples:**
+
+```bash
+witchy herb rosemary
+witchy crystal use protection
+witchy day monday
+witchy moon use banishing
+witchy color red
+witchy metal use prosperity
 ```
 
 ## Installation
@@ -43,25 +92,33 @@ To use the `witchy` command from anywhere in your terminal:
    cd ~/witchy-cli
    ```
 
-2. **Make the script executable**:
+2. **Install dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+   This will automatically set up the SQLite database and install all required packages.
+
+3. **Make the script executable**:
 
    ```bash
    chmod +x lookup.js
    ```
 
-3. **Create a directory for your personal binaries** (if it doesn't exist):
+4. **Create a directory for your personal binaries** (if it doesn't exist):
 
    ```bash
    mkdir -p ~/bin
    ```
 
-4. **Create a symbolic link to the script**:
+5. **Create a symbolic link to the script**:
 
    ```bash
    ln -sf ~/witchy-cli/lookup.js ~/bin/witchy
    ```
 
-5. **Add ~/bin to your PATH** (if not already done):
+6. **Add ~/bin to your PATH** (if not already done):
 
    For **zsh** (macOS default):
 
@@ -77,7 +134,7 @@ To use the `witchy` command from anywhere in your terminal:
    source ~/.bashrc
    ```
 
-6. **Test the installation**:
+7. **Test the installation**:
    ```bash
    witchy herb rosemary
    ```
@@ -93,7 +150,15 @@ To use the `witchy` command from anywhere in Command Prompt or PowerShell:
    cd C:\path\to\witchy-cli
    ```
 
-2. **Create a batch file wrapper**:
+2. **Install dependencies**:
+
+   ```cmd
+   npm install
+   ```
+
+   This will automatically set up the SQLite database and install all required packages.
+
+3. **Create a batch file wrapper**:
 
    Create a file called `witchy.bat` in a directory that's in your PATH (like `C:\Windows\System32` or create a personal bin directory):
 
@@ -108,7 +173,7 @@ To use the `witchy` command from anywhere in Command Prompt or PowerShell:
    node "C:\path\to\witchy-cli" $args
    ```
 
-3. **Alternative: Add to PATH directly**:
+4. **Alternative: Add to PATH directly**:
 
    - Open **System Properties** → **Advanced** → **Environment Variables**
    - Under **User variables**, find or create the `PATH` variable
@@ -119,7 +184,7 @@ To use the `witchy` command from anywhere in Command Prompt or PowerShell:
      node "%~dp0lookup.js" %*
      ```
 
-4. **Test the installation**:
+5. **Test the installation**:
    ```cmd
    witchy herb rosemary
    ```
@@ -130,19 +195,41 @@ To use the `witchy` command from anywhere in Command Prompt or PowerShell:
 
 If you prefer to run it locally without global installation:
 
-**macOS/Linux**:
+1. **Clone the repository and install dependencies**:
 
-```bash
-cd /path/to/witchy-cli
-./lookup.js herb rosemary
-```
+   **macOS/Linux**:
 
-**Windows**:
+   ```bash
+   git clone https://github.com/the-amber-joy/witchy-cli.git
+   cd witchy-cli
+   npm install
+   ```
 
-```cmd
-cd C:\path\to\witchy-cli
-node lookup.js herb rosemary
-```
+   **Windows**:
+
+   ```cmd
+   git clone https://github.com/the-amber-joy/witchy-cli.git
+   cd witchy-cli
+   npm install
+   ```
+
+2. **Run commands locally**:
+
+   **macOS/Linux**:
+
+   ```bash
+   ./lookup.js herb rosemary
+   # or use the interactive CLI
+   npm start
+   ```
+
+   **Windows**:
+
+   ```cmd
+   node lookup.js herb rosemary
+   REM or use the interactive CLI
+   npm start
+   ```
 
 ### Updating
 

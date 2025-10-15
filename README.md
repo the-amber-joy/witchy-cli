@@ -1,11 +1,11 @@
-# ✨ Witchy Lookup Tool
+# 🧙✨ Witchy CLI
 
 Your magical correspondence companion! A command-line tool for looking up magical correspondences including herbs, crystals, colors, moon phases, metals, and days of the week.
 
 ## Usage
 
 ```
-✨ Witchy Lookup Tool - Your magical correspondence companion! ✨
+🧙✨ Witchy CLI - Your magical correspondence companion! ✨🔮
 
 Usage: witchy <type> [command] <search-term>
 

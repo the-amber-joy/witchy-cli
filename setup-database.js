@@ -7,7 +7,7 @@
 const { execSync } = require("child_process");
 const path = require("path");
 
-console.log("🔮 Setting up SQLite database for Witchy Lookup...\n");
+console.log("🔮 Setting up SQLite database for Witchy CLI...\n");
 
 try {
   // Install sqlite3 dependency
@@ -20,9 +20,6 @@ try {
   execSync(`node "${migratePath}"`, { stdio: "inherit", cwd: __dirname });
 
   console.log("\n✨ Database setup complete!");
-  console.log(
-    "🔮 You can now use the witchy lookup tool with database-powered herb searches.",
-  );
   console.log("\nTry running:");
   console.log("  node lookup.js herb rosemary");
   console.log("  node lookup.js herb use protection");

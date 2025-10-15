@@ -1,5 +1,5 @@
 // Import all modules
-const { loadData } = require("./data/loader");
+const { loadData, loadDataSync } = require("./data/loader");
 const { showUsage } = require("./ui/display");
 const { highlightText } = require("./utils/text");
 const { getMoonPhaseEmoji, getColorCode } = require("./utils/colors");
@@ -20,14 +20,14 @@ const { findMetalByName, findMetalsByProperty } = require("./search/metals");
 const { findDayByName, findDaysByIntent } = require("./search/days");
 
 // Process a command with given arguments
-function processCommand(args) {
+async function processCommand(args) {
   if (args.length < 2) {
     showUsage();
     return;
   }
 
   const type = args[0].toLowerCase();
-  const data = loadData();
+  const data = await loadData();
   const { herbs, crystals, colors, moon, metals, days } = data;
 
   // Handle herb commands
@@ -35,7 +35,7 @@ function processCommand(args) {
     if (args.length >= 3 && args[1].toLowerCase() === "use") {
       // herb use <term>
       const searchTerm = args.slice(2).join(" ");
-      const matchingHerbs = findHerbsByUse(herbs, searchTerm);
+      const matchingHerbs = await findHerbsByUse(herbs, searchTerm);
 
       if (matchingHerbs.length > 0) {
         console.log(
@@ -73,7 +73,7 @@ function processCommand(args) {
     } else {
       // herb <name>
       const searchTerm = args.slice(1).join(" ");
-      const foundHerb = findHerbByName(herbs, searchTerm);
+      const foundHerb = await findHerbByName(herbs, searchTerm);
 
       if (foundHerb) {
         console.log(`\n🌿 ${foundHerb.name}`);
@@ -545,16 +545,16 @@ function processCommand(args) {
 }
 
 // Main function (for CLI usage)
-function main() {
+async function main() {
   const args = process.argv.slice(2);
-
+  
   if (args.length === 0) {
     // No arguments, show usage
     showUsage();
     process.exit(1);
   }
-
-  processCommand(args);
+  
+  await processCommand(args);
 }
 
 module.exports = { main, processCommand };

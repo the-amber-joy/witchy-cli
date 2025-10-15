@@ -33,7 +33,7 @@ class InteractiveCLI {
     });
   }
 
-  handleCommand(input) {
+  async handleCommand(input) {
     if (!input) {
       this.rl.prompt();
       return;
@@ -71,7 +71,7 @@ class InteractiveCLI {
 
     try {
       // Process the command using the existing logic
-      processCommand(args);
+      await processCommand(args);
     } catch (error) {
       console.log(`❌ Error: ${error.message}\n`);
     }

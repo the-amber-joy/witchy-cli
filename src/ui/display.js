@@ -1,7 +1,7 @@
 // Display usage instructions
 function showUsage() {
   console.log(
-    "✨ Witchy Lookup Tool - Your magical correspondence companion! ✨\n",
+    "🧙✨ Witchy Lookup Tool - Your magical correspondence companion! ✨🔮\n",
   );
   console.log("Usage: witchy <type> [command] <search-term>\n");
 

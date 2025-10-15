@@ -17,7 +17,7 @@ class InteractiveCLI {
     // Handle Ctrl+C gracefully
     this.rl.on("SIGINT", () => {
       console.clear();
-      console.log("✨ Blessed be! Exiting witchy lookup...");
+      console.log("🧙✨ Blessed be! Exiting witchy lookup...");
       process.exit(0);
     });
 
@@ -29,7 +29,7 @@ class InteractiveCLI {
     // Handle close event
     this.rl.on("close", () => {
       console.clear();
-      console.log("✨ Blessed be! Goodbye!");
+      console.log("🧙✨ Blessed be! Goodbye!");
       process.exit(0);
     });
   }
@@ -49,7 +49,7 @@ class InteractiveCLI {
 
     if (input === "exit" || input === "quit") {
       console.clear();
-      console.log("✨ Blessed be! Goodbye!");
+      console.log("🧙✨ Blessed be! Goodbye!");
       process.exit(0);
     }
 
@@ -81,13 +81,13 @@ class InteractiveCLI {
   }
 
   showWelcome() {
-    console.log("✨🔮 Welcome to Witchy Lookup CLI! 🔮✨\n");
+    console.log("✨🧙 Welcome to Witchy Lookup CLI! 🔮✨\n");
     this.showHelp(false);
   }
 
   showHelp(showTitle = true) {
     if (showTitle) {
-      console.log("\n🔮 Witchy Lookup Help 🔮\n");
+      console.log("\n🧙 Witchy Lookup Help 🔮\n");
     }
     console.log("🌟 Available Lookup Types:");
     console.log(
@@ -127,7 +127,7 @@ class InteractiveCLI {
     console.clear();
 
     // Show a simple loading message while migration runs
-    console.log("🔮 Preparing witchy lookup...");
+    console.log("🧹 Preparing witchy lookup...");
 
     try {
       // Run database migration silently (suppress console output)

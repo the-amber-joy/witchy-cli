@@ -6,10 +6,17 @@ const { ColorsDB } = require("../database/colors");
 const { MoonDB } = require("../database/moon");
 const { MetalsDB } = require("../database/metals");
 const { DaysDB } = require("../database/days");
+const { DatabaseMigrator } = require("../database/migrator");
 
-// Load all data from database
+// Load all data from database (with auto-migration)
 async function loadData() {
   try {
+    // Ensure database exists and is populated
+    const migrationRan = await DatabaseMigrator.ensureDatabaseExists();
+    if (migrationRan) {
+      console.log("🔮 Database ready for use!\n");
+    }
+
     // Load all data types from database in parallel for better performance
     const [
       herbsData,

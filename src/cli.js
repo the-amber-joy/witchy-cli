@@ -54,7 +54,6 @@ class InteractiveCLI {
 
     if (input === "clear") {
       console.clear();
-      this.showWelcome();
       this.rl.prompt();
       return;
     }
@@ -81,7 +80,7 @@ class InteractiveCLI {
   }
 
   showWelcome() {
-    console.log("✨🔮 Welcome to Witchy Lookup! 🔮✨\n");
+    console.log("✨🔮 Welcome to Witchy Lookup CLI! 🔮✨\n");
     this.showHelp(false);
   }
 

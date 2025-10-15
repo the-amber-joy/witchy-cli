@@ -141,11 +141,17 @@ async function migrateAllData() {
     daysStmt.finalize();
     console.log(`   ✅ ${daysData.length} days migrated`);
 
-    db.close();
+    // Close database and wait for it to finish
+    await new Promise((resolve, reject) => {
+      db.close((err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
 
     console.log(`\n✨ Migration Complete!`);
     console.log(`🔢 Total records migrated: ${totalMigrated}`);
-    console.log("🔮 All witchy correspondences are now in the database!");
+    console.log("🔮 All correspondences are now in the database!");
   } catch (error) {
     console.error("❌ Migration failed:", error.message);
     process.exit(1);

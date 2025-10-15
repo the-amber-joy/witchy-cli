@@ -6,24 +6,36 @@ const { migrateAllData } = require("./migrate");
 const DB_PATH = path.join(__dirname, "../data/witchy.db");
 
 class DatabaseMigrator {
-  static async ensureDatabaseExists(silent = false) {
+  static async ensureDatabaseExists(silent = false, quiet = false) {
     try {
       // Check if database file exists
       if (!fs.existsSync(DB_PATH)) {
-        if (!silent)
+        if (quiet) {
+          console.log("🔮 Setting up database for first use...");
+        } else if (!silent) {
           console.log("🔮 Database not found. Creating new database...");
-        await this.runFullMigration(silent);
+        }
+        await this.runFullMigration(silent || quiet);
+        if (quiet) {
+          console.log("✨ Database ready!\n");
+        }
         return true;
       }
 
       // Check if database has data
       const hasData = await this.checkDatabaseHasData();
       if (!hasData) {
-        if (!silent)
+        if (quiet) {
+          console.log("🔮 Setting up database for first use...");
+        } else if (!silent) {
           console.log(
             "🔮 Database exists but is empty. Running data migration...",
           );
-        await this.runDataMigration(silent);
+        }
+        await this.runDataMigration(silent || quiet);
+        if (quiet) {
+          console.log("✨ Database ready!\n");
+        }
         return true;
       }
 

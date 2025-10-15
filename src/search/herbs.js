@@ -6,7 +6,8 @@ async function findHerbByName(herbs, searchTerm) {
   try {
     // Ensure database exists before searching (lightweight check)
     // Postinstall script handles migration, this is just a safety net
-    await DatabaseMigrator.ensureDatabaseExists(false);
+    // Use quiet mode to show brief message instead of full migration output
+    await DatabaseMigrator.ensureDatabaseExists(false, true);
 
     return await HerbsDB.findHerbByName(searchTerm);
   } catch (error) {
@@ -23,7 +24,8 @@ async function findHerbByName(herbs, searchTerm) {
 async function findHerbsByUse(herbs, useTerm) {
   try {
     // Ensure database exists before searching (lightweight check)
-    await DatabaseMigrator.ensureDatabaseExists(false);
+    // Use quiet mode to show brief message instead of full migration output
+    await DatabaseMigrator.ensureDatabaseExists(false, true);
 
     return await HerbsDB.findHerbsByUse(useTerm);
   } catch (error) {
@@ -40,7 +42,8 @@ async function findHerbsByUse(herbs, useTerm) {
 async function getHerbSuggestions(searchTerm) {
   try {
     // Ensure database exists before searching (lightweight check)
-    await DatabaseMigrator.ensureDatabaseExists(false);
+    // Use quiet mode to show brief message instead of full migration output
+    await DatabaseMigrator.ensureDatabaseExists(false, true);
 
     return await HerbsDB.searchHerbsByPartialName(searchTerm);
   } catch (error) {

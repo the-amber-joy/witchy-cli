@@ -3,11 +3,11 @@ const path = require("path");
 const fs = require("fs");
 
 // Create path for the pre-populated database
-const dbPath = path.join(__dirname, "assets", "witchy.db");
+const dbPath = path.join(__dirname, "..", "assets", "witchy.db");
 
 // Make sure assets directory exists
-if (!fs.existsSync(path.join(__dirname, "assets"))) {
-  fs.mkdirSync(path.join(__dirname, "assets"), { recursive: true });
+if (!fs.existsSync(path.join(__dirname, "..", "assets"))) {
+  fs.mkdirSync(path.join(__dirname, "..", "assets"), { recursive: true });
 }
 
 // Delete existing database if it exists
@@ -97,12 +97,12 @@ db.serialize(() => {
   db.run("BEGIN TRANSACTION");
 
   // Load JSON data
-  const herbsData = require("./src/data/herbs.json");
-  const crystalsData = require("./src/data/crystals.json");
-  const colorsData = require("./src/data/colors.json");
-  const moonData = require("./src/data/moon.json");
-  const metalsData = require("./src/data/metals.json");
-  const daysData = require("./src/data/days.json");
+  const herbsData = require("../src/data/herbs.json");
+  const crystalsData = require("../src/data/crystals.json");
+  const colorsData = require("../src/data/colors.json");
+  const moonData = require("../src/data/moon.json");
+  const metalsData = require("../src/data/metals.json");
+  const daysData = require("../src/data/days.json");
 
   console.log("JSON data loaded:");
   console.log(`- ${herbsData.length} herbs`);

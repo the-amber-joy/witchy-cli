@@ -2,6 +2,7 @@
 ; This script creates a Windows installer for Witchy CLI
 
 !include "MUI2.nsh"
+!include "WordFunc.nsh"
 
 ; Installer configuration
 Name "Witchy CLI"
@@ -63,10 +64,12 @@ SectionEnd
 
 ; Optional section (can be disabled by the user)
 Section "Add to PATH"
-  ; Add installation directory to PATH
-  EnVar::SetHKLM
-  EnVar::AddValue "PATH" "$INSTDIR"
-  Pop $0
+  ; Add installation directory to PATH using native NSIS commands
+  ReadRegStr $0 HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path"
+  StrCpy $0 "$0;$INSTDIR"
+  WriteRegExpandStr HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path" $0
+  ; Broadcast WM_WININICHANGE to notify applications
+  SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
 SectionEnd
 
 Section "Start Menu Shortcuts"
@@ -98,8 +101,12 @@ Section "Uninstall"
   RMDir "$SMPROGRAMS\Witchy CLI"
   RMDir "$INSTDIR"
   
-  ; Remove from PATH
-  EnVar::SetHKLM
-  EnVar::DeleteValue "PATH" "$INSTDIR"
-  Pop $0
+  ; Remove from PATH using native NSIS commands
+  ReadRegStr $0 HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path"
+  ${WordReplace} $0 ";$INSTDIR" "" "+" $0
+  ${WordReplace} $0 "$INSTDIR;" "" "+" $0
+  ${WordReplace} $0 "$INSTDIR" "" "+" $0
+  WriteRegExpandStr HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path" $0
+  ; Broadcast WM_WININICHANGE to notify applications
+  SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
 SectionEnd

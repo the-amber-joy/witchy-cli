@@ -2,50 +2,39 @@
 
 Witchy CLI is a command-line tool for looking up magical correspondences (herbs, crystals, colors, etc.).
 
-## Quick Install
+## Recommended: Install via npm
 
-1. Download `witchy-cli-macos` from the [Releases page](https://github.com/the-amber-joy/witchyLookup/releases)
-2. Open Terminal
-3. Navigate to your Downloads folder:
-   ```bash
-   cd ~/Downloads
-   ```
-4. Make the file executable:
-   ```bash
-   chmod +x witchy-cli-macos
-   ```
-5. Move it to your PATH:
-   ```bash
-   sudo mv witchy-cli-macos /usr/local/bin/witchy
-   ```
-6. Test it:
-   ```bash
-   witchy herb rosemary
-   ```
-
-## Alternative: Run Without Installing
-
-If you don't want to install system-wide, you can run it directly:
-
-```bash
-cd ~/Downloads
-chmod +x witchy-cli-macos
-./witchy-cli-macos herb rosemary
-```
-
-## Alternative: Install via npm
-
-If you have Node.js installed:
+Due to Apple Silicon (M1/M2/M3) and Intel architecture differences, we recommend installing via npm:
 
 ```bash
 npm install -g witchy-cli
 ```
 
-## ⚠️ Important: Don't Double-Click!
+This works on both Apple Silicon and Intel Macs automatically!
 
-**DO NOT** try to open the `witchy-cli-macos` file by double-clicking it! It's a command-line tool, not a regular macOS app.
+### Don't have Node.js?
 
-If you accidentally opened it in a text editor and saw garbled text, that's normal - it's a compiled binary. Close the text editor and follow the installation instructions above.
+1. Download Node.js from [nodejs.org](https://nodejs.org/)
+2. Install it (choose the LTS version)
+3. Open Terminal and run:
+   ```bash
+   npm install -g witchy-cli
+   ```
+
+## Usage
+
+Once installed, use it from Terminal:
+
+```bash
+# Look up an herb
+witchy herb rosemary
+
+# Search crystals by use
+witchy crystal use protection
+
+# Find moon phase correspondences
+witchy moon full
+```
 
 ### Gatekeeper Warning
 

@@ -23,31 +23,18 @@ This creates `assets/witchy.db` which is bundled with the executable.
 
 ## Building for Your Platform
 
-To build an executable for your current platform:
+To build executables for Windows and Linux:
 
 ```bash
 npm run build
 ```
 
-This creates an executable in the `dist/` folder:
+This creates executables in the `dist/` folder:
 
-- **Windows**: `dist/witchy-cli.exe`
-- **macOS**: `dist/witchy-cli`
-- **Linux**: `dist/witchy-cli`
+- **Windows**: `dist/witchy-cli-win.exe`
+- **Linux**: `dist/witchy-cli-linux`
 
-## Building for All Platforms
-
-To build executables for Windows, macOS, and Linux at once:
-
-```bash
-npm run build:all
-```
-
-This creates:
-
-- `dist/witchy-cli-win.exe` - Windows executable
-- `dist/witchy-cli-macos` - macOS executable
-- `dist/witchy-cli-linux` - Linux executable
+> **Note:** We don't build macOS binaries due to Apple Silicon (ARM64) vs Intel (x86_64) architecture differences. Mac users should install via npm instead.
 
 ## Running the Executable
 

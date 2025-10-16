@@ -14,16 +14,13 @@ Download the appropriate file for your operating system:
 
 #### macOS
 
-- **Binary**: `witchy-cli-macos`
-  - ⚠️ **IMPORTANT**: This is a command-line tool, NOT a macOS app!
-  - **DO NOT double-click** - it will show garbled text
-  - Run from Terminal:
-    ```bash
-    chmod +x witchy-cli-macos
-    sudo mv witchy-cli-macos /usr/local/bin/witchy
-    witchy herb rosemary
-    ```
-  - See [MACOS_INSTALL.md](https://github.com/the-amber-joy/witchyLookup/blob/main/MACOS_INSTALL.md) for detailed instructions
+- **Install via npm** (recommended):
+  ```bash
+  npm install -g witchy-cli
+  witchy herb rosemary
+  ```
+- Due to Apple Silicon (M1/M2/M3) and Intel architecture differences, npm installation provides the best experience
+- See [MACOS_INSTALL.md](https://github.com/the-amber-joy/witchyLookup/blob/main/MACOS_INSTALL.md) for details
 
 #### Linux
 

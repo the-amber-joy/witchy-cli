@@ -1,6 +1,6 @@
 {
   "name": "witchy-cli",
-  "version": "1.0.11",
+  "version": "1.0.10",
   "description": "Witchy CLI - A magical correspondence lookup tool.",
   "main": "lookup.js",
   "bin": {
@@ -21,7 +21,7 @@
     "db:prepopulate": "node scripts/create-populated-db.js",
     "db:verify": "node scripts/verify-db.js assets/witchy.db",
     "prebuild": "npm test",
-    "build": "npm run db:prepopulate && pkg . --targets node18-win-x64,node18-macos-x64,node18-linux-x64 --out-path dist",
+    "build": "npm run db:prepopulate && pkg . --targets node18-win-x64,node18-linux-x64 --out-path dist",
     "prebuild:exe": "npm test",
     "build:exe": "pkg . --out-path dist",
     "release": "npm test && npm run build",

@@ -31,16 +31,101 @@ async function migrateAllData() {
     console.log(`   🪨 ${metalsData.length} metals`);
     console.log(`   📅 ${daysData.length} days\n`);
 
-    // Clear existing data - MUST wait for all deletes to complete
+    let totalMigrated = 0;
+
+    // Clear existing data and run all inserts in a transaction
     console.log("🧹 Clearing existing data...");
     await new Promise((resolve, reject) => {
       db.serialize(() => {
+        db.run("BEGIN TRANSACTION");
         db.run("DELETE FROM herbs");
         db.run("DELETE FROM crystals");
         db.run("DELETE FROM colors");
         db.run("DELETE FROM moon_phases");
         db.run("DELETE FROM metals");
-        db.run("DELETE FROM days", (err) => {
+        db.run("DELETE FROM days");
+
+        // Prepare insert statements INSIDE the transaction
+        const herbsStmt = db.prepare(
+          "INSERT INTO herbs (name, ritual_use, also_called) VALUES (?, ?, ?)",
+        );
+        const crystalsStmt = db.prepare(
+          "INSERT INTO crystals (name, properties, also_called) VALUES (?, ?, ?)",
+        );
+        const colorsStmt = db.prepare(
+          "INSERT INTO colors (name, meanings) VALUES (?, ?)",
+        );
+        const moonStmt = db.prepare(
+          "INSERT INTO moon_phases (phase, meaning) VALUES (?, ?)",
+        );
+        const metalsStmt = db.prepare(
+          "INSERT INTO metals (name, properties) VALUES (?, ?)",
+        );
+        const daysStmt = db.prepare(
+          "INSERT INTO days (name, intent, planet, colors, deities) VALUES (?, ?, ?, ?, ?)",
+        );
+
+        console.log("🌿 Migrating herbs...");
+        for (const herb of herbsData) {
+          const alsoCalled = herb.alsoCalled
+            ? JSON.stringify(herb.alsoCalled)
+            : null;
+          herbsStmt.run(herb.name, herb.ritualUse, alsoCalled);
+          totalMigrated++;
+        }
+        herbsStmt.finalize();
+        console.log(`   ✅ ${herbsData.length} herbs migrated`);
+
+        console.log("💎 Migrating crystals...");
+        for (const crystal of crystalsData) {
+          const alsoCalled = crystal.alsoCalled
+            ? JSON.stringify(crystal.alsoCalled)
+            : null;
+          crystalsStmt.run(crystal.name, crystal.properties, alsoCalled);
+          totalMigrated++;
+        }
+        crystalsStmt.finalize();
+        console.log(`   ✅ ${crystalsData.length} crystals migrated`);
+
+        console.log("🎨 Migrating colors...");
+        for (const color of colorsData) {
+          colorsStmt.run(color.name, color.meanings);
+          totalMigrated++;
+        }
+        colorsStmt.finalize();
+        console.log(`   ✅ ${colorsData.length} colors migrated`);
+
+        console.log("🌙 Migrating moon phases...");
+        for (const phase of moonData) {
+          moonStmt.run(phase.phase, phase.meaning);
+          totalMigrated++;
+        }
+        moonStmt.finalize();
+        console.log(`   ✅ ${moonData.length} moon phases migrated`);
+
+        console.log("🪨 Migrating metals...");
+        for (const metal of metalsData) {
+          metalsStmt.run(metal.name, metal.properties);
+          totalMigrated++;
+        }
+        metalsStmt.finalize();
+        console.log(`   ✅ ${metalsData.length} metals migrated`);
+
+        console.log("📅 Migrating days...");
+        for (const day of daysData) {
+          daysStmt.run(
+            day.name,
+            day.intent,
+            day.planet || null,
+            day.colors || null,
+            day.deities || null,
+          );
+          totalMigrated++;
+        }
+        daysStmt.finalize();
+        console.log(`   ✅ ${daysData.length} days migrated`);
+
+        db.run("COMMIT", (err) => {
           if (err) reject(err);
           else resolve();
         });
@@ -48,145 +133,11 @@ async function migrateAllData() {
     });
     // Note: FTS table is contentless and will be updated automatically via triggers
 
-    // Prepare insert statements
-    const herbsStmt = db.prepare(
-      "INSERT INTO herbs (name, ritual_use, also_called) VALUES (?, ?, ?)",
-    );
-    const crystalsStmt = db.prepare(
-      "INSERT INTO crystals (name, properties, also_called) VALUES (?, ?, ?)",
-    );
-    const colorsStmt = db.prepare(
-      "INSERT INTO colors (name, meanings) VALUES (?, ?)",
-    );
-    const moonStmt = db.prepare(
-      "INSERT INTO moon_phases (phase, meaning) VALUES (?, ?)",
-    );
-    const metalsStmt = db.prepare(
-      "INSERT INTO metals (name, properties) VALUES (?, ?)",
-    );
-    const daysStmt = db.prepare(
-      "INSERT INTO days (name, intent, planet, colors, deities) VALUES (?, ?, ?, ?, ?)",
-    );
-
-    let totalMigrated = 0;
-
-    // Migrate herbs
-    console.log("🌿 Migrating herbs...");
-    for (const herb of herbsData) {
-      const alsoCalled = herb.alsoCalled
-        ? JSON.stringify(herb.alsoCalled)
-        : null;
-      herbsStmt.run(herb.name, herb.ritualUse, alsoCalled, (err) => {
-        if (err)
-          console.error(
-            `   ❌ Error inserting herb "${herb.name}":`,
-            err.message,
-          );
-      });
-      totalMigrated++;
-    }
-    herbsStmt.finalize();
-    console.log(`   ✅ ${herbsData.length} herbs migrated`);
-
-    // Migrate crystals
-    console.log("💎 Migrating crystals...");
-    for (const crystal of crystalsData) {
-      const alsoCalled = crystal.alsoCalled
-        ? JSON.stringify(crystal.alsoCalled)
-        : null;
-      crystalsStmt.run(crystal.name, crystal.properties, alsoCalled, (err) => {
-        if (err)
-          console.error(
-            `   ❌ Error inserting crystal "${crystal.name}":`,
-            err.message,
-          );
-      });
-      totalMigrated++;
-    }
-    crystalsStmt.finalize();
-    console.log(`   ✅ ${crystalsData.length} crystals migrated`);
-
-    // Migrate colors
-    console.log("🎨 Migrating colors...");
-    for (const color of colorsData) {
-      colorsStmt.run(color.name, color.meanings, (err) => {
-        if (err)
-          console.error(
-            `   ❌ Error inserting color "${color.name}":`,
-            err.message,
-          );
-      });
-      totalMigrated++;
-    }
-    colorsStmt.finalize();
-    console.log(`   ✅ ${colorsData.length} colors migrated`);
-
-    // Migrate moon phases
-    console.log("🌙 Migrating moon phases...");
-    for (const phase of moonData) {
-      moonStmt.run(phase.phase, phase.meaning, (err) => {
-        if (err)
-          console.error(
-            `   ❌ Error inserting moon phase "${phase.phase}":`,
-            err.message,
-          );
-      });
-      totalMigrated++;
-    }
-    moonStmt.finalize();
-    console.log(`   ✅ ${moonData.length} moon phases migrated`);
-
-    // Migrate metals
-    console.log("🪨 Migrating metals...");
-    for (const metal of metalsData) {
-      metalsStmt.run(metal.name, metal.properties, (err) => {
-        if (err)
-          console.error(
-            `   ❌ Error inserting metal "${metal.name}":`,
-            err.message,
-          );
-      });
-      totalMigrated++;
-    }
-    metalsStmt.finalize();
-    console.log(`   ✅ ${metalsData.length} metals migrated`);
-
-    // Migrate days
-    console.log("📅 Migrating days...");
-    for (const day of daysData) {
-      daysStmt.run(
-        day.name,
-        day.intent,
-        day.planet || null,
-        day.colors || null,
-        day.deities || null,
-        (err) => {
-          if (err)
-            console.error(
-              `   ❌ Error inserting day "${day.name}":`,
-              err.message,
-            );
-        },
-      );
-      totalMigrated++;
-    }
-    daysStmt.finalize();
-    console.log(`   ✅ ${daysData.length} days migrated`);
-
-    // Close database and wait for it to finish
-    await new Promise((resolve, reject) => {
-      db.close((err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
-
-    console.log(`\n✨ Migration Complete!`);
-    console.log(`🔢 Total records migrated: ${totalMigrated}`);
-    console.log("🔮 All correspondences are now in the database!");
+    console.log(`🔮 All correspondences are now in the database!`);
   } catch (error) {
     console.error("❌ Migration failed:", error.message);
-    process.exit(1);
+    console.error(error.stack);
+    throw error;
   }
 }
 

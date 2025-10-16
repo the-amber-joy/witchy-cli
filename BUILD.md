@@ -118,6 +118,35 @@ Users may need to right-click → Open the first time, or run:
 xattr -cr witchy-cli
 ```
 
+### macOS Users Seeing Garbled Text
+
+If macOS users report seeing "garbled text" when opening the file, they're trying to open the binary executable in a text editor instead of running it from Terminal.
+
+**Solution:**
+
+- Direct them to [MACOS_INSTALL.md](MACOS_INSTALL.md) for proper installation instructions
+- Or have them download the DMG installer instead (see below)
+
+### Creating macOS DMG Installer
+
+To create a more user-friendly DMG installer for macOS:
+
+```bash
+# First build the binary
+npm run build
+
+# Then create the DMG (macOS only)
+npm run build:macos:dmg
+```
+
+This creates `dist/Witchy-CLI-x.x.x-macos.dmg` which includes:
+
+- The `witchy` binary
+- An `install.sh` script for easy installation
+- Instructions file
+
+The DMG creation is automatically done by GitHub Actions when pushing a version tag.
+
 ### Linux permissions
 
 Make the file executable:

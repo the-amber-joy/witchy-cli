@@ -9,6 +9,10 @@ async function findColorByName(colors, searchTerm) {
       "Database error, falling back to array search:",
       error.message,
     );
+    // If colors array is empty, load from JSON file
+    if (!colors || colors.length === 0) {
+      colors = require('../data/colors.json');
+    }
     return findColorByNameSync(colors, searchTerm);
   }
 }
@@ -22,6 +26,10 @@ async function findColorsByMeaning(colors, meaningTerm) {
       "Database error, falling back to array search:",
       error.message,
     );
+    // If colors array is empty, load from JSON file
+    if (!colors || colors.length === 0) {
+      colors = require('../data/colors.json');
+    }
     return findColorsByMeaningSync(colors, meaningTerm);
   }
 }

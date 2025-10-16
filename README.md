@@ -4,9 +4,33 @@ Your magical correspondence companion! A command-line tool for looking up magica
 
 ## Quick Start
 
-### Option 1: Standalone Executable (No Node.js Required) ⚡
+### Option 1: Installers (Recommended) 📦
 
-**Download** the pre-built executable for your platform from [Releases](https://github.com/the-amber-joy/witchy-cli/releases):
+**Windows**: Download and run `WitchyCLI-Setup-{version}.exe` from [Releases](https://github.com/the-amber-joy/witchy-cli/releases)
+
+- Professional installer with NSIS
+- Adds to Start Menu and Desktop
+- Optionally adds to PATH
+- Easy uninstaller
+
+**macOS**: Download `WitchyCLI-{version}.dmg` from [Releases](https://github.com/the-amber-joy/witchy-cli/releases)
+
+- Drag and drop to Applications
+- Clean DMG installer
+- Native macOS experience
+
+**Linux**: Download `witchy-cli-linux` from [Releases](https://github.com/the-amber-joy/witchy-cli/releases)
+
+- Standalone executable (no installer needed)
+- Install manually:
+  ```bash
+  sudo cp witchy-cli-linux /usr/local/bin/witchy
+  sudo chmod +x /usr/local/bin/witchy
+  ```
+
+### Option 2: Standalone Executables (No Installation) ⚡
+
+Download the pre-built executable for your platform from [Releases](https://github.com/the-amber-joy/witchy-cli/releases):
 
 - **Windows**: `witchy-cli-win.exe`
 - **macOS**: `witchy-cli-macos`
@@ -23,9 +47,9 @@ chmod +x witchy-cli-macos
 ./witchy-cli-macos herb rosemary
 ```
 
-No installation, no dependencies, just download and run! 🚀
+No Node.js required! 🚀
 
-### Option 2: With Node.js
+### Option 3: With Node.js (Development)
 
 ```bash
 # Clone and install

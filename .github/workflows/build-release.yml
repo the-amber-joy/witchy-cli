@@ -56,8 +56,106 @@ jobs:
           name: ${{ matrix.artifact_name }}
           path: dist/${{ matrix.artifact_name }}
 
-  release:
+  build-windows-installer:
     needs: build
+    runs-on: windows-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Windows executable
+        uses: actions/download-artifact@v4
+        with:
+          name: witchy-cli-win.exe
+          path: dist
+
+      - name: Install NSIS
+        run: |
+          choco install nsis -y
+
+      - name: Extract version from tag
+        id: get_version
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build Windows Installer
+        run: makensis /DVERSION=${{ steps.get_version.outputs.VERSION }} installers/windows-installer.nsi
+
+      - name: Upload Windows Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: dist/WitchyCLI-Setup-*.exe
+
+  build-macos-dmg:
+    needs: build
+    runs-on: macos-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download macOS executable
+        uses: actions/download-artifact@v4
+        with:
+          name: witchy-cli-macos
+          path: dist
+
+      - name: Create macOS app bundle
+        run: |
+          mkdir -p installers/macos/WitchyCLI.app/Contents/MacOS
+          cp dist/witchy-cli-macos installers/macos/WitchyCLI.app/Contents/MacOS/witchy
+          chmod +x installers/macos/WitchyCLI.app/Contents/MacOS/witchy
+
+          cat > installers/macos/WitchyCLI.app/Contents/Info.plist << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>CFBundleExecutable</key>
+              <string>witchy</string>
+              <key>CFBundleIdentifier</key>
+              <string>com.witchy.cli</string>
+              <key>CFBundleName</key>
+              <string>Witchy CLI</string>
+              <key>CFBundleDisplayName</key>
+              <string>Witchy CLI</string>
+              <key>CFBundleVersion</key>
+              <string>${GITHUB_REF#refs/tags/v}</string>
+              <key>CFBundleShortVersionString</key>
+              <string>${GITHUB_REF#refs/tags/v}</string>
+              <key>CFBundlePackageType</key>
+              <string>APPL</string>
+              <key>NSHumanReadableCopyright</key>
+              <string>© 2025 Amber Joy</string>
+              <key>LSMinimumSystemVersion</key>
+              <string>10.13</string>
+              <key>NSHighResolutionCapable</key>
+              <true/>
+          </dict>
+          </plist>
+          EOF
+
+      - name: Install create-dmg
+        run: npm install --global create-dmg
+
+      - name: Create DMG
+        run: |
+          create-dmg installers/macos/WitchyCLI.app dist/ --overwrite || true
+          # Rename to consistent name
+          mv dist/*.dmg dist/WitchyCLI-${GITHUB_REF#refs/tags/v}.dmg || true
+
+      - name: Upload macOS DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-dmg
+          path: dist/*.dmg
+
+  release:
+    needs: [build, build-windows-installer, build-macos-dmg]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
 
@@ -74,5 +172,7 @@ jobs:
             artifacts/witchy-cli-linux/witchy-cli-linux
             artifacts/witchy-cli-macos/witchy-cli-macos
             artifacts/witchy-cli-win.exe/witchy-cli-win.exe
+            artifacts/windows-installer/*.exe
+            artifacts/macos-dmg/*.dmg
           draft: false
           prerelease: false

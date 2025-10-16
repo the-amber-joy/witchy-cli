@@ -74,7 +74,11 @@ class InteractiveCLI {
       // Process the command using the existing logic (skip migration since CLI handles it)
       await processCommand(args, true);
     } catch (error) {
-      console.log(`❌ Error: ${error.message}\n`);
+      console.log(`❌ Error: ${error.message}`);
+      if (process.env.DEBUG) {
+        console.log(error.stack);
+      }
+      console.log();
     }
 
     this.rl.prompt();
@@ -124,36 +128,19 @@ class InteractiveCLI {
   }
 
   async start() {
-    console.clear();
-
-    // Show a simple loading message while migration runs
-    console.log("🧹 Preparing Witchy CLI...");
-
     try {
-      // Run database migration silently (suppress console output)
-      const originalConsoleLog = console.log;
-      const originalConsoleError = console.error;
-
-      // Temporarily silence console output during migration
-      console.log = () => {};
-      console.error = () => {};
-
-      // Ensure database exists (lightweight check)
-      // Postinstall script handles migration, this is just a safety net
-      await DatabaseMigrator.ensureDatabaseExists();
-
-      // Restore console output
-      console.log = originalConsoleLog;
-      console.error = originalConsoleError;
-
-      // Clear the loading message and show welcome
+      // Ensure database exists (quiet mode for clean startup)
+      await DatabaseMigrator.ensureDatabaseExists(false, true);
+      
+      // Show welcome after database is ready
       console.clear();
       this.showWelcome();
       this.rl.prompt();
     } catch (error) {
+      // Show error but continue - allow CLI to work with JSON fallback if needed
       console.clear();
-      console.log("❌ Error initializing database:", error.message);
-      console.log("The CLI will continue with JSON fallback.\n");
+      console.log("⚠️  Database initialization warning:", error.message);
+      console.log("Continuing with available functionality...\n");
       this.showWelcome();
       this.rl.prompt();
     }

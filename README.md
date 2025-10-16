@@ -129,6 +129,7 @@ npm start  # Interactive CLI
 ```
 
 Or run direct commands:
+
 ```bash
 ./lookup.js herb rosemary  # macOS/Linux
 node lookup.js herb rosemary  # Windows

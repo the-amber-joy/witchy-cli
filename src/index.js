@@ -569,13 +569,84 @@ async function processCommand(args, skipMigration = false) {
   }
 }
 
+// Interactive mode - run a REPL-style interface
+async function interactiveMode() {
+  const readline = require("readline");
+
+  console.log("🧙✨ Witchy CLI - Interactive Mode ✨🔮\n");
+  showUsage();
+  console.log(
+    "\n💡 Type your lookup command (e.g., 'herb rosemary' or 'crystal use protection')",
+  );
+  console.log("💡 Type 'help' to see usage again");
+  console.log("💡 Type 'exit' or 'quit' to close\n");
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    prompt: "🔮 witchy> ",
+  });
+
+  rl.prompt();
+
+  rl.on("line", async (line) => {
+    const input = line.trim();
+
+    if (!input) {
+      rl.prompt();
+      return;
+    }
+
+    const lowerInput = input.toLowerCase();
+
+    if (lowerInput === "exit" || lowerInput === "quit" || lowerInput === "q") {
+      console.log(
+        "\n✨ May your magic be powerful and your spells be true! ✨\n",
+      );
+      rl.close();
+      process.exit(0);
+      return;
+    }
+
+    if (lowerInput === "help" || lowerInput === "h" || lowerInput === "?") {
+      console.log();
+      showUsage();
+      console.log();
+      rl.prompt();
+      return;
+    }
+
+    const args = input.split(/\s+/);
+
+    // Pause input while processing
+    rl.pause();
+
+    try {
+      await processCommand(args, true);
+      console.log();
+    } catch (error) {
+      console.error("❌ Error:", error.message);
+      console.log();
+    }
+
+    // Resume and show prompt
+    rl.resume();
+    rl.prompt();
+  });
+
+  rl.on("close", () => {
+    console.log("\n✨ Blessed be! ✨\n");
+    process.exit(0);
+  });
+}
+
 // Main function (for CLI usage)
 async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    // No arguments, show usage
-    showUsage();
+    // No arguments, start interactive mode
+    await interactiveMode();
     return;
   }
 

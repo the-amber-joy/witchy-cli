@@ -39,7 +39,8 @@
     "assets": [
       "json/**/*",
       "src/**/*",
-      "lists/**/*"
+      "lists/**/*",
+      "node_modules/sqlite3/**/*"
     ],
     "scripts": [
       "src/**/*.js"

@@ -25,12 +25,24 @@ function getUserDataPath() {
     dataDir = path.join(homedir, ".local", "share", "witchy-cli");
   }
 
-  // Create directory if it doesn't exist
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
-  }
-
   return dataDir;
+}
+
+/**
+ * Ensure the data directory exists
+ * @returns {boolean} True if directory exists or was created successfully
+ */
+function ensureDataDirectoryExists() {
+  try {
+    const dataDir = getUserDataPath();
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    return true;
+  } catch (error) {
+    console.error("Failed to create data directory:", error.message);
+    return false;
+  }
 }
 
 // For pkg executables, use user data directory; otherwise use project structure
@@ -42,5 +54,6 @@ const DB_PATH = isPkg
 module.exports = {
   DB_PATH,
   getUserDataPath,
+  ensureDataDirectoryExists,
   isPkg,
 };

@@ -2,11 +2,16 @@ const fs = require("fs");
 const path = require("path");
 const { initializeDatabase } = require("./setup");
 const { migrateAllData } = require("./migrate");
-const { DB_PATH } = require("./config");
+const { DB_PATH, ensureDataDirectoryExists } = require("./config");
 
 class DatabaseMigrator {
   static async ensureDatabaseExists(silent = false, quiet = false) {
     try {
+      // Ensure the data directory exists first
+      if (!ensureDataDirectoryExists()) {
+        throw new Error("Failed to create data directory");
+      }
+
       // Check if database file exists
       if (!fs.existsSync(DB_PATH)) {
         if (quiet) {
@@ -41,6 +46,8 @@ class DatabaseMigrator {
       return false; // No migration needed
     } catch (error) {
       console.error("❌ Database migration check failed:", error.message);
+      console.error("   Database path:", DB_PATH);
+      console.error("   Error details:", error.code || error);
       throw error;
     }
   }

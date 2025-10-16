@@ -584,3 +584,11 @@ async function main() {
 }
 
 module.exports = { main, processCommand };
+
+// Only run main if this file is executed directly (not imported)
+if (require.main === module) {
+  main().catch((error) => {
+    console.error("❌ Error:", error.message);
+    process.exit(1);
+  });
+}

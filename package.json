@@ -1,6 +1,6 @@
 {
   "name": "witchy-cli",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Witchy CLI - A magical correspondence lookup tool.",
   "main": "lookup.js",
   "bin": {

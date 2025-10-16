@@ -2,118 +2,120 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 
-/**
- * Get the appropriate user data directory based on platform
- * @returns {string} Path to user data directory
- */
-function getUserDataPath() {
-  const platform = process.platform;
-  const homedir = os.homedir();
-
-  let dataDir;
-  if (platform === "win32") {
-    // Windows: %APPDATA%\WitchyCLI
-    dataDir = path.join(
-      process.env.APPDATA || path.join(homedir, "AppData", "Roaming"),
-      "WitchyCLI",
-    );
-  } else if (platform === "darwin") {
-    // macOS: ~/Library/Application Support/WitchyCLI
-    dataDir = path.join(homedir, "Library", "Application Support", "WitchyCLI");
-  } else {
-    // Linux: ~/.local/share/witchy-cli
-    dataDir = path.join(homedir, ".local", "share", "witchy-cli");
-  }
-
-  return dataDir;
-}
-
-/**
- * Ensure the data directory exists
- * @returns {boolean} True if directory exists or was created successfully
- */
-function ensureDataDirectoryExists() {
-  try {
-    const dataDir = getUserDataPath();
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
-    }
-    return true;
-  } catch (error) {
-    console.error("Failed to create data directory:", error.message);
-    return false;
-  }
-}
-
-// For pkg executables, use user data directory; otherwise use project structure
+// For pkg executables, use bundled database; otherwise use development database
 const isPkg = typeof process.pkg !== "undefined";
 
 /**
- * Get the path to the pre-populated database bundled with the executable
- * @returns {string|null} Path to bundled database or null if not found
+ * Get the path to the bundled database file
  */
 function getBundledDbPath() {
-  if (isPkg) {
-    // In pkg environment, check for bundled database in assets folder
-    const bundledPath = path.join(
-      path.dirname(process.execPath),
-      "assets",
-      "witchy.db",
-    );
+  if (!isPkg) {
+    // In development, use the regular database
+    return path.join(__dirname, "..", "data", "witchy.db");
+  }
+
+  // In pkg executable, database is bundled in the virtual filesystem
+  // Try different possible paths for the bundled database
+  const possiblePaths = [
+    path.join(__dirname, "..", "assets", "witchy.db"),
+    "/snapshot/witchyLookup/src/assets/witchy.db",
+    "/snapshot/witchyLookup/assets/witchy.db",
+    path.join(process.cwd(), "src", "assets", "witchy.db"),
+    path.join(process.cwd(), "assets", "witchy.db"),
+  ];
+
+  for (const dbPath of possiblePaths) {
+    if (fs.existsSync(dbPath)) {
+      return dbPath;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Get a temporary database path for pkg executables
+ */
+function getTempDbPath() {
+  const tempDir = os.tmpdir();
+  const sessionId = process.pid;
+  return path.join(tempDir, `witchy-${sessionId}.db`);
+}
+
+/**
+ * Copy bundled database to temporary location for pkg executables
+ */
+function copyBundledToTemp() {
+  const bundledPath = getBundledDbPath();
+  const tempPath = getTempDbPath();
+
+  if (bundledPath && fs.existsSync(bundledPath)) {
     try {
-      if (fs.existsSync(bundledPath)) {
-        return bundledPath;
-      }
+      fs.copyFileSync(bundledPath, tempPath);
+      return tempPath;
     } catch (error) {
-      // Silently fail if we can't access the bundled database
+      console.error("Failed to copy bundled database to temp:", error.message);
+      return null;
     }
   }
   return null;
 }
 
-// Path to user's database location
-const USER_DB_PATH = isPkg
-  ? path.join(getUserDataPath(), "witchy.db")
-  : path.join(__dirname, "../data/witchy.db");
-
-// Actual DB path to use (will be updated at runtime if bundled DB exists)
-const DB_PATH = USER_DB_PATH;
-
 /**
- * Copy bundled database to user directory if it exists
- * This avoids the need for database migration
- * @returns {boolean} True if database was copied, false otherwise
+ * Get the appropriate database path
+ * For pkg executables: Copy bundled database to temp directory for SQLite access
+ * For development: Use development database
+ * @returns {string} Path to database to use
  */
-function copyBundledDatabaseIfExists() {
-  const bundledDbPath = getBundledDbPath();
-  if (!bundledDbPath) {
-    return false;
+function getDbPath() {
+  if (!isPkg) {
+    return getBundledDbPath();
   }
 
-  try {
-    // Ensure data directory exists
-    ensureDataDirectoryExists();
-
-    // Only copy if user DB doesn't exist or is empty/corrupted
-    if (!fs.existsSync(USER_DB_PATH) || fs.statSync(USER_DB_PATH).size === 0) {
-      // Copy the bundled database to the user's database location
-      fs.copyFileSync(bundledDbPath, USER_DB_PATH);
-      console.log("✨ Pre-populated database copied to user directory");
-      return true;
+  // For pkg executables, copy to temp and use that
+  const tempPath = getTempDbPath();
+  if (!fs.existsSync(tempPath)) {
+    const copied = copyBundledToTemp();
+    if (!copied) {
+      throw new Error("Failed to create temporary database");
     }
-    return false;
-  } catch (error) {
-    console.error("❌ Failed to copy bundled database:", error.message);
-    return false;
   }
+  return tempPath;
+}
+
+// The database path to use
+const DB_PATH = getDbPath();
+
+// Clean up temporary database on exit for pkg executables
+if (isPkg) {
+  const tempPath = getTempDbPath();
+
+  process.on("exit", () => {
+    try {
+      if (fs.existsSync(tempPath)) {
+        fs.unlinkSync(tempPath);
+      }
+    } catch (error) {
+      // Ignore cleanup errors
+    }
+  });
+
+  process.on("SIGINT", () => {
+    try {
+      if (fs.existsSync(tempPath)) {
+        fs.unlinkSync(tempPath);
+      }
+    } catch (error) {
+      // Ignore cleanup errors
+    }
+    process.exit(0);
+  });
 }
 
 module.exports = {
   DB_PATH,
-  USER_DB_PATH,
-  getUserDataPath,
-  ensureDataDirectoryExists,
-  getBundledDbPath,
-  copyBundledDatabaseIfExists,
   isPkg,
+  getBundledDbPath,
+  getTempDbPath,
+  copyBundledToTemp,
 };

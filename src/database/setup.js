@@ -1,12 +1,26 @@
 const sqlite3 = require("sqlite3").verbose();
-const { DB_PATH } = require("./config");
+const { DB_PATH, isPkg } = require("./config");
+
+/**
+ * Get database opening mode based on whether we're using pkg
+ * @returns {number} SQLite opening mode
+ */
+function getDatabaseMode() {
+  if (isPkg) {
+    // Use read-only mode for pkg executables (bundled database)
+    return sqlite3.OPEN_READONLY;
+  }
+  // Use default mode for development database
+  return sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE;
+}
 
 /**
  * Initialize the SQLite database and create all tables
  */
 function initializeDatabase() {
   return new Promise((resolve, reject) => {
-    const db = new sqlite3.Database(DB_PATH, (err) => {
+    const mode = getDatabaseMode();
+    const db = new sqlite3.Database(DB_PATH, mode, (err) => {
       if (err) {
         console.error("Error opening database:", err.message);
         reject(err);
@@ -216,7 +230,8 @@ function initializeDatabase() {
  * Get a database connection
  */
 function getDatabase() {
-  return new sqlite3.Database(DB_PATH, (err) => {
+  const mode = getDatabaseMode();
+  return new sqlite3.Database(DB_PATH, mode, (err) => {
     if (err) {
       console.error("Error connecting to database:", err.message);
     }

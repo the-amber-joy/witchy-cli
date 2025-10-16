@@ -10,6 +10,9 @@ node_modules/
 # Build output
 dist/
 *.exe
+*.dmg
+*.app
+installers/macos/
 
 # Logs
 logs/

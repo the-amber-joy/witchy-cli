@@ -14,8 +14,11 @@
     "db:migrate": "node -e \"require('./src/database/migrate').migrateAllData().then(() => console.log('Migration complete!'))\"",
     "db:reset": "node -e \"require('./src/database/migrator').DatabaseMigrator.resetDatabase().then(() => console.log('Database reset complete!'))\"",
     "db:stats": "node -e \"require('./src/database/migrator').DatabaseMigrator.getDbStats().then(stats => console.log('Database stats:', JSON.stringify(stats, null, 2)))\"",
-    "build": "pkg . --out-path dist",
-    "build:all": "pkg . --targets node18-win-x64,node18-macos-x64,node18-linux-x64 --out-path dist"
+    "build:exe": "pkg . --out-path dist",
+    "build:exe:all": "pkg . --targets node18-win-x64,node18-macos-x64,node18-linux-x64 --out-path dist",
+    "build:installer:win": "npm run build:exe:all && electron-builder --win --x64",
+    "build:installer:mac": "npm run build:exe:all && electron-builder --mac",
+    "build:installers": "npm run build:exe:all && electron-builder --win --mac"
   },
   "keywords": [
     "witchcraft",
@@ -33,6 +36,7 @@
     "sqlite3": "^5.1.6"
   },
   "devDependencies": {
+    "electron-builder": "^26.0.12",
     "pkg": "^5.8.1"
   },
   "pkg": {

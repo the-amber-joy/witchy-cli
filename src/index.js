@@ -576,7 +576,7 @@ async function main() {
   if (args.length === 0) {
     // No arguments, show usage
     showUsage();
-    process.exit(1);
+    return;
   }
 
   // For direct CLI usage, skip migration in loadData since search functions handle it

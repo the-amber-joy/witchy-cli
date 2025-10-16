@@ -87,8 +87,8 @@ class MoonDB {
       `,
         [searchTerm],
         (err, rows) => {
-          if (err) {
-            // Fallback to LIKE search if FTS fails
+          if (err || !rows || rows.length === 0) {
+            // Fallback to LIKE search if FTS fails or returns no results
             db.all(
               `
             SELECT id, phase, meaning 
@@ -98,6 +98,7 @@ class MoonDB {
           `,
               [`%${searchTerm.toLowerCase()}%`],
               (fallbackErr, fallbackRows) => {
+                db.close();
                 if (fallbackErr) {
                   reject(fallbackErr);
                 } else {
@@ -108,17 +109,16 @@ class MoonDB {
                   }));
                   resolve(moonPhases);
                 }
-                db.close();
               },
             );
           } else {
+            db.close();
             const moonPhases = rows.map((row) => ({
               id: row.id,
               phase: row.phase,
               meaning: row.meaning,
             }));
             resolve(moonPhases);
-            db.close();
           }
         },
       );

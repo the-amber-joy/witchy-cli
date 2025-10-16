@@ -9,6 +9,10 @@ async function findMoonPhaseByName(moonPhases, searchTerm) {
       "Database error, falling back to array search:",
       error.message,
     );
+    // If moonPhases array is empty, load from JSON
+    if (!moonPhases || moonPhases.length === 0) {
+      moonPhases = require("../data/moon.json");
+    }
     return findMoonPhaseByNameSync(moonPhases, searchTerm);
   }
 }
@@ -22,6 +26,10 @@ async function findMoonPhasesByMeaning(moonPhases, meaningTerm) {
       "Database error, falling back to array search:",
       error.message,
     );
+    // If moonPhases array is empty, load from JSON
+    if (!moonPhases || moonPhases.length === 0) {
+      moonPhases = require("../data/moon.json");
+    }
     return findMoonPhasesByMeaningSync(moonPhases, meaningTerm);
   }
 }

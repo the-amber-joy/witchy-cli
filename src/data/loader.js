@@ -54,21 +54,13 @@ async function loadData(runMigration = true, silentMigration = false) {
 // Load data synchronously for backwards compatibility (falls back to JSON)
 function loadDataSync() {
   try {
-    const dataDir = __dirname; // JSON files are now in the same directory
-
-    const herbsPath = path.join(dataDir, "herbs.json");
-    const crystalsPath = path.join(dataDir, "crystals.json");
-    const colorsPath = path.join(dataDir, "colors.json");
-    const moonPath = path.join(dataDir, "moon.json");
-    const metalsPath = path.join(dataDir, "metals.json");
-    const daysPath = path.join(dataDir, "days.json");
-
-    const herbsData = JSON.parse(fs.readFileSync(herbsPath, "utf8"));
-    const crystalsData = JSON.parse(fs.readFileSync(crystalsPath, "utf8"));
-    const colorsData = JSON.parse(fs.readFileSync(colorsPath, "utf8"));
-    const moonData = JSON.parse(fs.readFileSync(moonPath, "utf8"));
-    const metalsData = JSON.parse(fs.readFileSync(metalsPath, "utf8"));
-    const daysData = JSON.parse(fs.readFileSync(daysPath, "utf8"));
+    // Use require() for better pkg compatibility (works with bundled JSON files)
+    const herbsData = require("./herbs.json");
+    const crystalsData = require("./crystals.json");
+    const colorsData = require("./colors.json");
+    const moonData = require("./moon.json");
+    const metalsData = require("./metals.json");
+    const daysData = require("./days.json");
 
     return {
       herbs: herbsData,

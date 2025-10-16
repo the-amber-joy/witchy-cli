@@ -15,25 +15,13 @@ async function migrateAllData() {
     const db = getDatabase();
 
     // Read all JSON data files
-    const dataPath = path.join(__dirname, "..", "data");
-    const herbsData = JSON.parse(
-      fs.readFileSync(path.join(dataPath, "herbs.json"), "utf8"),
-    );
-    const crystalsData = JSON.parse(
-      fs.readFileSync(path.join(dataPath, "crystals.json"), "utf8"),
-    );
-    const colorsData = JSON.parse(
-      fs.readFileSync(path.join(dataPath, "colors.json"), "utf8"),
-    );
-    const moonData = JSON.parse(
-      fs.readFileSync(path.join(dataPath, "moon.json"), "utf8"),
-    );
-    const metalsData = JSON.parse(
-      fs.readFileSync(path.join(dataPath, "metals.json"), "utf8"),
-    );
-    const daysData = JSON.parse(
-      fs.readFileSync(path.join(dataPath, "days.json"), "utf8"),
-    );
+    // Use require() instead of fs.readFileSync for better pkg compatibility
+    const herbsData = require("../data/herbs.json");
+    const crystalsData = require("../data/crystals.json");
+    const colorsData = require("../data/colors.json");
+    const moonData = require("../data/moon.json");
+    const metalsData = require("../data/metals.json");
+    const daysData = require("../data/days.json");
 
     console.log(`� Migration Summary:`);
     console.log(`   🌿 ${herbsData.length} herbs`);
@@ -43,14 +31,21 @@ async function migrateAllData() {
     console.log(`   🪨 ${metalsData.length} metals`);
     console.log(`   📅 ${daysData.length} days\n`);
 
-    // Clear existing data
+    // Clear existing data - MUST wait for all deletes to complete
     console.log("🧹 Clearing existing data...");
-    db.run("DELETE FROM herbs");
-    db.run("DELETE FROM crystals");
-    db.run("DELETE FROM colors");
-    db.run("DELETE FROM moon_phases");
-    db.run("DELETE FROM metals");
-    db.run("DELETE FROM days");
+    await new Promise((resolve, reject) => {
+      db.serialize(() => {
+        db.run("DELETE FROM herbs");
+        db.run("DELETE FROM crystals");
+        db.run("DELETE FROM colors");
+        db.run("DELETE FROM moon_phases");
+        db.run("DELETE FROM metals");
+        db.run("DELETE FROM days", (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+    });
     // Note: FTS table is contentless and will be updated automatically via triggers
 
     // Prepare insert statements
@@ -81,7 +76,13 @@ async function migrateAllData() {
       const alsoCalled = herb.alsoCalled
         ? JSON.stringify(herb.alsoCalled)
         : null;
-      herbsStmt.run(herb.name, herb.ritualUse, alsoCalled);
+      herbsStmt.run(herb.name, herb.ritualUse, alsoCalled, (err) => {
+        if (err)
+          console.error(
+            `   ❌ Error inserting herb "${herb.name}":`,
+            err.message,
+          );
+      });
       totalMigrated++;
     }
     herbsStmt.finalize();
@@ -93,7 +94,13 @@ async function migrateAllData() {
       const alsoCalled = crystal.alsoCalled
         ? JSON.stringify(crystal.alsoCalled)
         : null;
-      crystalsStmt.run(crystal.name, crystal.properties, alsoCalled);
+      crystalsStmt.run(crystal.name, crystal.properties, alsoCalled, (err) => {
+        if (err)
+          console.error(
+            `   ❌ Error inserting crystal "${crystal.name}":`,
+            err.message,
+          );
+      });
       totalMigrated++;
     }
     crystalsStmt.finalize();
@@ -102,7 +109,13 @@ async function migrateAllData() {
     // Migrate colors
     console.log("🎨 Migrating colors...");
     for (const color of colorsData) {
-      colorsStmt.run(color.name, color.meanings);
+      colorsStmt.run(color.name, color.meanings, (err) => {
+        if (err)
+          console.error(
+            `   ❌ Error inserting color "${color.name}":`,
+            err.message,
+          );
+      });
       totalMigrated++;
     }
     colorsStmt.finalize();
@@ -111,7 +124,13 @@ async function migrateAllData() {
     // Migrate moon phases
     console.log("🌙 Migrating moon phases...");
     for (const phase of moonData) {
-      moonStmt.run(phase.phase, phase.meaning);
+      moonStmt.run(phase.phase, phase.meaning, (err) => {
+        if (err)
+          console.error(
+            `   ❌ Error inserting moon phase "${phase.phase}":`,
+            err.message,
+          );
+      });
       totalMigrated++;
     }
     moonStmt.finalize();
@@ -120,7 +139,13 @@ async function migrateAllData() {
     // Migrate metals
     console.log("🪨 Migrating metals...");
     for (const metal of metalsData) {
-      metalsStmt.run(metal.name, metal.properties);
+      metalsStmt.run(metal.name, metal.properties, (err) => {
+        if (err)
+          console.error(
+            `   ❌ Error inserting metal "${metal.name}":`,
+            err.message,
+          );
+      });
       totalMigrated++;
     }
     metalsStmt.finalize();
@@ -135,6 +160,13 @@ async function migrateAllData() {
         day.planet || null,
         day.colors || null,
         day.deities || null,
+        (err) => {
+          if (err)
+            console.error(
+              `   ❌ Error inserting day "${day.name}":`,
+              err.message,
+            );
+        },
       );
       totalMigrated++;
     }

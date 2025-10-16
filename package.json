@@ -11,6 +11,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "pretest": "echo '🧪 Running tests...'",
+    "posttest": "echo '✅ All tests passed!'",
     "postinstall": "node -e \"require('./src/database/migrator').DatabaseMigrator.ensureDatabaseExists(false).then(() => console.log('✨ Database ready!')).catch(err => console.log('⚠️ Database setup will run on first use'))\"",
     "db:setup": "node -e \"require('./src/database/setup').setupDatabase().then(() => console.log('Database setup complete!'))\"",
     "db:migrate": "node -e \"require('./src/database/migrate').migrateAllData().then(() => console.log('Migration complete!'))\"",
@@ -18,8 +20,12 @@
     "db:stats": "node -e \"require('./src/database/migrator').DatabaseMigrator.getDbStats().then(stats => console.log('Database stats:', JSON.stringify(stats, null, 2)))\"",
     "db:prepopulate": "node scripts/create-populated-db.js",
     "db:verify": "node scripts/verify-db.js assets/witchy.db",
+    "prebuild": "npm test",
     "build": "npm run db:prepopulate && pkg . --targets node18-win-x64,node18-macos-x64,node18-linux-x64 --out-path dist",
-    "build:exe": "pkg . --out-path dist"
+    "prebuild:exe": "npm test",
+    "build:exe": "pkg . --out-path dist",
+    "release": "npm test && npm run build",
+    "prepare": "husky"
   },
   "keywords": [
     "witchcraft",
@@ -38,6 +44,7 @@
   },
   "devDependencies": {
     "electron-builder": "^26.0.12",
+    "husky": "^9.1.7",
     "jest": "^30.2.0",
     "pkg": "^5.8.1"
   },

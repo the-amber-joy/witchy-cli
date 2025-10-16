@@ -29,10 +29,12 @@ RequestExecutionLevel admin
 ; Version Information
 VIProductVersion "1.0.0.0"
 VIAddVersionKey "ProductName" "Witchy CLI"
+VIAddVersionKey "CompanyName" "Amber Joy"
 VIAddVersionKey "FileDescription" "Magical Correspondence Lookup Tool"
 VIAddVersionKey "FileVersion" "1.0.0"
 VIAddVersionKey "ProductVersion" "1.0.0"
-VIAddVersionKey "LegalCopyright" "© 2025"
+VIAddVersionKey "LegalCopyright" "© 2025 Amber Joy"
+VIAddVersionKey "Publisher" "Amber Joy"
 
 ; Installer Sections
 Section "Witchy CLI (required)"

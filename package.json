@@ -29,7 +29,7 @@
     "cli",
     "spellwork"
   ],
-  "author": "",
+  "author": "Amber Joy <contact@amberjoy.dev>",
   "license": "MIT",
   "dependencies": {
     "readline": "^1.3.0",

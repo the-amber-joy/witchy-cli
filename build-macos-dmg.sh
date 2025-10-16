@@ -34,12 +34,16 @@ cat > installers/macos/WitchyCLI.app/Contents/Info.plist << 'EOF'
     <string>com.witchy.cli</string>
     <key>CFBundleName</key>
     <string>Witchy CLI</string>
+    <key>CFBundleDisplayName</key>
+    <string>Witchy CLI</string>
     <key>CFBundleVersion</key>
     <string>1.0.0</string>
     <key>CFBundleShortVersionString</key>
     <string>1.0.0</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>© 2025 Amber Joy</string>
     <key>LSMinimumSystemVersion</key>
     <string>10.13</string>
     <key>NSHighResolutionCapable</key>

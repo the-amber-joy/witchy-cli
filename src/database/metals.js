@@ -69,47 +69,24 @@ class MetalsDB {
   }
 
   /**
-   * Find metals by properties (full-text search)
+   * Find metals by properties (using LIKE search)
    */
   static findMetalsByProperty(searchTerm) {
     return new Promise((resolve, reject) => {
       const db = getDatabase();
 
-      // Use FTS for better search results
+      // Use LIKE search for reliable results
       db.all(
         `
-        SELECT m.id, m.name, m.properties
-        FROM metals m
-        JOIN witchy_fts fts ON m.name = fts.name AND fts.content_type = 'metal'
-        WHERE witchy_fts MATCH ?
-        ORDER BY rank
+        SELECT id, name, properties 
+        FROM metals 
+        WHERE LOWER(properties) LIKE ?
+        ORDER BY name
       `,
-        [searchTerm],
+        [`%${searchTerm.toLowerCase()}%`],
         (err, rows) => {
           if (err) {
-            // Fallback to LIKE search if FTS fails
-            db.all(
-              `
-            SELECT id, name, properties 
-            FROM metals 
-            WHERE LOWER(properties) LIKE ?
-            ORDER BY name
-          `,
-              [`%${searchTerm.toLowerCase()}%`],
-              (fallbackErr, fallbackRows) => {
-                if (fallbackErr) {
-                  reject(fallbackErr);
-                } else {
-                  const metals = fallbackRows.map((row) => ({
-                    id: row.id,
-                    name: row.name,
-                    properties: row.properties,
-                  }));
-                  resolve(metals);
-                }
-                db.close();
-              },
-            );
+            reject(err);
           } else {
             const metals = rows.map((row) => ({
               id: row.id,
@@ -117,8 +94,8 @@ class MetalsDB {
               properties: row.properties,
             }));
             resolve(metals);
-            db.close();
           }
+          db.close();
         },
       );
     });

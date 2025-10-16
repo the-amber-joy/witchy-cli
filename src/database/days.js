@@ -73,50 +73,24 @@ class DaysDB {
   }
 
   /**
-   * Find days by intent (full-text search)
+   * Find days by intent (using LIKE search)
    */
   static findDaysByIntent(searchTerm) {
     return new Promise((resolve, reject) => {
       const db = getDatabase();
 
-      // Use FTS for better search results
+      // Use LIKE search for reliable results
       db.all(
         `
-        SELECT d.id, d.name, d.intent, d.planet, d.colors, d.deities
-        FROM days d
-        JOIN witchy_fts fts ON d.name = fts.name AND fts.content_type = 'day'
-        WHERE witchy_fts MATCH ?
-        ORDER BY rank
+        SELECT id, name, intent, planet, colors, deities 
+        FROM days 
+        WHERE LOWER(intent) LIKE ?
+        ORDER BY name
       `,
-        [searchTerm],
+        [`%${searchTerm.toLowerCase()}%`],
         (err, rows) => {
           if (err) {
-            // Fallback to LIKE search if FTS fails
-            db.all(
-              `
-            SELECT id, name, intent, planet, colors, deities 
-            FROM days 
-            WHERE LOWER(intent) LIKE ?
-            ORDER BY name
-          `,
-              [`%${searchTerm.toLowerCase()}%`],
-              (fallbackErr, fallbackRows) => {
-                if (fallbackErr) {
-                  reject(fallbackErr);
-                } else {
-                  const days = fallbackRows.map((row) => ({
-                    id: row.id,
-                    name: row.name,
-                    intent: row.intent,
-                    planet: row.planet,
-                    colors: row.colors,
-                    deities: row.deities,
-                  }));
-                  resolve(days);
-                }
-                db.close();
-              },
-            );
+            reject(err);
           } else {
             const days = rows.map((row) => ({
               id: row.id,
@@ -127,8 +101,8 @@ class DaysDB {
               deities: row.deities,
             }));
             resolve(days);
-            db.close();
           }
+          db.close();
         },
       );
     });

@@ -72,50 +72,24 @@ class CrystalsDB {
   }
 
   /**
-   * Find crystals by properties (full-text search)
+   * Find crystals by properties
    */
   static findCrystalsByProperty(searchTerm) {
     return new Promise((resolve, reject) => {
       const db = getDatabase();
 
-      // Use FTS for better search results
+      // Use simple LIKE search for reliable results
       db.all(
         `
-        SELECT c.id, c.name, c.properties, c.also_called
-        FROM crystals c
-        JOIN witchy_fts fts ON c.name = fts.name AND fts.content_type = 'crystal'
-        WHERE witchy_fts MATCH ?
-        ORDER BY rank
+        SELECT id, name, properties, also_called 
+        FROM crystals 
+        WHERE LOWER(properties) LIKE ?
+        ORDER BY name
       `,
-        [searchTerm],
+        [`%${searchTerm.toLowerCase()}%`],
         (err, rows) => {
           if (err) {
-            // Fallback to LIKE search if FTS fails
-            db.all(
-              `
-            SELECT id, name, properties, also_called 
-            FROM crystals 
-            WHERE LOWER(properties) LIKE ?
-            ORDER BY name
-          `,
-              [`%${searchTerm.toLowerCase()}%`],
-              (fallbackErr, fallbackRows) => {
-                if (fallbackErr) {
-                  reject(fallbackErr);
-                } else {
-                  const crystals = fallbackRows.map((row) => ({
-                    id: row.id,
-                    name: row.name,
-                    properties: row.properties,
-                    alsoCalled: row.also_called
-                      ? JSON.parse(row.also_called)
-                      : [],
-                  }));
-                  resolve(crystals);
-                }
-                db.close();
-              },
-            );
+            reject(err);
           } else {
             const crystals = rows.map((row) => ({
               id: row.id,
@@ -124,8 +98,8 @@ class CrystalsDB {
               alsoCalled: row.also_called ? JSON.parse(row.also_called) : [],
             }));
             resolve(crystals);
-            db.close();
           }
+          db.close();
         },
       );
     });

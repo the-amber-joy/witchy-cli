@@ -69,47 +69,24 @@ class ColorsDB {
   }
 
   /**
-   * Find colors by meanings (full-text search)
+   * Find colors by meanings (using LIKE search)
    */
   static findColorsByMeaning(searchTerm) {
     return new Promise((resolve, reject) => {
       const db = getDatabase();
 
-      // Use FTS for better search results
+      // Use LIKE search for reliable results
       db.all(
         `
-        SELECT c.id, c.name, c.meanings
-        FROM colors c
-        JOIN witchy_fts fts ON c.name = fts.name AND fts.content_type = 'color'
-        WHERE witchy_fts MATCH ?
-        ORDER BY rank
+        SELECT id, name, meanings 
+        FROM colors 
+        WHERE LOWER(meanings) LIKE ?
+        ORDER BY name
       `,
-        [searchTerm],
+        [`%${searchTerm.toLowerCase()}%`],
         (err, rows) => {
           if (err) {
-            // Fallback to LIKE search if FTS fails
-            db.all(
-              `
-            SELECT id, name, meanings 
-            FROM colors 
-            WHERE LOWER(meanings) LIKE ?
-            ORDER BY name
-          `,
-              [`%${searchTerm.toLowerCase()}%`],
-              (fallbackErr, fallbackRows) => {
-                if (fallbackErr) {
-                  reject(fallbackErr);
-                } else {
-                  const colors = fallbackRows.map((row) => ({
-                    id: row.id,
-                    name: row.name,
-                    meanings: row.meanings,
-                  }));
-                  resolve(colors);
-                }
-                db.close();
-              },
-            );
+            reject(err);
           } else {
             const colors = rows.map((row) => ({
               id: row.id,
@@ -117,8 +94,8 @@ class ColorsDB {
               meanings: row.meanings,
             }));
             resolve(colors);
-            db.close();
           }
+          db.close();
         },
       );
     });

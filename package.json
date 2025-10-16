@@ -1,6 +1,6 @@
 {
   "name": "witchy-cli",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "Witchy CLI - A magical correspondence lookup tool.",
   "main": "lookup.js",
   "bin": {
@@ -14,7 +14,9 @@
     "db:migrate": "node -e \"require('./src/database/migrate').migrateAllData().then(() => console.log('Migration complete!'))\"",
     "db:reset": "node -e \"require('./src/database/migrator').DatabaseMigrator.resetDatabase().then(() => console.log('Database reset complete!'))\"",
     "db:stats": "node -e \"require('./src/database/migrator').DatabaseMigrator.getDbStats().then(stats => console.log('Database stats:', JSON.stringify(stats, null, 2)))\"",
-    "build": "pkg . --targets node18-win-x64,node18-macos-x64,node18-linux-x64 --out-path dist",
+    "db:prepopulate": "node create-populated-db.js",
+    "db:verify": "node scripts/verify-db.js assets/witchy.db",
+    "build": "npm run db:prepopulate && pkg . --targets node18-win-x64,node18-macos-x64,node18-linux-x64 --out-path dist",
     "build:exe": "pkg . --out-path dist"
   },
   "keywords": [
@@ -41,6 +43,7 @@
       "json/**/*",
       "src/**/*",
       "lists/**/*",
+      "assets/**/*",
       "node_modules/sqlite3/**/*"
     ],
     "scripts": [

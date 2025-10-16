@@ -7,6 +7,20 @@ This guide explains how to build standalone executables of Witchy CLI that don't
 - Node.js 18+ installed (for building only, not for running the executable)
 - All dependencies installed (`npm install`)
 
+## Pre-populated Database
+
+Starting with v1.0.6, Witchy CLI includes a pre-populated database with the executable. Before building:
+
+```bash
+# Generate the pre-populated database
+npm run db:prepopulate
+
+# Verify the database
+npm run db:verify
+```
+
+This creates `assets/witchy.db` which is bundled with the executable.
+
 ## Building for Your Platform
 
 To build an executable for your current platform:
@@ -86,9 +100,15 @@ Simply share the built executable file. Users can:
 
 Make sure all required files are in the `pkg.assets` section of `package.json`.
 
-### Database not working
+### Database issues
 
-The database is created on first run in the same directory as the executable.
+The executable includes a pre-populated database. On first run, this database is copied to the user's data directory:
+
+- Windows: `%APPDATA%\WitchyCLI\witchy.db`
+- macOS: `~/Library/Application Support/WitchyCLI/witchy.db`
+- Linux: `~/.local/share/witchy-cli/witchy.db`
+
+If searches aren't working, check if the database was copied correctly.
 
 ### macOS "unverified developer" warning
 

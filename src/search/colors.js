@@ -11,7 +11,7 @@ async function findColorByName(colors, searchTerm) {
     );
     // If colors array is empty, load from JSON file
     if (!colors || colors.length === 0) {
-      colors = require('../data/colors.json');
+      colors = require("../data/colors.json");
     }
     return findColorByNameSync(colors, searchTerm);
   }
@@ -28,7 +28,7 @@ async function findColorsByMeaning(colors, meaningTerm) {
     );
     // If colors array is empty, load from JSON file
     if (!colors || colors.length === 0) {
-      colors = require('../data/colors.json');
+      colors = require("../data/colors.json");
     }
     return findColorsByMeaningSync(colors, meaningTerm);
   }

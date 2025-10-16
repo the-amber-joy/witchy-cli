@@ -8,6 +8,8 @@ Your magical correspondence companion! A command-line tool for looking up magica
 
 No installation needed! Download the standalone executable for your platform from [Releases](https://github.com/the-amber-joy/witchy-cli/releases):
 
+> **NEW in v1.0.6**: Now includes a pre-populated database for instant access to all correspondences without setup!
+
 **Windows:**
 
 ```cmd
@@ -143,6 +145,10 @@ node lookup.js herb rosemary  # Windows
 
 - **Building Executables**: See [BUILD.md](BUILD.md) for instructions on building from source
 - **Linux Desktop Integration**: See [LINUX_ICONS.md](LINUX_ICONS.md) for adding desktop shortcuts and icons
+
+## 📂 Data Storage
+
+Witchy CLI stores its magical correspondence data in a SQLite database. For detailed information about data storage and the new pre-populated database, see [DATABASE.md](DATABASE.md).
 
 ## Data Sources
 

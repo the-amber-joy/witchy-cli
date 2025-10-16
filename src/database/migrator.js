@@ -2,7 +2,12 @@ const fs = require("fs");
 const path = require("path");
 const { initializeDatabase } = require("./setup");
 const { migrateAllData } = require("./migrate");
-const { DB_PATH, ensureDataDirectoryExists } = require("./config");
+const {
+  DB_PATH,
+  USER_DB_PATH,
+  ensureDataDirectoryExists,
+  copyBundledDatabaseIfExists,
+} = require("./config");
 
 class DatabaseMigrator {
   static async ensureDatabaseExists(silent = false, quiet = false) {
@@ -12,8 +17,18 @@ class DatabaseMigrator {
         throw new Error("Failed to create data directory");
       }
 
+      // First try to copy the bundled database if it exists
+      // This is the preferred method and avoids migration issues
+      if (copyBundledDatabaseIfExists()) {
+        if (!silent && !quiet) {
+          console.log("✨ Using pre-populated database");
+        }
+        return true;
+      }
+
+      // If no bundled database or copy failed, fall back to regular process
       // Check if database file exists
-      if (!fs.existsSync(DB_PATH)) {
+      if (!fs.existsSync(USER_DB_PATH)) {
         if (quiet) {
           console.log("🔮 Setting up database for first use...");
         } else if (!silent) {

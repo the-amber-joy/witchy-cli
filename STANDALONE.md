@@ -2,7 +2,7 @@
 
 ## Summary
 
-Successfully configured Witchy CLI to build standalone executables that work **without Node.js installation**.
+Successfully configured Witchy CLI to build standalone executables that work **without Node.js installation**. Updated in v1.0.6 to include a pre-populated database for maximum reliability.
 
 ## What Was Done
 
@@ -14,16 +14,26 @@ Added:
 - Build scripts: `npm run build` and `npm run build:all`
 - pkg configuration specifying:
   - Target platforms: Windows, macOS, Linux (Node 18)
-  - Assets to bundle: JSON data, source files, lists
+  - Assets to bundle: JSON data, source files, lists, and pre-populated database
   - Output directory: `dist/`
 
-### 2. Database Path Fixes
+### 2. Pre-populated Database
 
-Modified `src/database/migrator.js` and `src/database/setup.js` to:
+Added:
 
-- Detect when running as a pkg executable
-- Use executable directory for database instead of virtual filesystem
-- Maintain backward compatibility with normal Node.js execution
+- Script to generate a fully populated database (`create-populated-db.js`)
+- Bundled database in `assets/witchy.db`
+- Database verification script (`scripts/verify-db.js`)
+- Automatic copy from bundled database to user directory on first run
+
+### 3. Database Path Configuration
+
+Modified `src/database/config.js` to:
+
+- Check for bundled database in assets directory
+- Copy bundled database to user directory if needed
+- Use user directory for persistent data storage
+- Maintain backward compatibility with development mode
 
 **Before:**
 

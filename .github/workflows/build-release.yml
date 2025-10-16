@@ -109,8 +109,10 @@ jobs:
       - name: Create macOS app bundle
         run: |
           mkdir -p installers/macos/WitchyCLI.app/Contents/MacOS
+          mkdir -p installers/macos/WitchyCLI.app/Contents/Resources
           cp dist/witchy-cli-macos installers/macos/WitchyCLI.app/Contents/MacOS/witchy
           chmod +x installers/macos/WitchyCLI.app/Contents/MacOS/witchy
+          cp assets/icon.icns installers/macos/WitchyCLI.app/Contents/Resources/
 
           cat > installers/macos/WitchyCLI.app/Contents/Info.plist << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
@@ -119,6 +121,8 @@ jobs:
           <dict>
               <key>CFBundleExecutable</key>
               <string>witchy</string>
+              <key>CFBundleIconFile</key>
+              <string>icon.icns</string>
               <key>CFBundleIdentifier</key>
               <string>com.witchy.cli</string>
               <key>CFBundleName</key>

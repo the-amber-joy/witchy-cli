@@ -27,6 +27,7 @@ Your magical correspondence companion! A command-line tool for looking up magica
   sudo cp witchy-cli-linux /usr/local/bin/witchy
   sudo chmod +x /usr/local/bin/witchy
   ```
+- Optional: Desktop integration with icon (see [LINUX_ICONS.md](LINUX_ICONS.md))
 
 ### Option 2: Standalone Executables (No Installation) ⚡
 

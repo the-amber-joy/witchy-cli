@@ -17,8 +17,10 @@ echo
 # Step 2: Create app bundle structure
 echo "[2/4] Creating app bundle..."
 mkdir -p installers/macos/WitchyCLI.app/Contents/MacOS
+mkdir -p installers/macos/WitchyCLI.app/Contents/Resources
 cp dist/witchy-cli-macos installers/macos/WitchyCLI.app/Contents/MacOS/witchy
 chmod +x installers/macos/WitchyCLI.app/Contents/MacOS/witchy
+cp assets/icon.icns installers/macos/WitchyCLI.app/Contents/Resources/
 echo
 
 # Step 3: Create Info.plist
@@ -30,6 +32,8 @@ cat > installers/macos/WitchyCLI.app/Contents/Info.plist << 'EOF'
 <dict>
     <key>CFBundleExecutable</key>
     <string>witchy</string>
+    <key>CFBundleIconFile</key>
+    <string>icon.icns</string>
     <key>CFBundleIdentifier</key>
     <string>com.witchy.cli</string>
     <key>CFBundleName</key>

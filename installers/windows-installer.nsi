@@ -13,8 +13,8 @@ RequestExecutionLevel admin
 
 ; Interface Settings
 !define MUI_ABORTWARNING
-!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
-!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
+!define MUI_ICON "..\assets\icon.ico"
+!define MUI_UNICON "..\assets\icon.ico"
 
 ; Pages
 !insertmacro MUI_PAGE_LICENSE "..\LICENSE"
@@ -31,11 +31,14 @@ RequestExecutionLevel admin
 VIProductVersion "1.0.0.0"
 VIAddVersionKey "ProductName" "Witchy CLI"
 VIAddVersionKey "CompanyName" "Amber Joy"
-VIAddVersionKey "FileDescription" "Magical Correspondence Lookup Tool"
+VIAddVersionKey "FileDescription" "Witchy CLI Installer - Magical Correspondence Lookup Tool"
 VIAddVersionKey "FileVersion" "1.0.0"
 VIAddVersionKey "ProductVersion" "1.0.0"
 VIAddVersionKey "LegalCopyright" "© 2025 Amber Joy"
+VIAddVersionKey "LegalTrademarks" ""
 VIAddVersionKey "Publisher" "Amber Joy"
+VIAddVersionKey "Comments" "Open source magical correspondence tool. Visit github.com/the-amber-joy/witchy-cli"
+VIAddVersionKey "OriginalFilename" "WitchyCLI-Setup-${VERSION}.exe"
 
 ; Installer Sections
 Section "Witchy CLI (required)"
@@ -47,6 +50,9 @@ Section "Witchy CLI (required)"
   ; Copy the executable
   File "..\dist\witchy-cli-win.exe"
   
+  ; Copy the icon file
+  File "..\assets\icon.ico"
+  
   ; Rename to simpler name
   Rename "$INSTDIR\witchy-cli-win.exe" "$INSTDIR\witchy.exe"
   
@@ -56,6 +62,8 @@ Section "Witchy CLI (required)"
   ; Write the uninstall keys for Windows
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\WitchyCLI" "DisplayName" "Witchy CLI"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\WitchyCLI" "UninstallString" '"$INSTDIR\uninstall.exe"'
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\WitchyCLI" "DisplayIcon" "$INSTDIR\icon.ico"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\WitchyCLI" "Publisher" "Amber Joy"
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\WitchyCLI" "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\WitchyCLI" "NoRepair" 1
   WriteUninstaller "$INSTDIR\uninstall.exe"
@@ -74,12 +82,12 @@ SectionEnd
 
 Section "Start Menu Shortcuts"
   CreateDirectory "$SMPROGRAMS\Witchy CLI"
-  CreateShortcut "$SMPROGRAMS\Witchy CLI\Witchy CLI.lnk" "$INSTDIR\witchy.exe"
-  CreateShortcut "$SMPROGRAMS\Witchy CLI\Uninstall.lnk" "$INSTDIR\uninstall.exe"
+  CreateShortcut "$SMPROGRAMS\Witchy CLI\Witchy CLI.lnk" "$INSTDIR\witchy.exe" "" "$INSTDIR\icon.ico" 0
+  CreateShortcut "$SMPROGRAMS\Witchy CLI\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\icon.ico" 0
 SectionEnd
 
 Section "Desktop Shortcut"
-  CreateShortcut "$DESKTOP\Witchy CLI.lnk" "$INSTDIR\witchy.exe"
+  CreateShortcut "$DESKTOP\Witchy CLI.lnk" "$INSTDIR\witchy.exe" "" "$INSTDIR\icon.ico" 0
 SectionEnd
 
 ; Uninstaller Section
@@ -91,6 +99,7 @@ Section "Uninstall"
   ; Remove files and uninstaller
   Delete "$INSTDIR\witchy.exe"
   Delete "$INSTDIR\witchy.db"
+  Delete "$INSTDIR\icon.ico"
   Delete "$INSTDIR\uninstall.exe"
   
   ; Remove shortcuts
@@ -99,7 +108,7 @@ Section "Uninstall"
   
   ; Remove directories
   RMDir "$SMPROGRAMS\Witchy CLI"
-  RMDir "$INSTDIR"
+  RMDir /r "$INSTDIR"
   
   ; Remove from PATH using native NSIS commands
   ReadRegStr $0 HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path"

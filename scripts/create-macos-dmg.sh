@@ -6,17 +6,23 @@
 set -e
 
 VERSION=$(node -p "require('./package.json').version")
-BINARY_PATH="dist/witchy-cli-macos"
+# The pkg tool creates dist/witchy-cli (not dist/witchy-cli-macos)
+BINARY_PATH="dist/witchy-cli"
 DMG_NAME="Witchy-CLI-${VERSION}-macos.dmg"
 APP_NAME="Witchy CLI"
 
 echo "Creating macOS DMG for Witchy CLI v${VERSION}..."
 
-# Check if binary exists
-if [ ! -f "$BINARY_PATH" ]; then
-    echo "Error: Binary not found at $BINARY_PATH"
+# Check if binary exists (try both possible names)
+if [ ! -f "$BINARY_PATH" ] && [ ! -f "dist/witchy-cli-macos" ]; then
+    echo "Error: Binary not found at $BINARY_PATH or dist/witchy-cli-macos"
     echo "Please run 'npm run build' first"
     exit 1
+fi
+
+# Use whichever binary exists
+if [ -f "dist/witchy-cli-macos" ]; then
+    BINARY_PATH="dist/witchy-cli-macos"
 fi
 
 # Create temporary directory for DMG contents

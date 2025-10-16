@@ -2,55 +2,47 @@
 
 Your magical correspondence companion! A command-line tool for looking up magical correspondences including herbs, crystals, colors, moon phases, metals, and days of the week.
 
-## Quick Start
+## ⚡ Quick Start
 
-### Option 1: Installers (Recommended) 📦
+Choose your preferred installation method:
 
-**Windows**: Download and run `WitchyCLI-Setup-{version}.exe` from [Releases](https://github.com/the-amber-joy/witchy-cli/releases)
+### 🎁 Installers (Easiest)
 
-- Professional installer with NSIS
-- Adds to Start Menu and Desktop
-- Optionally adds to PATH
-- Easy uninstaller
+Download from [Releases](https://github.com/the-amber-joy/witchy-cli/releases):
 
-**macOS**: Download `WitchyCLI-{version}.dmg` from [Releases](https://github.com/the-amber-joy/witchy-cli/releases)
+| Platform    | File                            | What You Get                                                |
+| ----------- | ------------------------------- | ----------------------------------------------------------- |
+| **Windows** | `WitchyCLI-Setup-{version}.exe` | Professional installer, Start Menu shortcuts, optional PATH |
+| **macOS**   | `WitchyCLI-{version}.dmg`       | Drag-and-drop to Applications, native app bundle            |
+| **Linux**   | `witchy-cli-linux`              | Standalone binary ([icon setup guide](LINUX_ICONS.md))      |
 
-- Drag and drop to Applications
-- Clean DMG installer
-- Native macOS experience
-
-**Linux**: Download `witchy-cli-linux` from [Releases](https://github.com/the-amber-joy/witchy-cli/releases)
-
-- Standalone executable (no installer needed)
-- Install manually:
-  ```bash
-  sudo cp witchy-cli-linux /usr/local/bin/witchy
-  sudo chmod +x /usr/local/bin/witchy
-  ```
-- Optional: Desktop integration with icon (see [LINUX_ICONS.md](LINUX_ICONS.md))
-
-### Option 2: Standalone Executables (No Installation) ⚡
-
-Download the pre-built executable for your platform from [Releases](https://github.com/the-amber-joy/witchy-cli/releases):
-
-- **Windows**: `witchy-cli-win.exe`
-- **macOS**: `witchy-cli-macos`
-- **Linux**: `witchy-cli-linux`
-
-Then run it directly:
+**Linux installation:**
 
 ```bash
-# Windows
-witchy-cli-win.exe herb rosemary
+sudo cp witchy-cli-linux /usr/local/bin/witchy
+sudo chmod +x /usr/local/bin/witchy
+witchy herb rosemary  # Ready to use!
+```
 
-# macOS/Linux (make executable first)
+### 📦 Standalone Executables (No Installation)
+
+Download and run directly - no installation needed!
+
+From [Releases](https://github.com/the-amber-joy/witchy-cli/releases):
+
+- `witchy-cli-win.exe` (Windows)
+- `witchy-cli-macos` (macOS)
+- `witchy-cli-linux` (Linux)
+
+```bash
+# Make executable (macOS/Linux only)
 chmod +x witchy-cli-macos
+
+# Run anywhere
 ./witchy-cli-macos herb rosemary
 ```
 
-No Node.js required! 🚀
-
-### Option 3: With Node.js (Development)
+### 💻 For Developers (Node.js)
 
 ```bash
 # Clone and install
@@ -125,211 +117,30 @@ witchy color red
 witchy metal use prosperity
 ```
 
-## Installation
+## 🛠️ Development Setup
 
-### Method 1: Global Installation (Recommended)
-
-#### On macOS/Linux:
-
-To use the `witchy` command from anywhere in your terminal:
-
-1. **Clone or download this repository** to a permanent location:
-
-   ```bash
-   git clone https://github.com/the-amber-joy/witchy-cli.git ~/witchy-cli
-   cd ~/witchy-cli
-   ```
-
-2. **Install dependencies**:
-
-   ```bash
-   npm install
-   ```
-
-   This will automatically set up the SQLite database and install all required packages.
-
-3. **Make the script executable**:
-
-   ```bash
-   chmod +x lookup.js
-   ```
-
-4. **Create a directory for your personal binaries** (if it doesn't exist):
-
-   ```bash
-   mkdir -p ~/bin
-   ```
-
-5. **Create a symbolic link to the script**:
-
-   ```bash
-   ln -sf ~/witchy-cli/lookup.js ~/bin/witchy
-   ```
-
-6. **Add ~/bin to your PATH** (if not already done):
-
-   For **zsh** (macOS default):
-
-   ```bash
-   echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
-   source ~/.zshrc
-   ```
-
-   For **bash**:
-
-   ```bash
-   echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
-   source ~/.bashrc
-   ```
-
-7. **Test the installation**:
-   ```bash
-   witchy herb rosemary
-   ```
-
-#### On Windows:
-
-To use the `witchy` command from anywhere in Command Prompt or PowerShell:
-
-1. **Clone or download this repository** to a permanent location:
-
-   ```cmd
-   git clone https://github.com/the-amber-joy/witchy-cli.git C:\path\to\witchy-cli
-   cd C:\path\to\witchy-cli
-   ```
-
-2. **Install dependencies**:
-
-   ```cmd
-   npm install
-   ```
-
-   This will automatically set up the SQLite database and install all required packages.
-
-3. **Create a batch file wrapper**:
-
-   Create a file called `witchy.bat` in a directory that's in your PATH (like `C:\Windows\System32` or create a personal bin directory):
-
-   ```batch
-   @echo off
-   node "C:\path\to\witchy-cli" %*
-   ```
-
-   Or if you prefer PowerShell, create `witchy.ps1`:
-
-   ```powershell
-   node "C:\path\to\witchy-cli" $args
-   ```
-
-4. **Alternative: Add to PATH directly**:
-
-   - Open **System Properties** → **Advanced** → **Environment Variables**
-   - Under **User variables**, find or create the `PATH` variable
-   - Add `C:\path\to\witchy-cli` to the PATH
-   - Create a `witchy.bat` file in `C:\path\to\witchy-cli`:
-     ```batch
-     @echo off
-     node "%~dp0lookup.js" %*
-     ```
-
-5. **Test the installation**:
-   ```cmd
-   witchy herb rosemary
-   ```
-
-**Note for Windows users**: Make sure you have [Node.js](https://nodejs.org/) installed, as the script requires it to run.
-
-### Method 2: Local Usage
-
-If you prefer to run it locally without global installation:
-
-1. **Clone the repository and install dependencies**:
-
-   **macOS/Linux**:
-
-   ```bash
-   git clone https://github.com/the-amber-joy/witchy-cli.git
-   cd witchy-cli
-   npm install
-   ```
-
-   **Windows**:
-
-   ```cmd
-   git clone https://github.com/the-amber-joy/witchy-cli.git
-   cd witchy-cli
-   npm install
-   ```
-
-2. **Run commands locally**:
-
-   **macOS/Linux**:
-
-   ```bash
-   ./lookup.js herb rosemary
-   # or use the interactive CLI
-   npm start
-   ```
-
-   **Windows**:
-
-   ```cmd
-   node lookup.js herb rosemary
-   REM or use the interactive CLI
-   npm start
-   ```
-
-### Updating
-
-To update your installation:
-
-**macOS/Linux**:
+Want to contribute or run from source?
 
 ```bash
-cd /path/to/witchy-cli
-git pull origin main
+git clone https://github.com/the-amber-joy/witchy-cli.git
+cd witchy-cli
+npm install
+npm start  # Interactive CLI
 ```
 
-**Windows**:
-
-```cmd
-cd C:\path\to\witchy-cli
-git pull origin main
+Or run direct commands:
+```bash
+./lookup.js herb rosemary  # macOS/Linux
+node lookup.js herb rosemary  # Windows
 ```
 
-The symlink (or batch file) will automatically point to the updated version.
+**Update anytime**: `git pull origin main`
 
-## Standalone Executables
+## 📚 Additional Info
 
-### What Are They?
-
-The standalone executables are self-contained versions of Witchy CLI that include:
-
-- Node.js runtime
-- All dependencies (sqlite3, etc.)
-- All source code and data files
-
-This means **no Node.js installation required!** Just download and run.
-
-### Benefits
-
-✅ **No Installation** - Download once, run anywhere  
-✅ **No Dependencies** - Everything is bundled  
-✅ **Offline** - Works without internet after download  
-✅ **Fast** - No npm overhead  
-✅ **Portable** - Copy to USB drive and use on any computer
-
-### File Size
-
-Executables are approximately 40-50MB due to the bundled Node.js runtime. This is normal for standalone Node.js applications.
-
-### Where's the Database?
-
-The database (`witchy.db`) is automatically created in the same directory as the executable on first run. You can delete it anytime to reset your data.
-
-### Building from Source
-
-Want to build the executables yourself? See [BUILD.md](BUILD.md) for instructions.
+- **Building Installers**: See [BUILD.md](BUILD.md) for instructions on building executables and installers from source
+- **Code Signing**: See [CODE_SIGNING.md](CODE_SIGNING.md) for information about Windows publisher warnings
+- **Linux Icons**: See [LINUX_ICONS.md](LINUX_ICONS.md) for desktop integration
 
 ## Data Sources
 

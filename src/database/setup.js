@@ -1,12 +1,5 @@
 const sqlite3 = require("sqlite3").verbose();
-const path = require("path");
-
-// Database configuration
-// For pkg executables, use the executable directory; otherwise use project structure
-const isPkg = typeof process.pkg !== "undefined";
-const DB_PATH = isPkg
-  ? path.join(path.dirname(process.execPath), "witchy.db")
-  : path.join(__dirname, "..", "data", "witchy.db");
+const { DB_PATH } = require("./config");
 
 /**
  * Initialize the SQLite database and create all tables

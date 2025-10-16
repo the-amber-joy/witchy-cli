@@ -35,7 +35,7 @@ class MoonDB {
   }
 
   /**
-   * Find moon phase by exact phase name match
+   * Find moon phase by phase name (exact or partial match)
    */
   static findMoonPhaseByName(searchName) {
     return new Promise((resolve, reject) => {
@@ -46,9 +46,10 @@ class MoonDB {
         `
         SELECT id, phase, meaning 
         FROM moon_phases 
-        WHERE LOWER(phase) = ?
+        WHERE LOWER(phase) = ? OR LOWER(phase) LIKE ?
+        LIMIT 1
       `,
-        [searchTerm],
+        [searchTerm, `%${searchTerm}%`],
         (err, row) => {
           if (err) {
             reject(err);

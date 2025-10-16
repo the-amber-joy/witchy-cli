@@ -7,17 +7,20 @@ Your magical correspondence companion! A command-line tool for looking up magica
 ### Option 1: Installers (Recommended) 📦
 
 **Windows**: Download and run `WitchyCLI-Setup-{version}.exe` from [Releases](https://github.com/the-amber-joy/witchy-cli/releases)
+
 - Professional installer with NSIS
 - Adds to Start Menu and Desktop
 - Optionally adds to PATH
 - Easy uninstaller
 
 **macOS**: Download `WitchyCLI-{version}.dmg` from [Releases](https://github.com/the-amber-joy/witchy-cli/releases)
+
 - Drag and drop to Applications
 - Clean DMG installer
 - Native macOS experience
 
 **Linux**: Download `witchy-cli-linux` from [Releases](https://github.com/the-amber-joy/witchy-cli/releases)
+
 - Standalone executable (no installer needed)
 - Install manually:
   ```bash

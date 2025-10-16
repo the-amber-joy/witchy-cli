@@ -3,6 +3,7 @@
 ## What Was Added
 
 ### 1. Windows Installer (NSIS)
+
 - **File**: `installers/windows-installer.nsi`
 - **Output**: `WitchyCLI-Setup-{version}.exe`
 - **Features**:
@@ -15,6 +16,7 @@
   - Registry integration
 
 ### 2. macOS DMG
+
 - **Output**: `WitchyCLI-{version}.dmg`
 - **Features**:
   - Native macOS app bundle
@@ -23,6 +25,7 @@
   - Info.plist with proper metadata
 
 ### 3. Linux Standalone
+
 - **Output**: `witchy-cli-linux`
 - Kept as standalone binary (Linux users prefer this)
 - Manual installation instructions provided
@@ -32,27 +35,33 @@
 ### Local Development
 
 **Windows**:
+
 ```bash
 build-windows-installer.bat
 ```
+
 Requires: NSIS installed and in PATH
 
 **macOS**:
+
 ```bash
 chmod +x build-macos-dmg.sh
 ./build-macos-dmg.sh
 ```
+
 Requires: macOS system, create-dmg (installed automatically)
 
 ### GitHub Actions (Automated)
 
 The workflow `.github/workflows/build-release.yml` now:
+
 1. Builds executables for all platforms
 2. Creates Windows installer on Windows runner
 3. Creates macOS DMG on macOS runner
 4. Uploads all files to GitHub Release
 
 When you push a tag (e.g., `v1.0.1`), GitHub Actions will:
+
 - Build everything automatically
 - Create a release
 - Attach all files:
@@ -65,6 +74,7 @@ When you push a tag (e.g., `v1.0.1`), GitHub Actions will:
 ## Package.json Updates
 
 New scripts added:
+
 - `build:exe` - Build single executable
 - `build:exe:all` - Build all platforms
 - `build:installer:win` - Build Windows installer (local)
@@ -72,6 +82,7 @@ New scripts added:
 - `build:installers` - Build both installers (local)
 
 Old scripts kept for compatibility:
+
 - `build` → renamed to `build:exe`
 - `build:all` → renamed to `build:exe:all`
 
@@ -84,20 +95,23 @@ Old scripts kept for compatibility:
 ## Next Steps
 
 1. **Optional**: Add custom icons
+
    - Windows: `assets/icon.ico` (256x256)
    - macOS: `assets/icon.icns` (512x512)
    - See `assets/README.md` for conversion tools
 
 2. **Test locally**:
+
    ```bash
    # Windows (requires NSIS)
    build-windows-installer.bat
-   
+
    # macOS (requires macOS)
    ./build-macos-dmg.sh
    ```
 
 3. **Push a new tag to test automated builds**:
+
    ```bash
    git add .
    git commit -m "feat: add Windows and macOS installers"

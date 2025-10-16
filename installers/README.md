@@ -5,6 +5,7 @@ This directory contains configuration files for creating installers.
 ## Windows Installer (NSIS)
 
 ### Prerequisites
+
 1. Install [NSIS (Nullsoft Scriptable Install System)](https://nsis.sourceforge.io/Download)
 2. Add NSIS to your PATH (usually `C:\Program Files (x86)\NSIS`)
 
@@ -21,6 +22,7 @@ makensis /DVERSION=1.0.0 installers/windows-installer.nsi
 The installer will be created in `dist/WitchyCLI-Setup-1.0.0.exe`
 
 ### Features
+
 - Adds Witchy CLI to Program Files
 - Optional: Adds to PATH environment variable
 - Creates Start Menu shortcuts
@@ -30,6 +32,7 @@ The installer will be created in `dist/WitchyCLI-Setup-1.0.0.exe`
 ## macOS Installer (DMG)
 
 ### Prerequisites
+
 - macOS system (for building)
 - `create-dmg` utility
 
@@ -79,9 +82,11 @@ The DMG will be created in `dist/`
 ## Linux (Standalone Binary)
 
 Linux users prefer standalone binaries, so no installer is created. The executable is distributed as-is:
+
 - `dist/witchy-cli-linux` - Standalone executable
 
 Users can install it manually:
+
 ```bash
 sudo cp witchy-cli-linux /usr/local/bin/witchy
 sudo chmod +x /usr/local/bin/witchy
@@ -92,7 +97,7 @@ sudo chmod +x /usr/local/bin/witchy
 The `.github/workflows/build-release.yml` workflow can be updated to automatically build installers on release:
 
 1. Windows: Run NSIS on Windows runner
-2. macOS: Run create-dmg on macOS runner  
+2. macOS: Run create-dmg on macOS runner
 3. Linux: Upload standalone binary
 
 See the workflow file for implementation details.

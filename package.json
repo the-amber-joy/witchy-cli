@@ -8,7 +8,9 @@
   },
   "scripts": {
     "start": "node lookup.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "postinstall": "node -e \"require('./src/database/migrator').DatabaseMigrator.ensureDatabaseExists(false).then(() => console.log('✨ Database ready!')).catch(err => console.log('⚠️ Database setup will run on first use'))\"",
     "db:setup": "node -e \"require('./src/database/setup').setupDatabase().then(() => console.log('Database setup complete!'))\"",
     "db:migrate": "node -e \"require('./src/database/migrate').migrateAllData().then(() => console.log('Migration complete!'))\"",
@@ -36,6 +38,7 @@
   },
   "devDependencies": {
     "electron-builder": "^26.0.12",
+    "jest": "^30.2.0",
     "pkg": "^5.8.1"
   },
   "pkg": {

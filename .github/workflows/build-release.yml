@@ -44,11 +44,6 @@ jobs:
       - name: Build executable
         run: npx pkg . --targets node18-${{ matrix.target }} --out-path dist
 
-      - name: Create macOS DMG (macOS only)
-        if: matrix.os == 'macos-latest'
-        run: |
-          bash scripts/create-macos-dmg.sh || echo "DMG creation failed, continuing with binary only"
-
       - name: Rename artifact
         shell: bash
         run: |
@@ -63,14 +58,6 @@ jobs:
         with:
           name: ${{ matrix.artifact_name }}
           path: dist/${{ matrix.artifact_name }}
-
-      - name: Upload macOS DMG (if exists)
-        if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v4
-        continue-on-error: true
-        with:
-          name: witchy-cli-macos-dmg
-          path: dist/*.dmg
 
   release:
     needs: [build]
@@ -89,7 +76,6 @@ jobs:
           files: |
             artifacts/witchy-cli-linux/witchy-cli-linux
             artifacts/witchy-cli-macos/witchy-cli-macos
-            artifacts/witchy-cli-macos-dmg/*.dmg
             artifacts/witchy-cli-win.exe/witchy-cli-win.exe
           draft: false
           prerelease: false

@@ -21,16 +21,13 @@ witchy-cli-win.exe herb rosemary
 **macOS:**
 
 ```bash
-# Download witchy-cli-macos (binary) or Witchy-CLI-x.x.x-macos.dmg
-# See MACOS_INSTALL.md for detailed instructions
-
-# Quick install:
+# Download witchy-cli-macos
 chmod +x witchy-cli-macos
 sudo mv witchy-cli-macos /usr/local/bin/witchy
 witchy herb rosemary
 ```
 
-> ⚠️ **macOS Users:** The `witchy-cli-macos` file is a CLI binary, NOT an app! Don't try to open it by double-clicking - it will show garbled text. See [MACOS_INSTALL.md](MACOS_INSTALL.md) for proper installation instructions, or download the DMG installer for easier setup.
+> ⚠️ **macOS Users:** The `witchy-cli-macos` file is a CLI binary, NOT an app! Don't try to open it by double-clicking - it will show garbled text. Run it from Terminal instead. See [MACOS_INSTALL.md](MACOS_INSTALL.md) for detailed instructions.
 
 **Linux:**
 

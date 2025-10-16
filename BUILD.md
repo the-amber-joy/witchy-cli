@@ -125,27 +125,7 @@ If macOS users report seeing "garbled text" when opening the file, they're tryin
 **Solution:**
 
 - Direct them to [MACOS_INSTALL.md](MACOS_INSTALL.md) for proper installation instructions
-- Or have them download the DMG installer instead (see below)
-
-### Creating macOS DMG Installer
-
-To create a more user-friendly DMG installer for macOS:
-
-```bash
-# First build the binary
-npm run build
-
-# Then create the DMG (macOS only)
-npm run build:macos:dmg
-```
-
-This creates `dist/Witchy-CLI-x.x.x-macos.dmg` which includes:
-
-- The `witchy` binary
-- An `install.sh` script for easy installation
-- Instructions file
-
-The DMG creation is automatically done by GitHub Actions when pushing a version tag.
+- Remind them it's a CLI tool that must be run from Terminal
 
 ### Linux permissions
 

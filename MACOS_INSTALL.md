@@ -2,34 +2,38 @@
 
 Witchy CLI is a command-line tool for looking up magical correspondences (herbs, crystals, colors, etc.).
 
-## Installation Options
-
-### Option 1: Install via DMG (Recommended)
-
-1. Download `Witchy-CLI-x.x.x-macos.dmg` from the [Releases page](https://github.com/the-amber-joy/witchyLookup/releases)
-2. Double-click the DMG file to mount it
-3. Double-click `install.sh` in the mounted volume
-4. Enter your password when prompted
-5. Open Terminal and type: `witchy herb rosemary`
-
-### Option 2: Install Binary Directly
+## Quick Install
 
 1. Download `witchy-cli-macos` from the [Releases page](https://github.com/the-amber-joy/witchyLookup/releases)
 2. Open Terminal
-3. Make the file executable:
+3. Navigate to your Downloads folder:
    ```bash
-   chmod +x ~/Downloads/witchy-cli-macos
+   cd ~/Downloads
    ```
-4. Move it to your PATH:
+4. Make the file executable:
    ```bash
-   sudo mv ~/Downloads/witchy-cli-macos /usr/local/bin/witchy
+   chmod +x witchy-cli-macos
    ```
-5. Test it:
+5. Move it to your PATH:
+   ```bash
+   sudo mv witchy-cli-macos /usr/local/bin/witchy
+   ```
+6. Test it:
    ```bash
    witchy herb rosemary
    ```
 
-### Option 3: Install via npm (requires Node.js)
+## Alternative: Run Without Installing
+
+If you don't want to install system-wide, you can run it directly:
+
+```bash
+cd ~/Downloads
+chmod +x witchy-cli-macos
+./witchy-cli-macos herb rosemary
+```
+
+## Alternative: Install via npm
 
 If you have Node.js installed:
 
@@ -37,9 +41,7 @@ If you have Node.js installed:
 npm install -g witchy-cli
 ```
 
-## Important Notes
-
-### Opening the Binary File
+## ⚠️ Important: Don't Double-Click!
 
 **DO NOT** try to open the `witchy-cli-macos` file by double-clicking it! It's a command-line tool, not a regular macOS app.
 

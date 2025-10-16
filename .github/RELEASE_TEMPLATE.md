@@ -14,14 +14,16 @@ Download the appropriate file for your operating system:
 
 #### macOS
 
-- **DMG Installer (Recommended)**: `Witchy-CLI-x.x.x-macos.dmg`
-  - Download and mount the DMG
-  - Run the `install.sh` script inside
-  - Use `witchy` command in Terminal
 - **Binary**: `witchy-cli-macos`
   - ⚠️ **IMPORTANT**: This is a command-line tool, NOT a macOS app!
   - **DO NOT double-click** - it will show garbled text
-  - See [MACOS_INSTALL.md](https://github.com/the-amber-joy/witchyLookup/blob/main/MACOS_INSTALL.md) for installation instructions
+  - Run from Terminal:
+    ```bash
+    chmod +x witchy-cli-macos
+    sudo mv witchy-cli-macos /usr/local/bin/witchy
+    witchy herb rosemary
+    ```
+  - See [MACOS_INSTALL.md](https://github.com/the-amber-joy/witchyLookup/blob/main/MACOS_INSTALL.md) for detailed instructions
 
 #### Linux
 

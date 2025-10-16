@@ -16,14 +16,7 @@ If you're seeing garbled text when trying to open `witchy-cli-macos`, **this is 
 
 ### The Solution
 
-**Option 1: Use the DMG Installer (Easiest)**
-
-1. Download `Witchy-CLI-x.x.x-macos.dmg` instead of `witchy-cli-macos`
-2. Double-click the DMG to mount it
-3. Run the `install.sh` script
-4. Open Terminal and type: `witchy herb rosemary`
-
-**Option 2: Install from Terminal**
+**Run it from Terminal:**
 
 1. Open **Terminal** (Applications → Utilities → Terminal)
 2. Navigate to your Downloads folder:

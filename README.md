@@ -4,43 +4,45 @@ Your magical correspondence companion! A command-line tool for looking up magica
 
 ## ⚡ Quick Start
 
-Choose your preferred installation method:
+### 📦 Download and Run (Easiest!)
 
-### 🎁 Installers (Easiest)
+No installation needed! Download the standalone executable for your platform from [Releases](https://github.com/the-amber-joy/witchy-cli/releases):
 
-Download from [Releases](https://github.com/the-amber-joy/witchy-cli/releases):
+**Windows:**
 
-| Platform    | File                            | What You Get                                                |
-| ----------- | ------------------------------- | ----------------------------------------------------------- |
-| **Windows** | `WitchyCLI-Setup-{version}.exe` | Professional installer, Start Menu shortcuts, optional PATH |
-| **macOS**   | `WitchyCLI-{version}.dmg`       | Drag-and-drop to Applications, native app bundle            |
-| **Linux**   | `witchy-cli-linux`              | Standalone binary ([icon setup guide](LINUX_ICONS.md))      |
-
-**Linux installation:**
-
-```bash
-sudo cp witchy-cli-linux /usr/local/bin/witchy
-sudo chmod +x /usr/local/bin/witchy
-witchy herb rosemary  # Ready to use!
+```cmd
+# Download witchy-cli-win.exe
+# Run directly - no installation needed!
+witchy-cli-win.exe herb rosemary
 ```
 
-### 📦 Standalone Executables (No Installation)
-
-Download and run directly - no installation needed!
-
-From [Releases](https://github.com/the-amber-joy/witchy-cli/releases):
-
-- `witchy-cli-win.exe` (Windows)
-- `witchy-cli-macos` (macOS)
-- `witchy-cli-linux` (Linux)
+**macOS:**
 
 ```bash
-# Make executable (macOS/Linux only)
+# Download witchy-cli-macos
 chmod +x witchy-cli-macos
-
-# Run anywhere
 ./witchy-cli-macos herb rosemary
 ```
+
+**Linux:**
+
+```bash
+# Download witchy-cli-linux
+chmod +x witchy-cli-linux
+./witchy-cli-linux herb rosemary
+
+# Optional: Install system-wide
+sudo cp witchy-cli-linux /usr/local/bin/witchy
+witchy herb rosemary
+```
+
+✨ **Benefits:**
+
+- No admin rights required
+- No installation wizard
+- Portable - run from anywhere
+- Works offline
+- Single file, no dependencies
 
 ### 💻 For Developers (Node.js)
 
@@ -139,9 +141,8 @@ node lookup.js herb rosemary  # Windows
 
 ## 📚 Additional Info
 
-- **Building Installers**: See [BUILD.md](BUILD.md) for instructions on building executables and installers from source
-- **Code Signing**: See [CODE_SIGNING.md](CODE_SIGNING.md) for information about Windows publisher warnings
-- **Linux Icons**: See [LINUX_ICONS.md](LINUX_ICONS.md) for desktop integration
+- **Building Executables**: See [BUILD.md](BUILD.md) for instructions on building from source
+- **Linux Desktop Integration**: See [LINUX_ICONS.md](LINUX_ICONS.md) for adding desktop shortcuts and icons
 
 ## Data Sources
 

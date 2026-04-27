@@ -14,8 +14,7 @@
     "postinstall": "node -e \"require('./src/database/migrator').DatabaseMigrator.ensureDatabaseExists(false).then(() => console.log('✨ Database ready!')).catch(err => console.log('⚠️ Database setup will run on first use'))\"",
     "db:migrate": "node -e \"require('./src/database/migrate').migrateAllData().then(() => console.log('Migration complete!'))\"",
     "db:reset": "node -e \"require('./src/database/migrator').DatabaseMigrator.resetDatabase().then(() => console.log('Database reset complete!'))\"",
-    "db:stats": "node -e \"require('./src/database/migrator').DatabaseMigrator.getDbStats().then(stats => console.log('Database stats:', JSON.stringify(stats, null, 2)))\"",
-    "prepare": "husky"
+    "db:stats": "node -e \"require('./src/database/migrator').DatabaseMigrator.getDbStats().then(stats => console.log('Database stats:', JSON.stringify(stats, null, 2)))\""
   },
   "keywords": [
     "witchcraft",
@@ -32,7 +31,6 @@
     "sqlite3": "^6.0.1"
   },
   "devDependencies": {
-    "husky": "^9.1.7",
     "jest": "^30.3.0"
   },
   "engines": {

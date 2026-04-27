@@ -132,6 +132,7 @@ npm run test:coverage  # coverage report
 ```
 
 Commits are protected by a husky pre-commit hook. CI runs on every push/PR via GitHub Actions.
+CI runs on every push/PR via GitHub Actions.
 
 ## 📂 Data Storage
 

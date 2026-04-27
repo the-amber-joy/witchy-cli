@@ -29,7 +29,7 @@
   "author": "Amber Joy <contact@amberjoy.dev>",
   "license": "MIT",
   "dependencies": {
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^6.0.1"
   },
   "devDependencies": {
     "husky": "^9.1.7",

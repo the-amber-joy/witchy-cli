@@ -2,14 +2,8 @@ const {
   findCrystalByName,
   findCrystalsByProperty,
 } = require("../src/search/crystals");
-const { DatabaseMigrator } = require("../src/database/migrator");
 
 describe("Crystal Search", () => {
-  beforeAll(async () => {
-    // Ensure database exists before running tests
-    await DatabaseMigrator.ensureDatabaseExists(true, true);
-  });
-
   describe("findCrystalByName", () => {
     test("should find crystal by exact name", async () => {
       const result = await findCrystalByName([], "amethyst");

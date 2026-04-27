@@ -8,8 +8,13 @@
   },
   "files": [
     "lookup.js",
-    "src/**/*.js",
+    "src/cli.js",
+    "src/index.js",
     "src/data/**/*.json",
+    "src/data/loader.js",
+    "src/search/**/*.js",
+    "src/ui/**/*.js",
+    "src/utils/**/*.js",
     "README.md",
     "LICENSE"
   ],
@@ -17,11 +22,7 @@
     "start": "node lookup.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "postinstall": "node -e \"require('./src/database/migrator').DatabaseMigrator.ensureDatabaseExists(false).then(() => console.log('✨ Database ready!')).catch(err => console.log('⚠️ Database setup will run on first use'))\"",
-    "db:migrate": "node -e \"require('./src/database/migrate').migrateAllData().then(() => console.log('Migration complete!'))\"",
-    "db:reset": "node -e \"require('./src/database/migrator').DatabaseMigrator.resetDatabase().then(() => console.log('Database reset complete!'))\"",
-    "db:stats": "node -e \"require('./src/database/migrator').DatabaseMigrator.getDbStats().then(stats => console.log('Database stats:', JSON.stringify(stats, null, 2)))\""
+    "test:coverage": "jest --coverage"
   },
   "keywords": [
     "witchcraft",
@@ -34,9 +35,7 @@
   ],
   "author": "Amber Joy <contact@amberjoy.dev>",
   "license": "MIT",
-  "dependencies": {
-    "sqlite3": "^6.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "jest": "^30.3.0"
   },

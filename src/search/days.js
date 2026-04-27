@@ -1,29 +1,13 @@
-const { DaysDB } = require("../database/days");
-
-// Find day by name (database version)
-async function findDayByName(days, dayName) {
-  try {
-    return await DaysDB.findDayByName(dayName);
-  } catch (error) {
-    console.error(
-      "Database error, falling back to array search:",
-      error.message,
-    );
-    return findDayByNameSync(days, dayName);
-  }
+function getDaysData(days) {
+  return days && days.length > 0 ? days : require("../data/days.json");
 }
 
-// Find days by intent (database version)
+async function findDayByName(days, dayName) {
+  return findDayByNameSync(getDaysData(days), dayName);
+}
+
 async function findDaysByIntent(days, intentTerm) {
-  try {
-    return await DaysDB.findDaysByIntent(intentTerm);
-  } catch (error) {
-    console.error(
-      "Database error, falling back to array search:",
-      error.message,
-    );
-    return findDaysByIntentSync(days, intentTerm);
-  }
+  return findDaysByIntentSync(getDaysData(days), intentTerm);
 }
 
 // Synchronous fallback functions (for backwards compatibility)

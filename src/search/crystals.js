@@ -1,46 +1,39 @@
-const { CrystalsDB } = require("../database/crystals");
+function getCrystalsData(crystals) {
+  return crystals && crystals.length > 0
+    ? crystals
+    : require("../data/crystals.json");
+}
 
-// Search for crystal by name or alternative name (database version)
 async function findCrystalByName(crystals, searchTerm) {
-  try {
-    return await CrystalsDB.findCrystalByName(searchTerm);
-  } catch (error) {
-    console.error(
-      "Database error, falling back to array search:",
-      error.message,
-    );
-    return findCrystalByNameSync(crystals, searchTerm);
-  }
+  return findCrystalByNameSync(getCrystalsData(crystals), searchTerm);
 }
 
-// Search for crystals by properties (database version)
 async function findCrystalsByProperty(crystals, propertyTerm) {
-  try {
-    return await CrystalsDB.findCrystalsByProperty(propertyTerm);
-  } catch (error) {
-    console.error(
-      "Database error, falling back to array search:",
-      error.message,
-    );
-    return findCrystalsByPropertySync(crystals, propertyTerm);
-  }
+  return findCrystalsByPropertySync(getCrystalsData(crystals), propertyTerm);
 }
 
-// Get crystal suggestions for partial matches
 async function getCrystalSuggestions(searchTerm) {
-  try {
-    return await CrystalsDB.searchCrystalsByPartialName(searchTerm);
-  } catch (error) {
-    console.error("Database error for suggestions:", error.message);
-    return [];
-  }
+  const normalizedSearch = searchTerm.toLowerCase().trim();
+  return getCrystalsData().filter((crystal) => {
+    if (crystal.name.toLowerCase().includes(normalizedSearch)) {
+      return true;
+    }
+
+    return (
+      crystal.alsoCalled &&
+      Array.isArray(crystal.alsoCalled) &&
+      crystal.alsoCalled.some((altName) =>
+        altName.toLowerCase().includes(normalizedSearch),
+      )
+    );
+  });
 }
 
 // Synchronous fallback functions (for backwards compatibility)
 function findCrystalByNameSync(crystals, searchTerm) {
   const normalizedSearch = searchTerm.toLowerCase().trim();
 
-  return crystals.find((crystal) => {
+  const match = crystals.find((crystal) => {
     // Check main name
     if (crystal.name.toLowerCase() === normalizedSearch) {
       return true;
@@ -55,6 +48,8 @@ function findCrystalByNameSync(crystals, searchTerm) {
 
     return false;
   });
+
+  return match || null;
 }
 
 function findCrystalsByPropertySync(crystals, propertyTerm) {

@@ -1,12 +1,6 @@
 const { findHerbByName, findHerbsByUse } = require("../src/search/herbs");
-const { DatabaseMigrator } = require("../src/database/migrator");
 
 describe("Herb Search", () => {
-  beforeAll(async () => {
-    // Ensure database exists before running tests
-    await DatabaseMigrator.ensureDatabaseExists(true, true);
-  });
-
   describe("findHerbByName", () => {
     test("should find herb by exact name", async () => {
       const result = await findHerbByName([], "rosemary");

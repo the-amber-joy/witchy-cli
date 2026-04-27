@@ -1,54 +1,32 @@
-const { MoonDB } = require("../database/moon");
+function getMoonPhasesData(moonPhases) {
+  return moonPhases && moonPhases.length > 0
+    ? moonPhases
+    : require("../data/moon.json");
+}
 
-// Search for moon phase by name (database version)
 async function findMoonPhaseByName(moonPhases, searchTerm) {
-  try {
-    return await MoonDB.findMoonPhaseByName(searchTerm);
-  } catch (error) {
-    console.error(
-      "Database error, falling back to array search:",
-      error.message,
-    );
-    // If moonPhases array is empty, load from JSON
-    if (!moonPhases || moonPhases.length === 0) {
-      moonPhases = require("../data/moon.json");
-    }
-    return findMoonPhaseByNameSync(moonPhases, searchTerm);
-  }
+  return findMoonPhaseByNameSync(getMoonPhasesData(moonPhases), searchTerm);
 }
 
-// Search for moon phases by meaning (database version)
 async function findMoonPhasesByMeaning(moonPhases, meaningTerm) {
-  try {
-    return await MoonDB.findMoonPhasesByMeaning(meaningTerm);
-  } catch (error) {
-    console.error(
-      "Database error, falling back to array search:",
-      error.message,
-    );
-    // If moonPhases array is empty, load from JSON
-    if (!moonPhases || moonPhases.length === 0) {
-      moonPhases = require("../data/moon.json");
-    }
-    return findMoonPhasesByMeaningSync(moonPhases, meaningTerm);
-  }
+  return findMoonPhasesByMeaningSync(
+    getMoonPhasesData(moonPhases),
+    meaningTerm,
+  );
 }
 
-// Get moon phase suggestions for partial matches
 async function getMoonPhaseSuggestions(searchTerm) {
-  try {
-    return await MoonDB.searchMoonPhasesByPartialName(searchTerm);
-  } catch (error) {
-    console.error("Database error for suggestions:", error.message);
-    return [];
-  }
+  const normalizedSearch = searchTerm.toLowerCase().trim();
+  return getMoonPhasesData().filter((phase) =>
+    phase.phase.toLowerCase().includes(normalizedSearch),
+  );
 }
 
 // Synchronous fallback functions (for backwards compatibility)
 function findMoonPhaseByNameSync(moonPhases, searchTerm) {
   const normalizedSearch = searchTerm.toLowerCase().trim();
 
-  return moonPhases.find((phase) => {
+  const match = moonPhases.find((phase) => {
     const phaseName = phase.phase.toLowerCase();
 
     // Exact match first
@@ -75,6 +53,8 @@ function findMoonPhaseByNameSync(moonPhases, searchTerm) {
 
     return false;
   });
+
+  return match || null;
 }
 
 function findMoonPhasesByMeaningSync(moonPhases, meaningTerm) {

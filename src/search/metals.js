@@ -1,29 +1,13 @@
-const { MetalsDB } = require("../database/metals");
-
-// Search for metal by name (database version)
-async function findMetalByName(metals, searchTerm) {
-  try {
-    return await MetalsDB.findMetalByName(searchTerm);
-  } catch (error) {
-    console.error(
-      "Database error, falling back to array search:",
-      error.message,
-    );
-    return findMetalByNameSync(metals, searchTerm);
-  }
+function getMetalsData(metals) {
+  return metals && metals.length > 0 ? metals : require("../data/metals.json");
 }
 
-// Search for metals by properties (database version)
+async function findMetalByName(metals, searchTerm) {
+  return findMetalByNameSync(getMetalsData(metals), searchTerm);
+}
+
 async function findMetalsByProperty(metals, propertyTerm) {
-  try {
-    return await MetalsDB.findMetalsByProperty(propertyTerm);
-  } catch (error) {
-    console.error(
-      "Database error, falling back to array search:",
-      error.message,
-    );
-    return findMetalsByPropertySync(metals, propertyTerm);
-  }
+  return findMetalsByPropertySync(getMetalsData(metals), propertyTerm);
 }
 
 // Synchronous fallback functions (for backwards compatibility)

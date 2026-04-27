@@ -2,14 +2,8 @@ const {
   findColorByName,
   findColorsByMeaning,
 } = require("../src/search/colors");
-const { DatabaseMigrator } = require("../src/database/migrator");
 
 describe("Color Search", () => {
-  beforeAll(async () => {
-    // Ensure database exists before running tests
-    await DatabaseMigrator.ensureDatabaseExists(true, true);
-  });
-
   describe("findColorByName", () => {
     test("should find color by exact name", async () => {
       const result = await findColorByName([], "red");

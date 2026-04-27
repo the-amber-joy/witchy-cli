@@ -1,62 +1,37 @@
-const { HerbsDB } = require("../database/herbs");
-const { DatabaseMigrator } = require("../database/migrator");
+function getHerbsData(herbs) {
+  return herbs && herbs.length > 0 ? herbs : require("../data/herbs.json");
+}
 
-// Search for herb by name or alternative name (database version)
 async function findHerbByName(herbs, searchTerm) {
-  try {
-    // Ensure database exists before searching (lightweight check)
-    // Postinstall script handles migration, this is just a safety net
-    // Use quiet mode to show brief message instead of full migration output
-    await DatabaseMigrator.ensureDatabaseExists(false, true);
-
-    return await HerbsDB.findHerbByName(searchTerm);
-  } catch (error) {
-    console.error(
-      "Database error, falling back to array search:",
-      error.message,
-    );
-    // Fallback to original array-based search
-    return findHerbByNameSync(herbs, searchTerm);
-  }
+  return findHerbByNameSync(getHerbsData(herbs), searchTerm);
 }
 
-// Search for herbs by ritual use (database version)
 async function findHerbsByUse(herbs, useTerm) {
-  try {
-    // Ensure database exists before searching (lightweight check)
-    // Use quiet mode to show brief message instead of full migration output
-    await DatabaseMigrator.ensureDatabaseExists(false, true);
-
-    return await HerbsDB.findHerbsByUse(useTerm);
-  } catch (error) {
-    console.error(
-      "Database error, falling back to array search:",
-      error.message,
-    );
-    // Fallback to original array-based search
-    return findHerbsByUseSync(herbs, useTerm);
-  }
+  return findHerbsByUseSync(getHerbsData(herbs), useTerm);
 }
 
-// Get herb suggestions for partial matches
 async function getHerbSuggestions(searchTerm) {
-  try {
-    // Ensure database exists before searching (lightweight check)
-    // Use quiet mode to show brief message instead of full migration output
-    await DatabaseMigrator.ensureDatabaseExists(false, true);
+  const normalizedSearch = searchTerm.toLowerCase().trim();
+  return getHerbsData().filter((herb) => {
+    if (herb.name.toLowerCase().includes(normalizedSearch)) {
+      return true;
+    }
 
-    return await HerbsDB.searchHerbsByPartialName(searchTerm);
-  } catch (error) {
-    console.error("Database error for suggestions:", error.message);
-    return [];
-  }
+    return (
+      herb.alsoCalled &&
+      Array.isArray(herb.alsoCalled) &&
+      herb.alsoCalled.some((altName) =>
+        altName.toLowerCase().includes(normalizedSearch),
+      )
+    );
+  });
 }
 
 // Synchronous fallback functions (for backwards compatibility)
 function findHerbByNameSync(herbs, searchTerm) {
   const normalizedSearch = searchTerm.toLowerCase().trim();
 
-  return herbs.find((herb) => {
+  const match = herbs.find((herb) => {
     // Check main name
     if (herb.name.toLowerCase() === normalizedSearch) {
       return true;
@@ -71,6 +46,8 @@ function findHerbByNameSync(herbs, searchTerm) {
 
     return false;
   });
+
+  return match || null;
 }
 
 function findHerbsByUseSync(herbs, useTerm) {

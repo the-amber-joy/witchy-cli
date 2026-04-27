@@ -1,6 +1,5 @@
 const readline = require("readline");
 const { processCommand } = require("./index");
-const { DatabaseMigrator } = require("./database/migrator");
 
 class InteractiveCLI {
   constructor() {
@@ -128,22 +127,9 @@ class InteractiveCLI {
   }
 
   async start() {
-    try {
-      // Ensure database exists (quiet mode for clean startup)
-      await DatabaseMigrator.ensureDatabaseExists(false, true);
-      
-      // Show welcome after database is ready
-      console.clear();
-      this.showWelcome();
-      this.rl.prompt();
-    } catch (error) {
-      // Show error but continue - allow CLI to work with JSON fallback if needed
-      console.clear();
-      console.log("⚠️  Database initialization warning:", error.message);
-      console.log("Continuing with available functionality...\n");
-      this.showWelcome();
-      this.rl.prompt();
-    }
+    console.clear();
+    this.showWelcome();
+    this.rl.prompt();
   }
 }
 

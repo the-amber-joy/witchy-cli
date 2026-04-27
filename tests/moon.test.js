@@ -2,14 +2,8 @@ const {
   findMoonPhaseByName,
   findMoonPhasesByMeaning,
 } = require("../src/search/moon");
-const { DatabaseMigrator } = require("../src/database/migrator");
 
 describe("Moon Phase Search", () => {
-  beforeAll(async () => {
-    // Ensure database exists before running tests
-    await DatabaseMigrator.ensureDatabaseExists(true, true);
-  });
-
   describe("findMoonPhaseByName", () => {
     test("should find moon phase by exact name", async () => {
       const result = await findMoonPhaseByName([], "full");

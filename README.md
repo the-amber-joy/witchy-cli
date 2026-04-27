@@ -131,22 +131,13 @@ npm run test:watch     # watch mode
 npm run test:coverage  # coverage report
 ```
 
-Commits are protected by a husky pre-commit hook. CI runs on every push/PR via GitHub Actions.
 CI runs on every push/PR via GitHub Actions.
 
 ## 📂 Data Storage
 
-SQLite database in your user data directory:
+Witchy CLI reads its correspondence data directly from the bundled JSON files in `src/data`.
 
-- Windows: `%APPDATA%\WitchyCLI\witchy.db`
-- macOS: `~/Library/Application Support/WitchyCLI/witchy.db`
-- Linux: `~/.local/share/witchy-cli/witchy.db`
-
-If the database is unavailable, Witchy CLI falls back to the JSON data files. To rebuild/reset your DB:
-
-```bash
-npm run db:reset
-```
+That keeps installs small and avoids any database setup step, which is especially helpful on lower-powered devices like a Raspberry Pi Zero.
 
 ## 📚 Data Sources
 

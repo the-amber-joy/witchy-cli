@@ -2,8 +2,9 @@
 const { loadData, loadDataSync } = require("./data/loader");
 const { showUsage } = require("./ui/display");
 const { highlightText } = require("./utils/text");
-const { getMoonPhaseEmoji, getColorCode } = require("./utils/colors");
-const { suggestUseSearch } = require("./utils/suggestions");
+const { getColorCode } = require("./utils/getColorCode");
+const { getMoonPhaseEmoji } = require("./utils/getMoonPhaseEmoji");
+const { suggestUseSearch } = require("./utils/suggestUseSearch");
 
 // Import search functions
 const { findHerbByName, findHerbsByUse } = require("./search/herbs");

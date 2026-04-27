@@ -2,20 +2,12 @@ const fs = require("fs");
 const path = require("path");
 const { initializeDatabase } = require("./setup");
 const { migrateAllData } = require("./migrate");
-const { DB_PATH, isPkg } = require("./config");
+const { DB_PATH } = require("./config");
 
 class DatabaseMigrator {
   static async ensureDatabaseExists(silent = false, quiet = false) {
     try {
-      // For pkg executables, the database is bundled and always available
-      if (isPkg) {
-        if (!silent && !quiet) {
-          console.log("✨ Using bundled pre-populated database");
-        }
-        return true;
-      }
-
-      // For development mode, check if database file exists
+      // Check if database file exists
       if (!fs.existsSync(DB_PATH)) {
         if (quiet) {
           console.log("🔮 Setting up database for first use...");

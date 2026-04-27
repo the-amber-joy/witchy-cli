@@ -1,16 +1,7 @@
 const sqlite3 = require("sqlite3").verbose();
-const { DB_PATH, isPkg } = require("./config");
+const { DB_PATH } = require("./config");
 
-/**
- * Get database opening mode based on whether we're using pkg
- * @returns {number} SQLite opening mode
- */
 function getDatabaseMode() {
-  if (isPkg) {
-    // Use read-only mode for pkg executables (bundled database)
-    return sqlite3.OPEN_READONLY;
-  }
-  // Use default mode for development database
   return sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE;
 }
 

@@ -43,6 +43,7 @@ node lookup.js herb rosemary
 ```bash
 chmod +x lookup.js
 sudo ln -s "$(pwd)/lookup.js" /usr/local/bin/witchy
+```
 
 ## 🔮 Usage
 
@@ -90,11 +91,6 @@ witchy <type> [command] <search-term>
 - 🌙 `moon` - Find moon phases perfect for your spellwork
 - 🪨 `metals` - Understand metallic energies and correspondences
 - 📅 `days` - Discover which days are best for specific magical work
-
-**Command Formats:**
-
-- `<type> <name>` - Look up by name
-- `<type> use <term>` - Search by magical use/property
 
 **Examples:**
 

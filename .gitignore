@@ -33,3 +33,6 @@ Thumbs.db
 # Test files
 test_*.js
 debug_*.js
+
+# Coverage output
+coverage/

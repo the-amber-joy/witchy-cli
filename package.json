@@ -6,6 +6,13 @@
   "bin": {
     "witchy": "./lookup.js"
   },
+  "files": [
+    "lookup.js",
+    "src/**/*.js",
+    "src/data/**/*.json",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "start": "node lookup.js",
     "test": "jest",

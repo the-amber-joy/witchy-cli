@@ -15,8 +15,9 @@ You can be up and running in under a minute.
 ### 💻 Install From Source (All Platforms, Pi Zero Ready)
 
 ```bash
-git clone https://github.com/the-amber-joy/witchy-cli.git
-cd witchy-cli
+sudo git clone https://github.com/the-amber-joy/witchy-cli.git /opt/witchy-cli
+sudo chown -R $USER:$USER /opt/witchy-cli
+cd /opt/witchy-cli
 git checkout pi-zero-json-runtime
 npm ci --no-audit --no-fund
 npm link
@@ -143,9 +144,10 @@ source ~/.bashrc
 ### Installation
 
 ```bash
-# Clone and checkout this branch
-git clone https://github.com/the-amber-joy/witchy-cli.git
-cd witchy-cli
+# Clone into /opt and take ownership
+sudo git clone https://github.com/the-amber-joy/witchy-cli.git /opt/witchy-cli
+sudo chown -R $USER:$USER /opt/witchy-cli
+cd /opt/witchy-cli
 git checkout pi-zero-json-runtime
 
 # Install with minimal footprint
@@ -160,14 +162,13 @@ witchy herb rosemary
 
 ### Persistence (Optional)
 
-If you want `witchy` to remain available after your Pi restarts or you pull fresh, add it to your cron or systemd startup. For a simple approach:
+If you want `witchy` to remain available after pulling updates, just re-run `npm link` from `/opt/witchy-cli`:
 
 ```bash
-# Make it part of your shell profile
-echo 'npm link' >> ~/.bashrc
+cd /opt/witchy-cli
+git pull
+npm link
 ```
-
-Or, run `npm link` whenever you pull updates.
 
 ### Troubleshooting
 

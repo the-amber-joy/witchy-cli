@@ -103,19 +103,7 @@ witchy color red
 witchy metal use prosperity
 ```
 
-## 🛠️ Development
-
-For maintainers and contributors:
-
-```bash
-npm test               # run tests
-npm run test:watch     # watch mode
-npm run test:coverage  # coverage report
-```
-
-CI runs on every push/PR via GitHub Actions.
-
-## 📂 Data Storage — JSON-Only (No SQLite)
+##  Data Storage — JSON-Only (No SQLite)
 
 Witchy CLI reads its correspondence data directly from the bundled JSON files in `src/data`.
 
@@ -161,7 +149,7 @@ cd witchy-cli
 git checkout pi-zero-json-runtime
 
 # Install with minimal footprint
-npm ci --omit=dev --no-audit --no-fund
+npm ci --no-audit --no-fund
 
 # Link globally
 npm link

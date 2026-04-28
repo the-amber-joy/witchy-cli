@@ -18,11 +18,11 @@ You can be up and running in under a minute.
 git clone https://github.com/the-amber-joy/witchy-cli.git
 cd witchy-cli
 git checkout pi-zero-json-runtime
-npm ci --omit=dev --no-audit --no-fund
+npm ci --no-audit --no-fund
 npm link
 ```
 
-**Pi Zero tip:** `npm ci` is preferred over `npm install` for reproducible, faster installs. The `--omit=dev` flag skips test dependencies, keeping the footprint minimal (~200 KB installed).
+**Pi Zero tip:** `npm ci` is preferred over `npm install` for reproducible, faster installs.
 
 After `npm link`, the `witchy` command is available globally from this local checkout.
 

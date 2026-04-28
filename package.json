@@ -19,10 +19,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "start": "node lookup.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "start": "node lookup.js"
   },
   "keywords": [
     "witchcraft",
@@ -35,10 +32,6 @@
   ],
   "author": "Amber Joy <contact@amberjoy.dev>",
   "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {
-    "jest": "^30.3.0"
-  },
   "engines": {
     "node": ">=20.20.2"
   }
